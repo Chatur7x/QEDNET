@@ -1,0 +1,120 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qednet"
+version = "0.1.0"
+description = "A Hybrid Quantum–Classical Machine Learning Platform for Early Disease Detection"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "QED-Net Team", email = "team@qednet.example"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    # Core ML
+    "scikit-learn>=1.3.0",
+    "numpy>=1.24.0",
+    "scipy>=1.11.0",
+    "pandas>=2.0.0",
+    "xgboost>=2.0.0",
+    "lightgbm>=4.0.0",
+    # Quantum
+    "pennylane>=0.33.0",
+    "pennylane-lightning>=0.33.0",
+    "qiskit>=1.0.0",
+    "qiskit-ibm-runtime>=0.20.0",
+    # Deep Learning
+    "torch>=2.0.0",
+    # Data
+    "pandera>=0.16.0",
+    "imbalanced-learn>=0.11.0",
+    # Tracking
+    "mlflow>=2.8.0",
+    # API
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    # Async
+    "celery>=5.3.0",
+    "redis>=5.0.0",
+    # Dashboard
+    "streamlit>=1.28.0",
+    "plotly>=5.17.0",
+    # Config
+    "pyyaml>=6.0.0",
+    # Testing
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "hypothesis>=6.92.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.0",
+    "black>=23.0.0",
+    "mypy>=1.7.0",
+    "pre-commit>=3.5.0",
+]
+docs = [
+    "mkdocs-material>=9.4.0",
+    "mkdocstrings[python]>=0.24.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qednet*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short --strict-markers"
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow tests",
+    "leakage: Leakage guard tests",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM", "T20"]
+ignore = ["E501", "B008"]
+fixable = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM", "T20"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+strict_optional = true
+
+[tool.coverage.run]
+source = ["qednet"]
+omit = ["*/tests/*", "*/test_*.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
