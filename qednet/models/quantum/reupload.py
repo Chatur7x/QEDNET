@@ -16,7 +16,7 @@ import numpy as np
 import pennylane as qml
 from pennylane import numpy as pnp
 
-from qednet.encoding import validate_matrix
+from qednet.encoding import validate_vector
 from .base import bce_loss, sigmoid, validate_xy
 
 
@@ -159,8 +159,15 @@ class ReuploadClassifier:
     def decision_scores(self, X):
         if not hasattr(self, "theta_"):
             raise RuntimeError("ReuploadClassifier not fitted")
-        Xm = validate_matrix(X, self.n_qubits, "reupload")
-        z = self._forward(Xm, self.theta_, self.phi_)
+        X_arr = np.asarray(X, dtype=float)
+        if X_arr.ndim != 2:
+            raise ValueError(f"X must be 2D, got shape {X_arr.shape}")
+        if X_arr.shape[0] == 0:
+            raise ValueError("X has no rows")
+        validate_vector(X_arr[0], self.n_qubits, "reupload")
+        if not np.all(np.isfinite(X_arr)):
+            raise ValueError("features must be finite")
+        z = self._forward(X_arr, self.theta_, self.phi_)
         return sigmoid(z)
 
     def predict_proba(self, X):

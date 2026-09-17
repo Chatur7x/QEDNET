@@ -1,10 +1,4 @@
-"""Shared validation for quantum encodings (D4).
-
-Assumptions (documented, per spec):
-- Input X is already compressed classical features (typically 8-16 dims).
-- Encodings never truncate silently; dimension mismatches raise ValueError.
-- No dataset-specific logic lives here.
-"""
+"""Shared validation for quantum encodings (D4)."""
 
 from __future__ import annotations
 
@@ -20,7 +14,7 @@ def validate_vector(x, n_qubits: int, encoding: str) -> np.ndarray:
         raise ValueError(f"{encoding}: features must be finite")
     if n_qubits < 1:
         raise ValueError(f"{encoding}: n_qubits must be >= 1, got {n_qubits}")
-    if encoding in ("angle", "zz", "iqp", "reupload"):
+    if encoding in ("angle", "zz", "reupload"):
         if arr.size > n_qubits:
             raise ValueError(
                 f"{encoding}: n_features={arr.size} > n_qubits={n_qubits}; "
@@ -36,24 +30,11 @@ def validate_vector(x, n_qubits: int, encoding: str) -> np.ndarray:
     return arr
 
 
-def validate_matrix(X, n_qubits: int, encoding: str) -> np.ndarray:
-    arr = np.asarray(X, dtype=float)
-    if arr.ndim != 2:
-        raise ValueError(f"{encoding}: X must be 2D, got shape {arr.shape}")
-    if arr.shape[0] == 0:
-        raise ValueError(f"{encoding}: X has no rows")
-    # ponytail: validate one row's width; per-row finiteness checked in vector path
-    validate_vector(arr[0], n_qubits, encoding)
-    if not np.all(np.isfinite(arr)):
-        raise ValueError(f"{encoding}: features must be finite")
-    return arr
-
-
 def pad_to_pow2(x: np.ndarray, n_qubits: int) -> np.ndarray:
     """Zero-pad a vector to 2**n_qubits and L2-normalize for amplitude encoding."""
     dim = 2**n_qubits
     v = np.zeros(dim)
-    v[: x.size] = x
+    v[:x.size] = x
     norm = np.linalg.norm(v)
     if norm == 0:
         raise ValueError("amplitude: zero vector cannot be normalized")

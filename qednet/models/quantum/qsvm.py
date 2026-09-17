@@ -13,7 +13,7 @@ import numpy as np
 import pennylane as qml
 from sklearn.svm import SVC
 
-from qednet.encoding import validate_matrix, zz_feature_map
+from qednet.encoding import validate_vector, zz_feature_map
 from .base import validate_xy
 
 
@@ -148,10 +148,17 @@ class QSVM:
         return self
 
     def _predict_kernel(self, X):
-        Xm = validate_matrix(X, self.n_qubits, self.encoding)
+        X_arr = np.asarray(X, dtype=float)
+        if X_arr.ndim != 2:
+            raise ValueError(f"X must be 2D, got shape {X_arr.shape}")
+        if X_arr.shape[0] == 0:
+            raise ValueError("X has no rows")
+        validate_vector(X_arr[0], self.n_qubits, self.encoding)
+        if not np.all(np.isfinite(X_arr)):
+            raise ValueError("features must be finite")
         if self._X_train is None or self._svc is None:
             raise RuntimeError("QSVM not fitted")
-        K = self._compute_kernel(Xm, self._X_train)
+        K = self._compute_kernel(X_arr, self._X_train)
         return self._svc.decision_function(K)
 
     def decision_scores(self, X):
