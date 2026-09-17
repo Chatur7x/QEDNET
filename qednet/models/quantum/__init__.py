@@ -2,5 +2,6 @@
 
 from .vqc import VQC
 from .qsvm import QSVM
+from .reupload import ReuploadClassifier
 
-__all__ = ["VQC", "QSVM"]
+__all__ = ["VQC", "QSVM", "ReuploadClassifier"]
