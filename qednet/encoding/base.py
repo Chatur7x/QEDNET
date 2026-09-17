@@ -1,0 +1,60 @@
+"""Shared validation for quantum encodings (D4).
+
+Assumptions (documented, per spec):
+- Input X is already compressed classical features (typically 8-16 dims).
+- Encodings never truncate silently; dimension mismatches raise ValueError.
+- No dataset-specific logic lives here.
+"""
+
+from __future__ import annotations
+
+import numpy as np
+
+
+def validate_vector(x, n_qubits: int, encoding: str) -> np.ndarray:
+    """Validate a single feature vector for the given encoding."""
+    arr = np.asarray(x, dtype=float).ravel()
+    if arr.size == 0:
+        raise ValueError(f"{encoding}: empty feature vector")
+    if not np.all(np.isfinite(arr)):
+        raise ValueError(f"{encoding}: features must be finite")
+    if n_qubits < 1:
+        raise ValueError(f"{encoding}: n_qubits must be >= 1, got {n_qubits}")
+    if encoding in ("angle", "zz", "iqp", "reupload"):
+        if arr.size > n_qubits:
+            raise ValueError(
+                f"{encoding}: n_features={arr.size} > n_qubits={n_qubits}; "
+                "compress upstream instead of truncating"
+            )
+    elif encoding == "amplitude":
+        if arr.size > 2**n_qubits:
+            raise ValueError(
+                f"amplitude: n_features={arr.size} > 2**n_qubits={2 ** n_qubits}"
+            )
+    else:
+        raise ValueError(f"unknown encoding: {encoding}")
+    return arr
+
+
+def validate_matrix(X, n_qubits: int, encoding: str) -> np.ndarray:
+    arr = np.asarray(X, dtype=float)
+    if arr.ndim != 2:
+        raise ValueError(f"{encoding}: X must be 2D, got shape {arr.shape}")
+    if arr.shape[0] == 0:
+        raise ValueError(f"{encoding}: X has no rows")
+    # ponytail: validate one row's width; per-row finiteness checked in vector path
+    validate_vector(arr[0], n_qubits, encoding)
+    if not np.all(np.isfinite(arr)):
+        raise ValueError(f"{encoding}: features must be finite")
+    return arr
+
+
+def pad_to_pow2(x: np.ndarray, n_qubits: int) -> np.ndarray:
+    """Zero-pad a vector to 2**n_qubits and L2-normalize for amplitude encoding."""
+    dim = 2**n_qubits
+    v = np.zeros(dim)
+    v[: x.size] = x
+    norm = np.linalg.norm(v)
+    if norm == 0:
+        raise ValueError("amplitude: zero vector cannot be normalized")
+    return v / norm
