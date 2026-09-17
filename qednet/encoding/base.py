@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 """Base encoder interface and shared validation utilities (D4 + Member C)."""
 
 from abc import ABC, abstractmethod
-from __future__ import annotations
 
 import numpy as np
 from numpy.typing import NDArray
