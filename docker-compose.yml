@@ -1,0 +1,20 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./runs:/app/runs
+      - ./data:/app/data
+    environment:
+      - DISABLE_PANDERA_IMPORT_WARNING=True
+
+  dashboard:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - api

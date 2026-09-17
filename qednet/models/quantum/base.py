@@ -26,6 +26,18 @@ def validate_xy(X, y, n_qubits: int, encoding: str):
     return X_arr, arr.astype(int)
 
 
+class SklearnCompatMixin:
+    """get_params/set_params for clone() — classes store raw ctor kwargs in _init_params."""
+
+    def get_params(self, deep: bool = True) -> dict:
+        return dict(self._init_params)
+
+    def set_params(self, **params) -> "SklearnCompatMixin":
+        self._init_params.update(params)
+        self.__init__(**self._init_params)
+        return self
+
+
 def sigmoid(z):
     """Autograd-compatible sigmoid."""
     return 1.0 / (1.0 + pnp.exp(-z))

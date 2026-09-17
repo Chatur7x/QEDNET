@@ -5,3 +5,11 @@ mlruns/
 *.pkl
 *.npz
 .env
+node_modules/
+frontend/dist/
+runs/
+data/raw/
+data/uploads/
+reports/
+.pytest_cache/
+qednet.egg-info/

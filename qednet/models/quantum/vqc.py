@@ -21,7 +21,7 @@ import pennylane as qml
 from pennylane import numpy as pnp
 
 from qednet.encoding import validate_vector
-from .base import bce_loss, sigmoid, validate_xy
+from .base import SklearnCompatMixin, bce_loss, sigmoid, validate_xy
 
 
 def _resolve_diff_method(requested: str, device_name: str) -> str:
@@ -35,7 +35,7 @@ def _resolve_diff_method(requested: str, device_name: str) -> str:
     raise ValueError(f"unknown diff_method {requested!r}")
 
 
-class VQC:
+class VQC(SklearnCompatMixin):
     def __init__(
         self,
         n_qubits: int = 4,
@@ -67,6 +67,11 @@ class VQC:
         self.max_iter = int(max_iter)
         self.seed = int(seed)
         self.use_entanglement = bool(use_entanglement)
+        self._init_params = dict(
+            n_qubits=n_qubits, n_layers=n_layers, encoding=encoding, device=device,
+            shots=shots, diff_method=diff_method, optimizer=optimizer, lr=lr,
+            max_iter=max_iter, seed=seed, use_entanglement=use_entanglement,
+        )
         self._built = False
 
     @property

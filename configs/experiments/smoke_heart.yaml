@@ -1,0 +1,30 @@
+dataset:
+  name: heart_disease
+
+preprocess:
+  impute_strategy: median
+  scale_method: standard
+  select_method: mutual_info
+  select_k: 8
+  compress_method: pca
+  compress_dim: 4
+
+model:
+  type: vqc
+  n_qubits: 4
+  n_layers: 1
+  encoding: angle
+  max_iter: 5
+
+training:
+  outer_folds: 2
+  inner_folds: 2
+  seeds: [42, 1]
+
+evaluation:
+  bootstrap_ci: 200
+  delong_test: true
+  decision_curve: true
+
+seed: 42
+experiment_name: qednet-smoke-heart

@@ -14,7 +14,7 @@ import pennylane as qml
 from sklearn.svm import SVC
 
 from qednet.encoding import validate_vector, zz_feature_map
-from .base import validate_xy
+from .base import SklearnCompatMixin, validate_xy
 
 
 def _overlap_statevector(dev, encoding_fn, x, y, n_qubits):
@@ -53,7 +53,7 @@ def _overlap_swap_test(dev, encoding_fn, x, y, n_qubits):
     return float(2 * probs[0] - 1)
 
 
-class QSVM:
+class QSVM(SklearnCompatMixin):
     def __init__(
         self,
         n_qubits: int = 4,
@@ -73,6 +73,10 @@ class QSVM:
         self.C = float(C)
         self.kernel_cache_size = int(kernel_cache_size)
         self.use_swap_test = bool(use_swap_test)
+        self._init_params = dict(
+            n_qubits=n_qubits, encoding=encoding, device=device, shots=shots,
+            C=C, kernel_cache_size=kernel_cache_size, use_swap_test=use_swap_test,
+        )
         self._dev = None
         self._encoding_fn = None
         self._kernel_train = None

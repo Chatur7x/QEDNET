@@ -1,0 +1,44 @@
+dataset:
+  name: breast_cancer
+
+preprocess:
+  impute_strategy: median
+  scale_method: standard
+  select_method: mutual_info
+  select_k: 16
+  compress_method: pca
+  compress_dim: 8
+  smote: false
+
+model:
+  type: vqc
+  n_qubits: 8
+  n_layers: 3
+  encoding: angle
+  optimizer: adam
+  learning_rate: 0.01
+  max_iter: 50
+
+training:
+  outer_folds: 5
+  inner_folds: 3
+  seeds: [42, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+evaluation:
+  bootstrap_ci: 2000
+  delong_test: true
+  decision_curve: true
+
+cascade:
+  enabled: true
+  low_confidence_min: 0.35
+  low_confidence_max: 0.65
+
+certificate:
+  enabled: true
+  dequantization: [rff, nystrom]
+  entanglement_ablation: parameter_matched
+  bottleneck_honesty_meter: true
+
+seed: 42
+experiment_name: qednet

@@ -17,10 +17,10 @@ import pennylane as qml
 from pennylane import numpy as pnp
 
 from qednet.encoding import validate_vector
-from .base import bce_loss, sigmoid, validate_xy
+from .base import SklearnCompatMixin, bce_loss, sigmoid, validate_xy
 
 
-class ReuploadClassifier:
+class ReuploadClassifier(SklearnCompatMixin):
     def __init__(
         self,
         n_qubits: int = 4,
@@ -48,6 +48,11 @@ class ReuploadClassifier:
         self.lr = float(lr)
         self.max_iter = int(max_iter)
         self.seed = int(seed)
+        self._init_params = dict(
+            n_qubits=n_qubits, n_layers=n_layers, device=device, shots=shots,
+            diff_method=diff_method, optimizer=optimizer, lr=lr,
+            max_iter=max_iter, seed=seed,
+        )
         self._built = False
 
     @property

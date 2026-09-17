@@ -1,0 +1,30 @@
+{
+  "logistic": {
+    "metrics": {
+      "auroc": 0.9732,
+      "auprc": 0.9737,
+      "sens_at_spec95": 0.82,
+      "spec_at_sens95": 0.88,
+      "f1": 0.8911,
+      "mcc": 0.7802,
+      "brier": 0.0705,
+      "ece": 0.0602,
+      "decision_curve_auc": 2.1169
+    },
+    "seconds": 3.3
+  },
+  "vqc_tiny": {
+    "metrics": {
+      "auroc": 0.6268,
+      "auprc": 0.6178,
+      "sens_at_spec95": 0.12,
+      "spec_at_sens95": 0.12,
+      "f1": 0.411,
+      "mcc": 0.1663,
+      "brier": 0.2422,
+      "ece": 0.0627,
+      "decision_curve_auc": 1.6698
+    },
+    "seconds": 8.6
+  }
+}
