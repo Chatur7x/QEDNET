@@ -2,6 +2,10 @@
 
 This platform is a research and educational artifact. It is not a medical device
 and must not be used for real patient care.
+
+Member A: Quantum core (models/quantum, encoding, certificate, diagnostics, hardware)
+Member B: Data, preprocessing, leakage guard
+Member C: Platform & integration (train, evaluation, explain, deploy, API, dashboard)
 """
 
 __version__ = "0.1.0"

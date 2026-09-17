@@ -50,6 +50,7 @@ mlflow.db
 artifacts/
 *.pkl
 *.joblib
+*.npz
 
 # Data
 data/raw/
