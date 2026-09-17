@@ -1,6 +1,6 @@
 """SHAP-based explainability."""
 
-from typing: import Optional
+from typing import Optional
 import numpy as np
 from numpy.typing import NDArray
 

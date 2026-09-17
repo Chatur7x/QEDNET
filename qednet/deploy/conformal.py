@@ -1,7 +1,7 @@
 """Conformal Prediction (F6)."""
 
 from dataclasses import dataclass
-from typing: import List
+from typing import List
 import numpy as np
 from numpy.typing import NDArray
 
