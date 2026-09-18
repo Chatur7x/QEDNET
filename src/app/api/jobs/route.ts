@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
-import { listJobs, startTrainingJob, CONFIGS_DIR, readProgress, refreshJob } from "@/lib/qednet";
+import { listJobs, startTrainingJob, CONFIGS_DIR, readProgress, refreshJob, cancelJob } from "@/lib/qednet";
 
 export const dynamic = "force-dynamic";
 
@@ -39,3 +39,14 @@ export async function POST(req: Request) {
   const job = startTrainingJob(configName, experimentId);
   return NextResponse.json({ ok: true, job: { ...job, progress: readProgress(experimentId) } });
 }
+
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const jobId = searchParams.get("jobId") || (await req.json().catch(() => ({}))).jobId;
+  if (!jobId) {
+    return NextResponse.json({ ok: false, error: "jobId is required" }, { status: 400 });
+  }
+  const cancelled = cancelJob(String(jobId));
+  return NextResponse.json({ ok: true, cancelled });
+}
+

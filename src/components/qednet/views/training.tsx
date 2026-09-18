@@ -13,6 +13,7 @@ import {
   useExperiments,
   useJobs,
   useStartTraining,
+  useCancelJob,
   seconds,
 } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
@@ -47,9 +48,11 @@ export function TrainingView() {
   const experiments = useExperiments();
   const datasets = useDatasets();
   const start = useStartTraining();
+  const cancel = useCancelJob();
 
   const [configName, setConfigName] = useState("breast_cancer");
   const [expId, setExpId] = useState("exp_custom_1");
+
 
   const liveJob = useMemo(
     () => jobs.data?.find((j) => j.status === "running") ?? null,
@@ -165,10 +168,26 @@ export function TrainingView() {
             title={`Running: ${liveJob.experimentId}`}
             subtitle={`job ${liveJob.jobId} · PID ${liveJob.pid ?? "—"}`}
             right={
-              <span className="qed-num inline-flex items-center gap-1.5 text-xs text-stone-500">
-                <Timer className="h-3.5 w-3.5" aria-hidden />
-                {seconds((Date.now() - liveJob.startedAt) / 1000)}
-              </span>
+              <div className="flex items-center gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    cancel.mutate(liveJob.jobId, {
+                      onSuccess: () => toast.info(`Cancelled experiment ${liveJob.experimentId}`),
+                    });
+                  }}
+                  disabled={cancel.isPending}
+                  className="h-7 text-xs text-rose-700 hover:bg-rose-50"
+                >
+                  cancel job
+                </Button>
+                <span className="qed-num inline-flex items-center gap-1.5 text-xs text-stone-500">
+                  <Timer className="h-3.5 w-3.5" aria-hidden />
+                  {seconds((Date.now() - liveJob.startedAt) / 1000)}
+                </span>
+              </div>
             }
           >
             {p ? (

@@ -5,8 +5,9 @@
 "use client";
 
 import { useState } from "react";
-import { FileText, GitBranch, ShieldQuestion } from "lucide-react";
+import { FileText, GitBranch, ShieldQuestion, Download, Copy, Check, Printer } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { toast } from "sonner";
 import {
   useExperiment,
   useExperiments,
@@ -14,6 +15,7 @@ import {
   pct,
   seconds,
 } from "@/lib/api-client";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -35,11 +37,37 @@ import { ProbabilityHistogram as Histogram } from "../charts";
 export function ReportsView() {
   const experiments = useExperiments();
   const [expId, setExpId] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const activeId = expId ?? experiments.data?.[0]?.experiment_id ?? null;
   const experiment = useExperiment(activeId);
 
   const result = experiment.data?.result;
   const report = experiment.data?.report;
+
+  function copyReport() {
+    if (!report) return;
+    navigator.clipboard.writeText(report);
+    setCopied(true);
+    toast.success("Copied report markdown to clipboard");
+    setTimeout(() => setCopied(false), 2500);
+  }
+
+  function downloadReport() {
+    if (!report) return;
+    const blob = new Blob([report], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `report_${result?.experiment_id || activeId || "qednet"}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Downloaded research report (.md)");
+  }
+
+  function printReport() {
+    window.print();
+  }
+
 
   if (experiments.isLoading) return <LoadingState />;
   if (!experiments.data?.length) {
@@ -161,6 +189,47 @@ export function ReportsView() {
                 <SectionCard
                   title={`Research report — ${result.experiment_id ?? activeId}`}
                   subtitle="auto-generated from measured results only"
+                  right={
+                    report ? (
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={copyReport}
+                          className="h-7 gap-1 px-2 text-xs text-stone-700 hover:bg-stone-100"
+                        >
+                          {copied ? (
+                            <>
+                              <Check className="h-3 w-3 text-emerald-600" /> Copied
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="h-3 w-3" /> Copy .md
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={downloadReport}
+                          className="h-7 gap-1 px-2 text-xs text-stone-700 hover:bg-stone-100"
+                        >
+                          <Download className="h-3 w-3" /> Download .md
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={printReport}
+                          className="h-7 gap-1 px-2 text-xs text-stone-700 hover:bg-stone-100"
+                        >
+                          <Printer className="h-3 w-3" /> Print / PDF
+                        </Button>
+                      </div>
+                    ) : undefined
+                  }
                 >
                   {report ? (
                     <div className="qed-scroll max-h-[640px] overflow-y-auto pr-2 text-sm leading-relaxed text-stone-700 [&_h1]:qed-display [&_h1]:mb-3 [&_h1]:text-base [&_h1]:font-semibold [&_h1]:text-stone-900 [&_h2]:mt-5 [&_h2]:mb-2 [&_h2]:text-sm [&_h2]:font-semibold [&_h2]:text-stone-900 [&_h3]:mt-3 [&_h3]:text-xs [&_h3]:font-semibold [&_table]:w-full [&_table]:text-xs [&_th]:border [&_th]:border-stone-200 [&_th]:bg-stone-50 [&_th]:px-2 [&_th]:py-1 [&_th]:text-left [&_td]:border [&_td]:border-stone-200 [&_td]:px-2 [&_td]:py-1 [&_code]:rounded [&_code]:bg-stone-100 [&_code]:px-1 [&_code]:text-[11px] [&_pre]:qed-num [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-stone-950 [&_pre]:p-3 [&_pre]:text-[11px] [&_pre]:text-stone-300 [&_blockquote]:border-l-2 [&_blockquote]:border-stone-300 [&_blockquote]:pl-3 [&_blockquote]:text-stone-500 [&_p]:mt-2 [&_li]:mt-1">

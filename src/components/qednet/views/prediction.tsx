@@ -5,7 +5,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Loader2, Play, ShieldAlert, GitBranch } from "lucide-react";
+import { Loader2, Play, ShieldAlert, GitBranch, Sparkles, Zap, AlertTriangle, Shuffle, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import {
   useExperiment,
@@ -33,6 +33,68 @@ import {
   TransitionIn,
 } from "../ui-bits";
 
+function getPresetValues(dataset: string, featureNames: string[], type: "low" | "borderline" | "high"): Record<number, string> {
+  const d = dataset.toLowerCase();
+  const res: Record<number, string> = {};
+
+  if (d.includes("heart")) {
+    const presets = {
+      low: ["42", "0", "0", "118", "172", "0", "0", "172", "0", "0.2", "2", "0", "2"],
+      borderline: ["54", "1", "1", "132", "238", "0", "1", "142", "0", "1.2", "1", "1", "2"],
+      high: ["66", "1", "3", "162", "305", "1", "2", "108", "1", "3.2", "0", "3", "3"],
+    };
+    const vals = presets[type];
+    vals.forEach((v, i) => { res[i] = v; });
+    return res;
+  }
+
+  if (d.includes("diabetes")) {
+    const presets = {
+      low: ["1", "92", "68", "18", "70", "24.2", "0.22", "24"],
+      borderline: ["3", "126", "76", "28", "120", "31.4", "0.45", "34"],
+      high: ["6", "178", "92", "38", "240", "39.8", "0.88", "52"],
+    };
+    const vals = presets[type];
+    vals.forEach((v, i) => { res[i] = v; });
+    return res;
+  }
+
+  if (d.includes("parkinson")) {
+    const scale = type === "low" ? 0.3 : type === "borderline" ? 0.9 : 2.2;
+    featureNames.forEach((_, i) => {
+      res[i] = (Math.max(0.001, (0.01 + Math.sin(i + 1) * 0.005) * scale)).toFixed(4);
+    });
+    return res;
+  }
+
+  const scale = type === "low" ? 0.6 : type === "borderline" ? 1.0 : 1.8;
+  featureNames.forEach((name, i) => {
+    let base = 10;
+    if (name.includes("area")) base = 550;
+    else if (name.includes("perimeter")) base = 85;
+    else if (name.includes("texture")) base = 18;
+    else if (name.includes("smoothness") || name.includes("concav") || name.includes("compact")) base = 0.09;
+    else if (name.includes("radius")) base = 14;
+    res[i] = (base * scale).toFixed(2);
+  });
+  return res;
+}
+
+function getRandomValues(featureNames: string[]): Record<number, string> {
+  const res: Record<number, string> = {};
+  featureNames.forEach((name, i) => {
+    let base = 10;
+    if (name.includes("area")) base = 500 + Math.random() * 400;
+    else if (name.includes("perimeter")) base = 70 + Math.random() * 50;
+    else if (name.includes("texture")) base = 12 + Math.random() * 15;
+    else if (name.includes("smoothness") || name.includes("concav") || name.includes("compact")) base = 0.05 + Math.random() * 0.15;
+    else if (name.includes("radius")) base = 10 + Math.random() * 12;
+    else base = 10 + Math.random() * 50;
+    res[i] = base.toFixed(2);
+  });
+  return res;
+}
+
 export function PredictionView() {
   const experiments = useExperiments();
   const [expId, setExpId] = useState<string | null>(null);
@@ -42,6 +104,7 @@ export function PredictionView() {
   const activeId = expId ?? experiments.data?.[0]?.experiment_id ?? null;
   const featureNames = experiment.data?.result?.feature_names ?? [];
   const nFeatures = experiment.data?.result?.n_features ?? 0;
+  const datasetName = experiment.data?.result?.dataset ?? "dataset";
 
   // feature values initialised lazily from names
   const [values, setValues] = useState<Record<number, string>>({});
@@ -53,10 +116,10 @@ export function PredictionView() {
     return arr;
   }, [values, nFeatures]);
 
-  function run() {
+  function runWithFeatures(featArr: number[]) {
     if (!activeId) return;
     predict.mutate(
-      { experimentId: activeId, features: featureValues },
+      { experimentId: activeId, features: featArr },
       {
         onSuccess: (res) => {
           if (!res.ok) toast.error("Prediction failed", { description: res.error });
@@ -64,6 +127,50 @@ export function PredictionView() {
         onError: (e) => toast.error("Prediction failed", { description: String(e) }),
       }
     );
+  }
+
+  function run() {
+    runWithFeatures(featureValues);
+  }
+
+  function applyPreset(type: "low" | "borderline" | "high") {
+    const newVals = getPresetValues(datasetName, featureNames, type);
+    setValues(newVals);
+    const arr: number[] = [];
+    for (let i = 0; i < nFeatures; i++) {
+      arr.push(parseFloat(newVals[i] ?? "0") || 0);
+    }
+    runWithFeatures(arr);
+    if (type === "borderline") {
+      toast.info("Applied Borderline Case preset", {
+        description: "Ambiguous screening value lands in [0.35, 0.65] band — triggers Quantum Second Opinion!",
+      });
+    } else if (type === "low") {
+      toast.success("Applied Low Risk preset", {
+        description: "Classical screening classifies with high confidence without routing to quantum.",
+      });
+    } else {
+      toast.warning("Applied High Risk preset", {
+        description: "Classical screening classifies as positive with high confidence.",
+      });
+    }
+  }
+
+  function applyRandom() {
+    const newVals = getRandomValues(featureNames);
+    setValues(newVals);
+    const arr: number[] = [];
+    for (let i = 0; i < nFeatures; i++) {
+      arr.push(parseFloat(newVals[i] ?? "0") || 0);
+    }
+    runWithFeatures(arr);
+    toast.info("Randomized features");
+  }
+
+  function clearValues() {
+    const empty: Record<number, string> = {};
+    for (let i = 0; i < nFeatures; i++) empty[i] = "0";
+    setValues(empty);
   }
 
   const pr: PredictionResult | undefined = predict.data?.prediction;
@@ -131,11 +238,62 @@ export function PredictionView() {
           )}
         </SectionCard>
 
-        {/* feature inputs */}
+        {/* feature inputs with 1-click test presets */}
         {nFeatures > 0 && (
           <SectionCard
             title="Input features (original scale)"
-            subtitle={`${featureNames.length} features — values in the dataset's native units`}
+            subtitle={`${featureNames.length} features — load realistic 1-click presets or enter values`}
+            right={
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-[11px] text-stone-400 mr-1">1-click test:</span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => applyPreset("low")}
+                  className="h-7 gap-1 px-2 text-[11px] text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
+                >
+                  <Sparkles className="h-3 w-3" /> Low Risk
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => applyPreset("borderline")}
+                  className="h-7 gap-1 px-2 text-[11px] border-violet-300 bg-violet-50/70 text-violet-800 hover:bg-violet-100 hover:text-violet-900 font-medium shadow-xs"
+                >
+                  <Zap className="h-3 w-3 text-violet-600 fill-violet-600" /> ⚡ Borderline (Quantum Cascade)
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => applyPreset("high")}
+                  className="h-7 gap-1 px-2 text-[11px] text-rose-700 hover:bg-rose-50 hover:text-rose-800"
+                >
+                  <AlertTriangle className="h-3 w-3" /> High Risk
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={applyRandom}
+                  className="h-7 gap-1 px-2 text-[11px] text-stone-600 hover:bg-stone-100"
+                >
+                  <Shuffle className="h-3 w-3" /> Random
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearValues}
+                  className="h-7 px-2 text-[11px] text-stone-400 hover:text-stone-700"
+                  title="Clear values"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                </Button>
+              </div>
+            }
           >
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {featureNames.map((f, i) => (
@@ -155,7 +313,7 @@ export function PredictionView() {
                 </div>
               ))}
             </div>
-            <div className="mt-4">
+            <div className="mt-4 flex items-center gap-3">
               <Button onClick={run} disabled={predict.isPending} size="sm" className="gap-2">
                 {predict.isPending ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
@@ -164,9 +322,13 @@ export function PredictionView() {
                 )}
                 run cascade prediction
               </Button>
+              <span className="text-[11px] text-stone-400">
+                Tip: Click <strong>⚡ Borderline</strong> to trigger the Quantum Second-Opinion Cascade.
+              </span>
             </div>
           </SectionCard>
         )}
+
 
         {/* result */}
         {pr && (
@@ -185,6 +347,16 @@ export function PredictionView() {
               </span>
             }
           >
+            {pr.route === "quantum" && (
+              <div className="mb-5 flex items-start gap-2.5 rounded-md border border-violet-200 bg-violet-50/90 p-3 text-xs text-violet-900">
+                <Zap className="mt-0.5 h-4 w-4 shrink-0 text-violet-600 fill-violet-600" aria-hidden />
+                <div>
+                  <span className="font-semibold">Quantum Second-Opinion Cascade Triggered: </span>
+                  Classical screening probability ({fmt(pr.classical_screening_probability)}) fell inside the [0.35, 0.65] ambiguity band. The sample was routed to the {pr.model_used ?? "quantum circuit"} for quantum-enhanced second opinion, resolving positive-class probability to {fmt(pr.probability_used)}.
+                </div>
+              </div>
+            )}
+
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
               <Stat
                 label="route"

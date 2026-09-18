@@ -264,6 +264,20 @@ export function useStartTraining() {
   });
 }
 
+export function useCancelJob() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (jobId: string) => {
+      const res = await fetch(`/api/jobs?jobId=${encodeURIComponent(jobId)}`, {
+        method: "DELETE",
+      });
+      return res.json();
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["jobs"] }),
+  });
+}
+
+
 export function usePredict() {
   return useMutation({
     mutationFn: async (body: { experimentId: string; features: number[] }) => {
