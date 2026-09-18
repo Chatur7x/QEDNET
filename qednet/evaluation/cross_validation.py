@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.base import clone
 
-from qednet.evaluation.metrics import compute_all_metrics
+from qednet.evaluation.metrics import compute_flat_metrics as compute_all_metrics
 from qednet.evaluation.statistics import bootstrap_ci, delong_roc_test, paired_t_test
 from qednet.evaluation.calibration import evaluate_calibration, calibrate_model
 

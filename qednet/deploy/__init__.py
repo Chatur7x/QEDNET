@@ -1,22 +1,15 @@
-"""Deploy utilities (F1, F6, N5)."""
-
-from .cascade import QuantumCascade, CascadeConfig
-from .conformal import SplitConformalPredictor
-from .uncertainty import (
-    shot_noise_variance,
-    shot_noise_ci,
-    propagate_shot_uncertainty,
-    combine_uncertainties,
-    evaluate_uncertainty_calibration,
-)
+"""Deployment utilities and serving."""
+from qednet.deploy.serving import ServingPipeline, PredictionResult
+from qednet.deploy.cascade import QuantumSecondOpinionCascade
+from qednet.deploy.conformal import ConformalPredictor, ConformalResult
+from qednet.deploy.uncertainty import UncertaintyQuantifier, UncertaintyResult
 
 __all__ = [
-    "QuantumCascade",
-    "CascadeConfig",
-    "SplitConformalPredictor",
-    "shot_noise_variance",
-    "shot_noise_ci",
-    "propagate_shot_uncertainty",
-    "combine_uncertainties",
-    "evaluate_uncertainty_calibration",
+    "ServingPipeline",
+    "PredictionResult",
+    "QuantumSecondOpinionCascade",
+    "ConformalPredictor",
+    "ConformalResult",
+    "UncertaintyQuantifier",
+    "UncertaintyResult",
 ]

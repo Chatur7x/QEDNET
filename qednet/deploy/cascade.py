@@ -1,111 +1,106 @@
-"""F1 Quantum Second Opinion Cascade."""
-
-from __future__ import annotations
+"""Quantum Second-Opinion Cascade (F1)."""
 
 from dataclasses import dataclass
-from typing import Optional
-
+from typing import Literal
 import numpy as np
-from sklearn.base import BaseEstimator, ClassifierMixin
+from numpy.typing import NDArray
+
+from qednet.models.base import BaseEstimator
 
 
 @dataclass
-class CascadeConfig:
-    """Configuration for the classical-quantum cascade."""
-    ambiguity_low: float = 0.35
-    ambiguity_high: float = 0.65
-    classical_model: Optional[BaseEstimator] = None
-    quantum_model: Optional[BaseEstimator] = None
-    preprocess_fn: Optional[callable] = None
+class CascadeResult:
+    """Result from cascade prediction."""
+    prediction: int
+    probability: float
+    calibrated_probability: float
+    routing: Literal["classical", "quantum_second_opinion"]
+    reason: Literal["high_confidence", "ambiguous_probability"]
+    classical_proba: float
+    quantum_proba: float | None
+    model_name: str
+    config_hash: str
 
 
-class QuantumCascade(BaseEstimator, ClassifierMixin):
-    """
-    Classical-Quantum Second Opinion Cascade.
+class QuantumSecondOpinionCascade:
+    """Cascade that routes ambiguous classical predictions to quantum model.
 
-    Flow:
-    1. Classical model (e.g., XGBoost) screens all patients
-    2. If confidence in [ambiguity_low, ambiguity_high], defer to quantum model
-    3. Otherwise use classical prediction
-    4. Return calibrated probabilities with uncertainty
+    Architecture:
+        Input
+         ↓
+        Classical screener (XGBoost)
+         ↓
+        Is probability ambiguous? (p ∈ [low, high])
+         ↓ yes → Quantum model → Calibrated result
+         ↓ no  → Use classical result
     """
 
     def __init__(
         self,
         classical_model: BaseEstimator,
         quantum_model: BaseEstimator,
-        preprocess_fn,
-        ambiguity_low: float = 0.35,
-        ambiguity_high: float = 0.65,
-        calibrate: bool = True,
+        ambiguity_threshold: tuple[float, float] = (0.35, 0.65),
+        classical_name: str = "xgboost",
+        quantum_name: str = "vqc",
+        config_hash: str = "",
     ):
+        """Initialize cascade.
+
+        Args:
+            classical_model: Fitted classical screener
+            quantum_model: Fitted quantum model
+            ambiguity_threshold: (low, high) range for ambiguous probabilities.
+                                Default (0.35, 0.65) means probabilities in [0.35, 0.65]
+                                are considered ambiguous and routed to quantum.
+            classical_name: Name of classical model for metadata
+            quantum_name: Name of quantum model for metadata
+            config_hash: Configuration hash for reproducibility
+        """
         self.classical_model = classical_model
         self.quantum_model = quantum_model
-        self.preprocess_fn = preprocess_fn
-        self.ambiguity_low = ambiguity_low
-        self.ambiguity_high = ambiguity_high
-        self.calibrate = calibrate
-        self._preprocess = None
-        self._fitted = False
+        self.ambiguity_low, self.ambiguity_high = ambiguity_threshold
+        self.classical_name = classical_name
+        self.quantum_name = quantum_name
+        self.config_hash = config_hash
 
-    def fit(self, X, y):
-        self._preprocess = self.preprocess_fn()
-        X_trans = self._preprocess.fit_transform(X, y)
+        if not (0 <= self.ambiguity_low < self.ambiguity_high <= 1):
+            raise ValueError("ambiguity_threshold must satisfy 0 <= low < high <= 1")
 
-        # Fit classical
-        self.classical_model.fit(X_trans, y)
+    def predict(self, X: NDArray) -> list[CascadeResult]:
+        """Run cascade prediction on batch of samples."""
+        classical_probas = self.classical_model.predict_proba(X)[:, 1]
+        quantum_probas = self.quantum_model.predict_proba(X)[:, 1]
 
-        # Fit quantum (on same preprocessed features)
-        self.quantum_model.fit(X_trans, y)
+        results = []
+        for i in range(X.shape[0]):
+            classical_p = float(classical_probas[i])
+            quantum_p = float(quantum_probas[i])
 
-        self._fitted = True
-        self.classes_ = np.array([0, 1])
-        return self
+            is_ambiguous = self.ambiguity_low <= classical_p <= self.ambiguity_high
 
-    def predict_proba(self, X):
-        if not self._fitted:
-            raise RuntimeError("Cascade not fitted")
+            if is_ambiguous:
+                calibrated_p = quantum_p
+                routing = "quantum_second_opinion"
+                reason = "ambiguous_probability"
+                final_pred = int(quantum_p >= 0.5)
+                model_name = self.quantum_name
+            else:
+                calibrated_p = classical_p
+                routing = "classical"
+                reason = "high_confidence"
+                final_pred = int(classical_p >= 0.5)
+                model_name = self.classical_name
 
-        X_trans = self._preprocess.transform(X)
+            results.append(CascadeResult(
+                prediction=final_pred,
+                probability=calibrated_p,
+                calibrated_probability=calibrated_p,
+                routing=routing,
+                reason=reason,
+                classical_proba=classical_p,
+                quantum_proba=quantum_p if is_ambiguous else None,
+                model_name=model_name,
+                config_hash=self.config_hash,
+            ))
 
-        # Classical predictions
-        class_proba = self.classical_model.predict_proba(X_trans)[:, 1]
-
-        # Identify ambiguous cases
-        ambiguous = (class_proba >= self.ambiguity_low) & (class_proba <= self.ambiguity_high)
-
-        # Final predictions
-        final_proba = class_proba.copy()
-
-        if np.any(ambiguous):
-            # Quantum second opinion for ambiguous
-            quantum_proba = self.quantum_model.predict_proba(X_trans[ambiguous])[:, 1]
-            final_proba[ambiguous] = quantum_proba
-
-        return np.column_stack([1 - final_proba, final_proba])
-
-    def predict(self, X):
-        return (self.predict_proba(X)[:, 1] >= 0.5).astype(int)
-
-    def get_routing(self, X):
-        """Get routing decisions for each sample."""
-        if not self._fitted:
-            raise RuntimeError("Cascade not fitted")
-        X_trans = self._preprocess.transform(X)
-        class_proba = self.classical_model.predict_proba(X_trans)[:, 1]
-        ambiguous = (class_proba >= self.ambiguity_low) & (class_proba <= self.ambiguity_high)
-        return {
-            "classical_proba": class_proba,
-            "routed_to_quantum": ambiguous,
-            "n_classical": int(np.sum(~ambiguous)),
-            "n_quantum": int(np.sum(ambiguous)),
-        }
-
-    def metadata(self) -> dict:
-        return {
-            "model": "quantum_cascade",
-            "ambiguity_low": self.ambiguity_low,
-            "ambiguity_high": self.ambiguity_high,
-            "classical_model": self.classical_model.__class__.__name__,
-            "quantum_model": self.quantum_model.__class__.__name__,
-        }
+        return results

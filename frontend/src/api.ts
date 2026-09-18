@@ -1,4 +1,4 @@
-const BASE = "http://localhost:8000";
+const BASE = "http://localhost:8000/research";
 
 async function req(path: string, opts?: RequestInit) {
   const r = await fetch(BASE + path, {

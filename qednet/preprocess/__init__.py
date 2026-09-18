@@ -1,24 +1,27 @@
-"""D3 Preprocessing public API."""
-
-from .imputation import SafeImputer
-from .scaling import SafeScaler
-from .selection import SafeFeatureSelector
-from .compression import SafePCA, AutoencoderCompressor
-from .pipeline import (
-    LeakageSafePipeline,
+"""Preprocessing pipelines and transformers."""
+from qednet.preprocess.pipeline import (
+    PreprocessingPipeline,
+    create_preprocessing_pipeline,
     PreprocessConfig,
+    LeakageSafePipeline,
     make_preprocess_pipeline,
     split_data,
 )
+from qednet.preprocess.scalers import StandardScaler, RobustScaler
+from qednet.preprocess.imputer import MissingValueImputer
+from qednet.preprocess.compression import PCACompressor, FeatureSelector, SafePCA
 
 __all__ = [
-    "SafeImputer",
-    "SafeScaler",
-    "SafeFeatureSelector",
-    "SafePCA",
-    "AutoencoderCompressor",
-    "LeakageSafePipeline",
+    "PreprocessingPipeline",
+    "create_preprocessing_pipeline",
     "PreprocessConfig",
+    "LeakageSafePipeline",
     "make_preprocess_pipeline",
     "split_data",
+    "StandardScaler",
+    "RobustScaler",
+    "MissingValueImputer",
+    "PCACompressor",
+    "FeatureSelector",
+    "SafePCA",
 ]

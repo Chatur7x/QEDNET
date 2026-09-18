@@ -1,125 +1,180 @@
-"""F6 Split Conformal Prediction."""
+"""Conformal Prediction (F6)."""
 
-from __future__ import annotations
-
+from dataclasses import dataclass
+from typing import List
 import numpy as np
-from sklearn.base import BaseEstimator, ClassifierMixin, clone
-from sklearn.model_selection import train_test_split
+from numpy.typing import NDArray
+
+from qednet.models.base import BaseEstimator
 
 
-class SplitConformalPredictor(BaseEstimator, ClassifierMixin):
-    """
-    Split Conformal Prediction for calibrated prediction sets.
-    Returns prediction sets with guaranteed coverage.
+@dataclass
+class ConformalResult:
+    """Result from conformal prediction."""
+    prediction_set: List[int]
+    abstained: bool
+    alpha: float
+    calibration_coverage: float
+    nonconformity_scores: NDArray | None = None
+    threshold: float | None = None
+
+
+class ConformalPredictor:
+    """Model-agnostic conformal predictor for binary classification.
+
+    Can wrap any model with fit/predict_proba interface.
+    Provides finite-sample coverage guarantees under exchangeability.
+
+    Example:
+        predictor = ConformalPredictor(model, alpha=0.10)
+        predictor.calibrate(X_cal, y_cal)
+        result = predictor.predict(X_test)
     """
 
     def __init__(
         self,
-        base_model: BaseEstimator,
-        preprocess_fn,
-        calibration_size: float = 0.2,
-        confidence: float = 0.9,
-        random_state: int = 42,
+        model: BaseEstimator,
+        alpha: float = 0.10,
+        score_type: str = "max_proba",
     ):
-        self.base_model = base_model
-        self.preprocess_fn = preprocess_fn
-        self.calibration_size = calibration_size
-        self.confidence = confidence
-        self.random_state = random_state
-        self._model = None
-        self._preprocess = None
-        self._quantile = None
-        self._fitted = False
+        """Initialize conformal predictor.
 
-    def fit(self, X, y):
-        self._preprocess = self.preprocess_fn()
+        Args:
+            model: Fitted base model with predict_proba method
+            alpha: Miscoverage level (1 - alpha = target coverage)
+            score_type: Nonconformity score type ('max_proba', 'margin', 'aps')
+        """
+        if not 0 < alpha < 1:
+            raise ValueError("alpha must be in (0, 1)")
 
-        # Split into train and calibration
-        X_train, X_cal, y_train, y_cal = train_test_split(
-            X, y, test_size=self.calibration_size,
-            random_state=self.random_state, stratify=y
-        )
+        self.model = model
+        self.alpha = alpha
+        self.score_type = score_type
+        self.calibration_scores: NDArray | None = None
+        self.threshold: float | None = None
+        self.calibration_coverage: float | None = None
+        self._is_calibrated = False
 
-        X_train_trans = self._preprocess.fit_transform(X_train, y_train)
-        X_cal_trans = self._preprocess.transform(X_cal)
+    def _compute_scores(self, y_true: NDArray, y_proba: NDArray) -> NDArray:
+        """Compute nonconformity scores."""
+        proba_1 = y_proba[:, 1] if y_proba.ndim > 1 else y_proba
 
-        # Fit model on training
-        self._model = clone(self.base_model)
-        self._model.fit(X_train_trans, y_train)
+        if self.score_type == "max_proba":
+            true_class_proba = y_proba[np.arange(len(y_true)), y_true]
+            return 1 - true_class_proba
+        elif self.score_type == "margin":
+            margin = np.abs(proba_1 - (1 - proba_1))
+            return 1 - margin
+        elif self.score_type == "aps":
+            # Adaptive Prediction Sets (Romano et al., 2020)
+            sorted_indices = np.argsort(y_proba, axis=1)[:, ::-1]
+            ranks = np.argsort(sorted_indices, axis=1)
+            true_ranks = ranks[np.arange(len(y_true)), y_true]
+            scores = np.zeros(len(y_true))
+            for i in range(len(y_true)):
+                higher = sorted_indices[i, :true_ranks[i]]
+                scores[i] = y_proba[i, higher].sum() if len(higher) > 0 else 0
+            scores += np.random.rand(len(y_true)) * y_proba[np.arange(len(y_true)), y_true]
+            return scores
+        else:
+            raise ValueError(f"Unknown score_type: {self.score_type}")
 
-        # Compute conformity scores on calibration set
-        cal_proba = self._model.predict_proba(X_cal_trans)[:, 1]
-        # Score = 1 - p_true for true class
-        scores = 1 - cal_proba[y_cal == 1]
-        scores = np.concatenate([scores, cal_proba[y_cal == 0]])  # for class 0: p_1
+    def calibrate(
+        self,
+        X_cal: NDArray,
+        y_cal: NDArray,
+    ) -> "ConformalPredictor":
+        """Calibrate on held-out calibration set.
 
-        # Quantile for coverage
-        n_cal = len(scores)
-        level = np.ceil((n_cal + 1) * self.confidence) / n_cal
-        self._quantile = np.quantile(scores, min(level, 1.0))
+        Args:
+            X_cal: Calibration features
+            y_cal: Calibration labels
 
-        self._fitted = True
-        self.classes_ = np.array([0, 1])
+        Returns:
+            self
+        """
+        if len(X_cal) != len(y_cal):
+            raise ValueError("X_cal and y_cal must have same length")
+        if len(X_cal) == 0:
+            raise ValueError("Calibration set cannot be empty")
+
+        y_proba = self.model.predict_proba(X_cal)
+        self.calibration_scores = self._compute_scores(y_cal, y_proba)
+
+        n_cal = len(self.calibration_scores)
+        quantile_level = np.ceil((n_cal + 1) * (1 - self.alpha)) / n_cal
+        quantile_level = min(quantile_level, 1.0)
+        self.threshold = float(np.quantile(self.calibration_scores, quantile_level))
+        self._is_calibrated = True
+
+        pred_sets = self._get_prediction_sets(y_proba)
+        coverage = np.mean([y_cal[i] in pred_sets[i] for i in range(len(y_cal))])
+        self.calibration_coverage = float(coverage)
+
         return self
 
-    def predict_set(self, X) -> np.ndarray:
-        """
-        Returns prediction sets:
-        - 0: {0}
-        - 1: {1}
-        - 2: {0, 1} (ambiguous)
-        """
-        if not self._fitted:
-            raise RuntimeError("Not fitted")
+    def _get_prediction_sets(self, y_proba: NDArray) -> List[List[int]]:
+        """Get prediction sets for given probabilities."""
+        if not self._is_calibrated:
+            raise RuntimeError("Must call calibrate() before predict()")
 
-        X_trans = self._preprocess.transform(X)
-        proba = self._model.predict_proba(X_trans)[:, 1]
+        n = len(y_proba)
+        pred_sets = []
 
-        # p_1 >= 1 - quantile -> include class 1
-        # p_0 >= 1 - quantile -> include class 0
-        p1 = proba
-        p0 = 1 - proba
-        threshold = 1 - self._quantile
+        for i in range(n):
+            proba = y_proba[i]
 
-        include_1 = p1 >= threshold
-        include_0 = p0 >= threshold
+            if self.score_type == "max_proba":
+                score_0 = 1 - proba[0]
+                score_1 = 1 - proba[1]
+            elif self.score_type == "margin":
+                margin = abs(proba[0] - proba[1])
+                score_0 = 1 - margin
+                score_1 = score_0
+            else:  # aps
+                sorted_idx = np.argsort(proba)[::-1]
+                rank_0 = np.where(sorted_idx == 0)[0][0]
+                higher_0 = sorted_idx[:rank_0]
+                score_0 = proba[higher_0].sum() if len(higher_0) > 0 else 0
 
-        pred_sets = np.zeros(len(X), dtype=int)
-        pred_sets[include_1 & ~include_0] = 1
-        pred_sets[~include_1 & include_0] = 0
-        pred_sets[include_1 & include_0] = 2  # ambiguous
+                rank_1 = np.where(sorted_idx == 1)[0][0]
+                higher_1 = sorted_idx[:rank_1]
+                score_1 = proba[higher_1].sum() if len(higher_1) > 0 else 0
+
+            scores = [score_0, score_1]
+            pred_set = [c for c, s in enumerate(scores) if s <= self.threshold]
+            pred_sets.append(pred_set)
 
         return pred_sets
 
-    def predict(self, X):
-        """Single prediction (most probable class)."""
-        sets = self.predict_set(X)
-        # For ambiguous, pick higher prob
-        X_trans = self._preprocess.transform(X)
-        proba = self._model.predict_proba(X_trans)[:, 1]
-        pred = (proba >= 0.5).astype(int)
-        pred[sets == 2] = pred[sets == 2]  # keep most probable
-        return pred
+    def predict(self, X: NDArray) -> List[ConformalResult]:
+        """Generate conformal prediction sets."""
+        if not self._is_calibrated:
+            raise RuntimeError("Must call calibrate() before predict()")
 
-    def predict_proba(self, X):
-        X_trans = self._preprocess.transform(X)
-        return self._model.predict_proba(X_trans)
+        y_proba = self.model.predict_proba(X)
+        pred_sets = self._get_prediction_sets(y_proba)
 
-    def get_coverage_info(self, X, y) -> dict:
-        """Evaluate empirical coverage."""
-        sets = self.predict_set(X)
-        covered = (sets == 2) | ((sets == 1) & (y == 1)) | ((sets == 0) & (y == 0))
+        results = []
+        for pred_set in pred_sets:
+            abstained = len(pred_set) == 2
+            results.append(ConformalResult(
+                prediction_set=pred_set,
+                abstained=abstained,
+                alpha=self.alpha,
+                calibration_coverage=self.calibration_coverage or 0.0,
+                threshold=self.threshold,
+            ))
+
+        return results
+
+    def get_coverage_report(self) -> dict:
+        """Get calibration coverage statistics."""
         return {
-            "empirical_coverage": float(np.mean(covered)),
-            "target_coverage": self.confidence,
-            "ambiguous_rate": float(np.mean(sets == 2)),
-            "set_sizes": np.bincount(sets, minlength=3).tolist(),
-        }
-
-    def metadata(self) -> dict:
-        return {
-            "model": "split_conformal",
-            "confidence": self.confidence,
-            "calibration_size": self.calibration_size,
-            "quantile": float(self._quantile) if self._quantile is not None else None,
+            "target_coverage": 1 - self.alpha,
+            "empirical_coverage": self.calibration_coverage or 0.0,
+            "alpha": self.alpha,
+            "n_calibration": len(self.calibration_scores) if self.calibration_scores is not None else 0,
+            "threshold": self.threshold or 0.0,
+            "score_type": self.score_type,
         }

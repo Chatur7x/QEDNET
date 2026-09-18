@@ -1,4 +1,4 @@
-"""VQC: angle/ZZ/amplitude encoding + strongly-entangling layers (D5).
+"""VQC: Variational Quantum Classifier (D5) - Member A's implementation.
 
 Architecture: input -> encoding -> L x [Rot(3 params/qubit) + CNOT chain]
 -> <Z0> -> sigmoid -> BCE. Fits sklearn-style fit/predict_proba/predict.
@@ -15,13 +15,16 @@ so capacity is held constant and any gap isolates entanglement.
 from __future__ import annotations
 
 import time
+from typing import Optional
 
 import numpy as np
+from numpy.typing import NDArray
 import pennylane as qml
 from pennylane import numpy as pnp
 
 from qednet.encoding import validate_vector
-from .base import SklearnCompatMixin, bce_loss, sigmoid, validate_xy
+from qednet.models.base import BaseEstimator
+from .base import bce_loss, sigmoid, validate_xy
 
 
 def _resolve_diff_method(requested: str, device_name: str) -> str:
@@ -35,7 +38,23 @@ def _resolve_diff_method(requested: str, device_name: str) -> str:
     raise ValueError(f"unknown diff_method {requested!r}")
 
 
-class VQC(SklearnCompatMixin):
+class VQC(BaseEstimator):
+    """Variational Quantum Classifier with sklearn-compatible interface.
+
+    Args:
+        n_qubits: Number of qubits
+        n_layers: Number of variational layers
+        encoding: Feature encoding ('angle', 'zz', 'amplitude')
+        device: PennyLane device name
+        shots: Number of shots (None for exact)
+        diff_method: Gradient method ('backprop', 'parameter-shift', 'finite-diff')
+        optimizer: Optimizer ('adam', 'sgd', 'spsa')
+        lr: Learning rate
+        max_iter: Maximum iterations
+        seed: Random seed
+        use_entanglement: Whether to use entangling CNOTs
+    """
+
     def __init__(
         self,
         n_qubits: int = 4,
@@ -49,34 +68,46 @@ class VQC(SklearnCompatMixin):
         max_iter: int = 30,
         seed: int = 0,
         use_entanglement: bool = True,
+        # Aliases for config compatibility
+        layers: int | None = None,
+        ansatz: str | None = None,
+        learning_rate: float | None = None,
+        random_state: int | None = None,
+        **kwargs,
     ):
-        if n_qubits < 1:
-            raise ValueError("n_qubits must be >= 1")
-        if n_layers < 1:
-            raise ValueError("n_layers must be >= 1")
-        if optimizer.lower() not in ("adam", "sgd", "spsa"):
-            raise ValueError("optimizer must be adam/sgd/spsa")
+        # Raw ctor values for sklearn clone() (identity check needs same objects)
+        self._raw_params = {k: v for k, v in locals().items() if k not in ("self", "kwargs")}
+        # Handle config aliases
         self.n_qubits = int(n_qubits)
-        self.n_layers = int(n_layers)
+        self.n_layers = int(layers if layers is not None else n_layers)
         self.encoding = encoding.lower()
         self.device_name = device
         self.shots = shots
         self.diff_method_req = diff_method
         self.optimizer = optimizer.lower()
-        self.lr = float(lr)
+        self.lr = float(learning_rate if learning_rate is not None else lr)
         self.max_iter = int(max_iter)
-        self.seed = int(seed)
+        self.seed = int(random_state if random_state is not None else seed)
         self.use_entanglement = bool(use_entanglement)
-        self._init_params = dict(
-            n_qubits=n_qubits, n_layers=n_layers, encoding=encoding, device=device,
-            shots=shots, diff_method=diff_method, optimizer=optimizer, lr=lr,
-            max_iter=max_iter, seed=seed, use_entanglement=use_entanglement,
-        )
         self._built = False
+
+        # Store aliases for get_params
+        self._ansatz = ansatz
+        self._learning_rate = learning_rate
+        self._random_state = random_state
+        self._layers = layers
 
     @property
     def n_params(self) -> int:
         return self.n_layers * self.n_qubits * 3
+
+    @property
+    def layers(self) -> int:
+        return self.n_layers
+
+    @layers.setter
+    def layers(self, value: int):
+        self.n_layers = value
 
     def _build(self):
         diff = _resolve_diff_method(self.diff_method_req, self.device_name)
@@ -133,7 +164,7 @@ class VQC(SklearnCompatMixin):
         """Return circuit outputs for each x in X as a 1D array/tensor."""
         return pnp.array([self._circuit(x, theta) for x in X])
 
-    def fit(self, X, y):
+    def fit(self, X: NDArray, y: NDArray) -> "VQC":
         Xm, ym = validate_xy(X, y, self.n_qubits, self.encoding)
         if not self._built:
             self._build()
@@ -173,10 +204,11 @@ class VQC(SklearnCompatMixin):
         self.n_iter_ = self.max_iter
         self.fit_time_s_ = time.time() - t0
         self.n_features_in_ = Xm.shape[1]
+        self._fitted = True
         return self
 
-    def decision_scores(self, X):
-        if not hasattr(self, "theta_"):
+    def decision_scores(self, X: NDArray) -> NDArray:
+        if not getattr(self, "_fitted", False):
             raise RuntimeError("VQC is not fitted")
         X_arr = np.asarray(X, dtype=float)
         if X_arr.ndim != 2:
@@ -188,12 +220,46 @@ class VQC(SklearnCompatMixin):
             raise ValueError("features must be finite")
         return sigmoid(self._forward(X_arr, self.theta_))
 
-    def predict_proba(self, X):
+    def predict_proba(self, X: NDArray) -> NDArray:
         p1 = self.decision_scores(X)
         return np.column_stack([1 - p1, p1])
 
-    def predict(self, X):
+    def predict(self, X: NDArray) -> NDArray:
         return (self.decision_scores(X) >= 0.5).astype(int)
+
+    def get_params(self, deep: bool = True) -> dict:
+        # Raw ctor values: sklearn clone() requires identical objects back.
+        if hasattr(self, "_raw_params"):
+            return dict(self._raw_params)
+        return {
+            "n_qubits": self.n_qubits,
+            "layers": self.n_layers,
+            "n_layers": self.n_layers,
+            "ansatz": self._ansatz or "strongly_entangling",
+            "encoding": self.encoding,
+            "optimizer": self.optimizer,
+            "learning_rate": self._learning_rate or self.lr,
+            "max_iter": self.max_iter,
+            "shots": self.shots,
+            "random_state": self._random_state or self.seed,
+            "use_entanglement": self.use_entanglement,
+            "device": self.device_name,
+            "diff_method": getattr(self, "diff_method_", self.diff_method_req),
+        }
+
+    def set_params(self, **params) -> "VQC":
+        for key, value in params.items():
+            if key == "layers":
+                self.n_layers = value
+            elif key == "learning_rate":
+                self.lr = value
+                self._learning_rate = value
+            elif key == "random_state":
+                self.seed = value
+                self._random_state = value
+            elif hasattr(self, key):
+                setattr(self, key, value)
+        return self
 
     def metadata(self) -> dict:
         two_q = (self.n_qubits if self.n_qubits > 1 else 0) * self.n_layers \
@@ -211,3 +277,14 @@ class VQC(SklearnCompatMixin):
             "use_entanglement": self.use_entanglement,
             "fit_time_s": getattr(self, "fit_time_s_", None),
         }
+
+
+def _resolve_diff_method(requested: str, device_name: str) -> str:
+    r = requested.lower().replace("_", "-")
+    if r in ("backprop", "back-prop"):
+        return "adjoint" if "lightning" in device_name else "backprop"
+    if r in ("parameter-shift", "parameter-shift-rule", "ps"):
+        return "parameter-shift"
+    if r in ("finite-diff", "finite-difference", "spsa-grad"):
+        return "finite-diff"
+    raise ValueError(f"unknown diff_method {requested!r}")

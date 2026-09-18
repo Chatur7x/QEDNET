@@ -1,4 +1,4 @@
-"""Data Re-uploading Classifier (D5).
+"""Data Re-uploading Classifier (D5) - Member A's implementation.
 
 Repeatedly injects features between trainable layers:
 |0> -> U(theta_1) -> S(x) -> U(theta_2) -> S(x) -> ... -> U(theta_L) -> S(x) -> measure Z0
@@ -11,16 +11,33 @@ Configurable layers, parameter count, deterministic seed.
 from __future__ import annotations
 
 import time
+from typing import Optional
 
 import numpy as np
+from numpy.typing import NDArray
 import pennylane as qml
 from pennylane import numpy as pnp
 
 from qednet.encoding import validate_vector
-from .base import SklearnCompatMixin, bce_loss, sigmoid, validate_xy
+from qednet.models.base import BaseEstimator
+from .base import bce_loss, sigmoid, validate_xy
 
 
-class ReuploadClassifier(SklearnCompatMixin):
+class ReuploadClassifier(BaseEstimator):
+    """Data Re-uploading Classifier with sklearn-compatible interface.
+
+    Args:
+        n_qubits: Number of qubits
+        n_layers: Number of reuploading layers
+        device: PennyLane device name
+        shots: Number of shots (None for exact)
+        diff_method: Gradient method ('backprop', 'parameter-shift', 'finite-diff')
+        optimizer: Optimizer ('adam', 'sgd', 'spsa')
+        lr: Learning rate
+        max_iter: Maximum iterations
+        seed: Random seed
+    """
+
     def __init__(
         self,
         n_qubits: int = 4,
@@ -32,6 +49,12 @@ class ReuploadClassifier(SklearnCompatMixin):
         lr: float = 0.05,
         max_iter: int = 30,
         seed: int = 0,
+        # Config aliases
+        layers: int | None = None,
+        learning_rate: float | None = None,
+        random_state: int | None = None,
+        encoding: str = "reupload",
+        **kwargs,
     ):
         if n_qubits < 1:
             raise ValueError("n_qubits must be >= 1")
@@ -39,26 +62,36 @@ class ReuploadClassifier(SklearnCompatMixin):
             raise ValueError("n_layers must be >= 1")
         if optimizer.lower() not in ("adam", "sgd", "spsa"):
             raise ValueError("optimizer must be adam/sgd/spsa")
+        self._raw_params = {k: v for k, v in locals().items() if k not in ("self", "kwargs")}
         self.n_qubits = int(n_qubits)
-        self.n_layers = int(n_layers)
+        self.n_layers = int(layers if layers is not None else n_layers)
         self.device_name = device
         self.shots = shots
         self.diff_method_req = diff_method
         self.optimizer = optimizer.lower()
-        self.lr = float(lr)
+        self.lr = float(learning_rate if learning_rate is not None else lr)
         self.max_iter = int(max_iter)
-        self.seed = int(seed)
-        self._init_params = dict(
-            n_qubits=n_qubits, n_layers=n_layers, device=device, shots=shots,
-            diff_method=diff_method, optimizer=optimizer, lr=lr,
-            max_iter=max_iter, seed=seed,
-        )
+        self.seed = int(random_state if random_state is not None else seed)
         self._built = False
+
+        # Store aliases for get_params
+        self._layers = layers
+        self._learning_rate = learning_rate
+        self._random_state = random_state
+        self._encoding = encoding
 
     @property
     def n_params(self) -> int:
         # theta: L x n_qubits x 3, phi: L x n_qubits
         return self.n_layers * self.n_qubits * 3 + self.n_layers * self.n_qubits
+
+    @property
+    def layers(self) -> int:
+        return self.n_layers
+
+    @layers.setter
+    def layers(self, value: int):
+        self.n_layers = value
 
     def _resolve_diff(self):
         r = self.diff_method_req.lower().replace("_", "-")
@@ -109,7 +142,7 @@ class ReuploadClassifier(SklearnCompatMixin):
     def _forward(self, X, theta, phi):
         return pnp.array([self._circuit(x, theta, phi) for x in X])
 
-    def fit(self, X, y):
+    def fit(self, X: NDArray, y: NDArray) -> "ReuploadClassifier":
         Xm, ym = validate_xy(X, y, self.n_qubits, "reupload")
         if not self._built:
             self._build()
@@ -159,10 +192,11 @@ class ReuploadClassifier(SklearnCompatMixin):
         self.n_iter_ = self.max_iter
         self.fit_time_s_ = time.time() - t0
         self.n_features_in_ = Xm.shape[1]
+        self._fitted = True
         return self
 
-    def decision_scores(self, X):
-        if not hasattr(self, "theta_"):
+    def decision_scores(self, X: NDArray) -> NDArray:
+        if not getattr(self, "_fitted", False):
             raise RuntimeError("ReuploadClassifier not fitted")
         X_arr = np.asarray(X, dtype=float)
         if X_arr.ndim != 2:
@@ -175,12 +209,44 @@ class ReuploadClassifier(SklearnCompatMixin):
         z = self._forward(X_arr, self.theta_, self.phi_)
         return sigmoid(z)
 
-    def predict_proba(self, X):
+    def predict_proba(self, X: NDArray) -> NDArray:
         p1 = self.decision_scores(X)
-        return pnp.column_stack([1 - p1, p1])
+        return np.column_stack([1 - p1, p1])
 
-    def predict(self, X):
+    def predict(self, X: NDArray) -> NDArray:
         return (self.decision_scores(X) >= 0.5).astype(int)
+
+    def get_params(self, deep: bool = True) -> dict:
+        # Raw ctor values: sklearn clone() requires identical objects back.
+        if hasattr(self, "_raw_params"):
+            return dict(self._raw_params)
+        return {
+            "n_qubits": self.n_qubits,
+            "layers": self.n_layers,
+            "n_layers": self.n_layers,
+            "encoding": self._encoding or "reupload",
+            "optimizer": self.optimizer,
+            "learning_rate": self._learning_rate or self.lr,
+            "max_iter": self.max_iter,
+            "shots": self.shots,
+            "random_state": self._random_state or self.seed,
+            "device": self.device_name,
+            "diff_method": getattr(self, "diff_method_", self.diff_method_req),
+        }
+
+    def set_params(self, **params) -> "ReuploadClassifier":
+        for key, value in params.items():
+            if key == "layers":
+                self.n_layers = value
+            elif key == "learning_rate":
+                self.lr = value
+                self._learning_rate = value
+            elif key == "random_state":
+                self.seed = value
+                self._random_state = value
+            elif hasattr(self, key):
+                setattr(self, key, value)
+        return self
 
     def metadata(self) -> dict:
         two_q = (self.n_qubits if self.n_qubits > 1 else 0) * self.n_layers

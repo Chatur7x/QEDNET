@@ -1,62 +1,35 @@
-"""D8 Evaluation Engine public API."""
-
-from .metrics import (
+"""Evaluation metrics and analysis."""
+from qednet.evaluation.metrics import (
     compute_all_metrics,
+    auroc,
+    auprc,
     sensitivity_at_specificity,
-    specificity_at_sensitivity,
-    expected_calibration_error,
-    net_benefit,
-    decision_curve_auc,
+    mcc,
+    brier_score,
+    ece,
+    bootstrap_confidence_interval,
+    delong_test,
+    decision_curve_analysis,
 )
-from .statistics import (
-    bootstrap_ci,
-    delong_roc_test,
-    paired_t_test,
-    corrected_paired_t_test,
-)
-from .calibration import (
-    PlattCalibrator,
-    IsotonicCalibrator,
-    calibrate_model,
-    evaluate_calibration,
-)
-from .cross_validation import (
+
+__all__ = [
+    "compute_all_metrics",
+    "auroc",
+    "auprc",
+    "sensitivity_at_specificity",
+    "mcc",
+    "brier_score",
+    "ece",
+    "bootstrap_confidence_interval",
+    "delong_test",
+    "decision_curve_analysis",
+    "nested_cv",
+    "compare_models",
+    "run_multiple_seeds",
+]
+
+from qednet.evaluation.cross_validation import (  # noqa: E402
     nested_cv,
     compare_models,
     run_multiple_seeds,
 )
-from .leakage_guard import (
-    detect_leakage,
-    check_preprocessing_leakage,
-    audit_pipeline,
-)
-from .bootstrap import bootstrap_statistic, bootstrap_ci_diff
-from .decision_curve import decision_curve, net_benefit_at_threshold, clinical_net_benefit
-
-__all__ = [
-    "compute_all_metrics",
-    "sensitivity_at_specificity",
-    "specificity_at_sensitivity",
-    "expected_calibration_error",
-    "net_benefit",
-    "decision_curve_auc",
-    "bootstrap_ci",
-    "delong_roc_test",
-    "paired_t_test",
-    "corrected_paired_t_test",
-    "PlattCalibrator",
-    "IsotonicCalibrator",
-    "calibrate_model",
-    "evaluate_calibration",
-    "nested_cv",
-    "compare_models",
-    "run_multiple_seeds",
-    "detect_leakage",
-    "check_preprocessing_leakage",
-    "audit_pipeline",
-    "bootstrap_statistic",
-    "bootstrap_ci_diff",
-    "decision_curve",
-    "net_benefit_at_threshold",
-    "clinical_net_benefit",
-]

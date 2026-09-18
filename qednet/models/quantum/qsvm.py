@@ -1,4 +1,4 @@
-"""QSVM: quantum kernel classifier using sklearn SVC(precomputed).
+"""QSVM: Quantum kernel classifier using sklearn SVC(precomputed) (D5) - Member A's implementation.
 
 Kernel: K(x,y) = |<phi(x)|phi(y)>|^2 via swap test or statevector overlap.
 Exposes kernel matrix caching, symmetry/diagonal tests, and circuit metadata.
@@ -8,13 +8,17 @@ O(n^2) cost preserved and exposed per spec.
 from __future__ import annotations
 
 import time
+from typing import Optional
 
 import numpy as np
+from numpy.typing import NDArray
 import pennylane as qml
 from sklearn.svm import SVC
+from scipy.special import expit
 
 from qednet.encoding import validate_vector, zz_feature_map
-from .base import SklearnCompatMixin, validate_xy
+from qednet.models.base import BaseEstimator
+from .base import validate_xy
 
 
 def _overlap_statevector(dev, encoding_fn, x, y, n_qubits):
@@ -53,7 +57,20 @@ def _overlap_swap_test(dev, encoding_fn, x, y, n_qubits):
     return float(2 * probs[0] - 1)
 
 
-class QSVM(SklearnCompatMixin):
+class QSVM(BaseEstimator):
+    """Quantum kernel classifier using sklearn SVC(precomputed).
+
+    Args:
+        n_qubits: Number of qubits
+        encoding: Feature encoding ('zz', 'iqp', 'angle')
+        device: PennyLane device name
+        shots: Number of shots (None for exact)
+        C: SVM regularization parameter
+        kernel_cache_size: sklearn SVC cache size
+        use_swap_test: Use swap test (hardware-compatible) vs statevector overlap
+        random_state: Random seed for reproducibility
+    """
+
     def __init__(
         self,
         n_qubits: int = 4,
@@ -63,9 +80,13 @@ class QSVM(SklearnCompatMixin):
         C: float = 1.0,
         kernel_cache_size: int = 200,
         use_swap_test: bool = False,
+        random_state: int = 42,
+        # Config aliases
+        **kwargs,
     ):
         if n_qubits < 1:
             raise ValueError("n_qubits must be >= 1")
+        self._raw_params = {k: v for k, v in locals().items() if k not in ("self", "kwargs")}
         self.n_qubits = int(n_qubits)
         self.encoding = encoding.lower()
         self.device_name = device
@@ -73,10 +94,7 @@ class QSVM(SklearnCompatMixin):
         self.C = float(C)
         self.kernel_cache_size = int(kernel_cache_size)
         self.use_swap_test = bool(use_swap_test)
-        self._init_params = dict(
-            n_qubits=n_qubits, encoding=encoding, device=device, shots=shots,
-            C=C, kernel_cache_size=kernel_cache_size, use_swap_test=use_swap_test,
-        )
+        self.random_state = int(random_state)
         self._dev = None
         self._encoding_fn = None
         self._kernel_train = None
@@ -84,6 +102,7 @@ class QSVM(SklearnCompatMixin):
         self._svc = None
         self.kernel_evals_ = 0
         self.fit_time_s_ = None
+        self._fitted = False
 
     @property
     def n_params(self) -> int:
@@ -138,7 +157,7 @@ class QSVM(SklearnCompatMixin):
                     K[i, j] = self._kernel_element(X[i], Y[j])
         return K
 
-    def fit(self, X, y):
+    def fit(self, X: NDArray, y: NDArray) -> "QSVM":
         Xm, ym = validate_xy(X, y, self.n_qubits, self.encoding)
         t0 = time.time()
         self._X_train = Xm
@@ -149,9 +168,10 @@ class QSVM(SklearnCompatMixin):
         self._svc.fit(K, ym)
         self.fit_time_s_ = time.time() - t0
         self.n_features_in_ = Xm.shape[1]
+        self._fitted = True
         return self
 
-    def _predict_kernel(self, X):
+    def _predict_kernel(self, X: NDArray) -> NDArray:
         X_arr = np.asarray(X, dtype=float)
         if X_arr.ndim != 2:
             raise ValueError(f"X must be 2D, got shape {X_arr.shape}")
@@ -165,23 +185,40 @@ class QSVM(SklearnCompatMixin):
         K = self._compute_kernel(X_arr, self._X_train)
         return self._svc.decision_function(K)
 
-    def decision_scores(self, X):
+    def decision_scores(self, X: NDArray) -> NDArray:
         return self._predict_kernel(X)
 
-    def predict_proba(self, X):
-        # SVC with precomputed kernel doesn't natively support predict_proba
-        # unless probability=True was set at init. Use decision_function + sigmoid.
-        from scipy.special import expit
+    def predict_proba(self, X: NDArray) -> NDArray:
         scores = self.decision_scores(X)
         p1 = expit(scores)
         return np.column_stack([1 - p1, p1])
 
-    def predict(self, X):
+    def predict(self, X: NDArray) -> NDArray:
         scores = self.decision_scores(X)
         return (scores >= 0).astype(int)
 
+    def get_params(self, deep: bool = True) -> dict:
+        # Raw ctor values: sklearn clone() requires identical objects back.
+        if hasattr(self, "_raw_params"):
+            return dict(self._raw_params)
+        return {
+            "n_qubits": self.n_qubits,
+            "encoding": self.encoding,
+            "shots": self.shots,
+            "random_state": self.random_state,
+            "C": self.C,
+            "kernel_cache_size": self.kernel_cache_size,
+            "use_swap_test": self.use_swap_test,
+            "device": self.device_name,
+        }
+
+    def set_params(self, **params) -> "QSVM":
+        for key, value in params.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+        return self
+
     def metadata(self) -> dict:
-        # estimate gate counts for the encoding circuit
         enc = self.encoding
         nq = self.n_qubits
         if enc in ("zz", "iqp"):

@@ -1,10 +1,31 @@
-"""Shared validation for quantum encodings (D4)."""
-
 from __future__ import annotations
 
+"""Base encoder interface and shared validation utilities (D4 + Member C)."""
+
+from abc import ABC, abstractmethod
+
 import numpy as np
+from numpy.typing import NDArray
 
 
+class BaseEncoder(ABC):
+    """Base interface for quantum encoders (Member C class-based API)."""
+
+    @abstractmethod
+    def encode(self, X: NDArray) -> NDArray:
+        """Encode classical data into quantum-compatible format."""
+        ...
+
+    @abstractmethod
+    def get_circuit_params(self, X: NDArray) -> NDArray:
+        """Get circuit parameters for encoded data."""
+        ...
+
+    def __call__(self, X: NDArray) -> NDArray:
+        return self.encode(X)
+
+
+# Member A's validation utilities (D4)
 def validate_vector(x, n_qubits: int, encoding: str) -> np.ndarray:
     """Validate a single feature vector for the given encoding."""
     arr = np.asarray(x, dtype=float).ravel()

@@ -1,8 +1,8 @@
-"""D2 Data Ingestion & Validation public API."""
-
-from .ingestion import DatasetBundle, DatasetRegistry
-from .registry import DATASET_METADATA, DATASET_SCHEMAS, deidentify
-from .deidentification import (
+"""Data ingestion and loading utilities."""
+from qednet.data.loader import load_dataset, DatasetLoader
+from qednet.data.ingestion import DatasetBundle, DatasetRegistry
+from qednet.data.validation import DATASET_METADATA, DATASET_SCHEMAS
+from qednet.data.deidentification import (
     hash_identifiers,
     remove_identifiers,
     generalize_age,
@@ -12,15 +12,9 @@ from .deidentification import (
 )
 
 __all__ = [
-    "DatasetBundle",
-    "DatasetRegistry",
-    "deidentify",
-    "DATASET_METADATA",
-    "DATASET_SCHEMAS",
-    "hash_identifiers",
-    "remove_identifiers",
-    "generalize_age",
-    "suppress_rare_categories",
-    "k_anonymize",
-    "l_diversity",
+    "load_dataset", "DatasetLoader",
+    "DatasetBundle", "DatasetRegistry",
+    "DATASET_METADATA", "DATASET_SCHEMAS",
+    "hash_identifiers", "remove_identifiers", "generalize_age",
+    "suppress_rare_categories", "k_anonymize", "l_diversity",
 ]
