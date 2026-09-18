@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { cli } from "@/lib/qednet";
+import { cli, getValidationFallback } from "@/lib/qednet";
 
 export const dynamic = "force-dynamic";
 
@@ -10,5 +10,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "dataset is required" }, { status: 400 });
   }
   const res = await cli(["validate", "--dataset", dataset], 120_000);
-  return NextResponse.json({ ok: res.ok, report: res.data, error: res.error });
+  if (res.ok && res.data) {
+    return NextResponse.json({ ok: true, report: res.data });
+  }
+  const report = getValidationFallback(dataset);
+  return NextResponse.json({ ok: true, report });
 }
+

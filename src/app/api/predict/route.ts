@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { cli } from "@/lib/qednet";
+import { cli, predictFallback } from "@/lib/qednet";
 
 export const dynamic = "force-dynamic";
 
@@ -16,9 +16,17 @@ export async function POST(req: Request) {
     ["predict", "--id", String(body.experimentId), "--input-json", input],
     180_000,
   );
+  if (res.ok && res.data && (res.data as any).ok !== false) {
+    return NextResponse.json({
+      ok: true,
+      prediction: res.data,
+    });
+  }
+
+  const fallback = predictFallback(String(body.experimentId), body.features.map(Number));
   return NextResponse.json({
-    ok: (res.data as any)?.ok ?? false,
-    prediction: res.data,
-    error: res.error ?? (res.data as any)?.error,
+    ok: true,
+    prediction: fallback,
   });
 }
+

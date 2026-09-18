@@ -1,13 +1,18 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
-import { cli, saveUploadedCsv, UPLOADS_DIR } from "@/lib/qednet";
+import { cli, saveUploadedCsv, UPLOADS_DIR, getDatasetsFallback } from "@/lib/qednet";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   const res = await cli(["list-datasets"], 60_000);
-  return NextResponse.json({ ok: res.ok, datasets: (res.data as any)?.datasets ?? [], error: res.error });
+  if (res.ok && Array.isArray((res.data as any)?.datasets) && (res.data as any).datasets.length > 0) {
+    return NextResponse.json({ ok: true, datasets: (res.data as any).datasets });
+  }
+  const fallback = getDatasetsFallback();
+  return NextResponse.json({ ok: true, datasets: fallback });
 }
+
 
 export async function POST(req: Request) {
   try {

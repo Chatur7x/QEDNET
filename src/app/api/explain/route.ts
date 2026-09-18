@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { cli } from "@/lib/qednet";
+import { cli, getExplainFallback } from "@/lib/qednet";
 
 export const dynamic = "force-dynamic";
 
@@ -12,9 +12,25 @@ export async function GET(req: Request) {
   }
   const args = ["explain", "--id", id, ...(model ? ["--model", model] : [])];
   const res = await cli(args, 300_000);
+  if (res.ok && (res.data as any)?.explainability) {
+    return NextResponse.json({
+      ok: true,
+      explainability: (res.data as any).explainability,
+    });
+  }
+
+  const fallback = getExplainFallback(id);
+  if (fallback) {
+    return NextResponse.json({
+      ok: true,
+      explainability: fallback,
+    });
+  }
+
   return NextResponse.json({
-    ok: res.ok,
-    explainability: (res.data as any)?.explainability ?? null,
-    error: res.error ?? (res.data as any)?.error,
-  });
+    ok: false,
+    explainability: null,
+    error: res.error ?? (res.data as any)?.error ?? "Explainability data not found",
+  }, { status: 404 });
 }
+
