@@ -228,7 +228,7 @@ export function ModelBarChart({
               <div className="rounded-md border border-stone-200 bg-white/95 px-3 py-2 text-xs shadow-sm">
                 <div className="font-medium text-stone-800">{payload[0].payload.model}</div>
                 <div className="qed-num text-stone-600">
-                  {metric}: <span className="font-medium text-stone-900">{payload[0].payload.value.toFixed(4)}</span>
+                  {metric}: <span className="font-medium text-stone-900">{payload?.[0]?.payload?.value?.toFixed(4) ?? 'N/A'}</span>
                   {payload[0].payload.err !== undefined && (
                     <span className="text-stone-400"> ± {payload[0].payload.err.toFixed(4)}</span>
                   )}

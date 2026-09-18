@@ -23,6 +23,7 @@ import logging
 import sys
 from pathlib import Path
 from typing import Any, Dict
+import numpy as np
 
 # silence noisy third-party loggers for clean JSON stdout
 for noisy in ("qednet",):
