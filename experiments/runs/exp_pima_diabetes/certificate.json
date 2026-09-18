@@ -1,0 +1,291 @@
+{
+  "certificate_title": "QED-Net 2.0 Quantum Advantage Certificate",
+  "research_status": "Research and educational platform \u2014 not a medical device, not clinically validated, not for diagnosis.",
+  "experiment_id": "exp_pima_diabetes",
+  "dataset": "pima_diabetes",
+  "model": "qsvm",
+  "configuration_hash": "15ed6bf597f3",
+  "random_seeds": [
+    42,
+    7,
+    2026
+  ],
+  "metrics": {
+    "quantum_best": {
+      "model": "qsvm",
+      "auroc": 0.8247572792918706,
+      "ci95": [
+        0.8035695214287286,
+        0.8375231538369311
+      ]
+    },
+    "classical_best": {
+      "model": "logistic_regression",
+      "auroc": 0.8370097833682739,
+      "ci95": [
+        0.8195197336652452,
+        0.8519600874562342
+      ]
+    },
+    "all_models": {
+      "logistic_regression": 0.8370097833682739,
+      "random_forest": 0.8179266247379453,
+      "xgboost": 0.7950253901700443,
+      "rbf_svm": 0.8246846028418354,
+      "matched_mlp": 0.8281006289308177,
+      "qsvm": 0.8247572792918706,
+      "vqc": 0.8215269042627534,
+      "reupload": 0.7941318425343582,
+      "hybrid_qnn": 0.7793421849522477
+    }
+  },
+  "confidence_intervals": {
+    "logistic_regression": [
+      0.8195197336652452,
+      0.8519600874562342
+    ],
+    "random_forest": [
+      0.7992456893524902,
+      0.8333247273683417
+    ],
+    "xgboost": [
+      0.7754814517281322,
+      0.8106859482919414
+    ],
+    "rbf_svm": [
+      0.8060832082495794,
+      0.8403557012485382
+    ],
+    "matched_mlp": [
+      0.7966178499870417,
+      0.8319325417599055
+    ],
+    "qsvm": [
+      0.8035695214287286,
+      0.8375231538369311
+    ],
+    "vqc": [
+      0.7990651373846284,
+      0.833581659957613
+    ],
+    "reupload": [
+      0.7602018720015917,
+      0.7978140643830585
+    ],
+    "hybrid_qnn": [
+      0.7577004357821602,
+      0.7970528905565551
+    ]
+  },
+  "parameter_count": {
+    "quantum": 347,
+    "matched_mlp": 41,
+    "ratio_quantum_over_mlp": 8.4634
+  },
+  "qubit_count": 8,
+  "circuit_depth": 8,
+  "training_runtime": {
+    "logistic_regression": 0.026220912995995604,
+    "random_forest": 9.143474574999345,
+    "xgboost": 13.157144890999916,
+    "rbf_svm": 0.5078506239988201,
+    "matched_mlp": 1.1651219289979053,
+    "qsvm": 1.3909890150007413,
+    "vqc": 418.4804293800007,
+    "reupload": 654.4010356179951,
+    "hybrid_qnn": 987.3879867790056
+  },
+  "inference_runtime": {
+    "logistic_regression": 7.008399916230701e-05,
+    "random_forest": 0.05788680499972543,
+    "xgboost": 0.0008925750007620081,
+    "rbf_svm": 0.005619896999633056,
+    "matched_mlp": 9.348899948236067e-05,
+    "qsvm": 0.07655988199985586,
+    "vqc": 0.03480625199881615,
+    "reupload": 0.06217861900040589,
+    "hybrid_qnn": 0.0376168200000393
+  },
+  "quantum_resource_data": {
+    "n_qubits": 8,
+    "gate_counts": {
+      "ry": 8
+    },
+    "total_gates_per_circuit": 8,
+    "circuit_depth": 8,
+    "n_circuits": 1383,
+    "shots": null,
+    "shots_note": "exact statevector fidelity (equivalent to shots=inf); kernel entries are inner products of simulated quantum states",
+    "kernel_method": "fidelity |<phi(x)|phi(x')>|^2",
+    "state_compute_time_s": 0.0986,
+    "statevector_dimension": 256
+  },
+  "ablation_result": {
+    "available": true,
+    "model": "vqc",
+    "entangled": {
+      "auroc": 0.8203292181069958,
+      "n_parameters": 25,
+      "circuit_depth": 6,
+      "entangling_gates": 21
+    },
+    "non_entangled_parameter_matched": {
+      "auroc": 0.7860905349794238,
+      "n_parameters": 25,
+      "circuit_depth": 4,
+      "entangling_gates": 0
+    },
+    "auroc_delta_entangled_minus_nonentangled": 0.034239,
+    "capacity_preserved": true,
+    "entanglement_contribution": "positive contribution",
+    "interpretation": "Same-parameter-count comparison; differences within noise are reported as no measurable contribution. The result is whatever the experiment actually shows."
+  },
+  "dequantization_result": {
+    "quantum_kernel_auroc": 0.821481,
+    "rff": {
+      "method": "Random Fourier Features (surrogate of quantum kernel distances)",
+      "n_components": 200,
+      "gamma_median_heuristic": 0.634922,
+      "auroc": 0.7546913580246913,
+      "note": "classical kernel approximation evaluated on identical test folds"
+    },
+    "nystrom": {
+      "method": "Nystrom low-rank approximation of quantum kernel",
+      "n_components": 100,
+      "auroc": 0.822962962962963,
+      "kernel_relative_reconstruction_error": 0.039444,
+      "note": "classical low-rank surrogate evaluated on identical test folds"
+    }
+  },
+  "bottleneck_honesty_meter": {
+    "compressed_space_baseline": {
+      "model": "logistic regression on squashed compressed features",
+      "auroc": 0.8323456790123457,
+      "n_dims": 8
+    },
+    "quantum_score": {
+      "model": "vqc",
+      "auroc": 0.8203292181069958
+    },
+    "performance_gap_quantum_minus_baseline": -0.012016,
+    "reading": "simple classical model on the same compressed representation outperforms the quantum layer",
+    "purpose": "measures how much predictive performance comes from classical feature compression versus the quantum layer"
+  },
+  "statistical_result": {
+    "delong_test": {
+      "delong_available": true,
+      "auc1": 0.820883,
+      "auc2": 0.835681,
+      "auc_diff": -0.014798,
+      "z": -3.293341,
+      "p_value": 0.000990042688950421,
+      "significant_005": true
+    },
+    "corrected_cv_test": {
+      "available": true,
+      "mean_diff": -0.012252,
+      "t": -1.155468,
+      "p_value": 0.26723880790093846,
+      "significant_005": false,
+      "correction": "Nadeau-Bengio corrected resampled t-test",
+      "k_folds": 5,
+      "n_train": 615,
+      "n_test": 153
+    },
+    "bootstrap": {
+      "logistic_regression": {
+        "metric": "auroc",
+        "point": 0.8356807628524047,
+        "ci_low": 0.8195197336652452,
+        "ci_high": 0.8519600874562342,
+        "n_resamples": 2000,
+        "alpha": 0.05
+      },
+      "random_forest": {
+        "metric": "auroc",
+        "point": 0.8164780265339968,
+        "ci_low": 0.7992456893524902,
+        "ci_high": 0.8333247273683417,
+        "n_resamples": 2000,
+        "alpha": 0.05
+      },
+      "xgboost": {
+        "metric": "auroc",
+        "point": 0.7930762852404644,
+        "ci_low": 0.7754814517281322,
+        "ci_high": 0.8106859482919414,
+        "n_resamples": 2000,
+        "alpha": 0.05
+      },
+      "rbf_svm": {
+        "metric": "auroc",
+        "point": 0.8235920398009949,
+        "ci_low": 0.8060832082495794,
+        "ci_high": 0.8403557012485382,
+        "n_resamples": 2000,
+        "alpha": 0.05
+      },
+      "matched_mlp": {
+        "metric": "auroc",
+        "point": 0.8148250414593698,
+        "ci_low": 0.7966178499870417,
+        "ci_high": 0.8319325417599055,
+        "n_resamples": 2000,
+        "alpha": 0.05
+      },
+      "qsvm": {
+        "metric": "auroc",
+        "point": 0.8208826699834163,
+        "ci_low": 0.8035695214287286,
+        "ci_high": 0.8375231538369311,
+        "n_resamples": 2000,
+        "alpha": 0.05
+      },
+      "vqc": {
+        "metric": "auroc",
+        "point": 0.8157512437810945,
+        "ci_low": 0.7990651373846284,
+        "ci_high": 0.833581659957613,
+        "n_resamples": 2000,
+        "alpha": 0.05
+      },
+      "reupload": {
+        "metric": "auroc",
+        "point": 0.7781907131011608,
+        "ci_low": 0.7602018720015917,
+        "ci_high": 0.7978140643830585,
+        "n_resamples": 2000,
+        "alpha": 0.05
+      },
+      "hybrid_qnn": {
+        "metric": "auroc",
+        "point": 0.7771268656716418,
+        "ci_low": 0.7577004357821602,
+        "ci_high": 0.7970528905565551,
+        "n_resamples": 2000,
+        "alpha": 0.05
+      }
+    }
+  },
+  "final_evidence_classification": "No Demonstrated Advantage",
+  "final_evidence_rationale": "best quantum AUROC 0.8248 <= best classical 0.8370; classical models remain competitive or superior on this dataset",
+  "reproducibility": {
+    "python_version": "3.12.14",
+    "platform": "Linux-5.10.134-013.15.kangaroo.al8.x86_64-x86_64-with-glibc2.41",
+    "package_versions": {
+      "numpy": "2.1.3",
+      "scikit-learn": "1.5.2",
+      "pennylane": "0.45.1",
+      "xgboost": "2.1.3",
+      "shap": "0.52.0"
+    },
+    "qednet_version": "2.0.0",
+    "config_hash": "15ed6bf597f3",
+    "created_unix": 1789676572
+  },
+  "methodology_notes": [
+    "Classification rules are deterministic and documented in code; no human or model judgement is applied to the verdict.",
+    "Statistical significance is only reported when the test was actually performed (DeLong paired test on pooled out-of-fold predictions; Nadeau-Bengio corrected resampled t-test).",
+    "Exact statevector simulation (equivalent to shots=inf) is used for quantum circuits; resource reports record this explicitly."
+  ]
+}

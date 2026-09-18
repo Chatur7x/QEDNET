@@ -1,0 +1,10 @@
+{
+  "jobId": "",
+  "experimentId": "exp_pima_diabetes",
+  "configName": "pima_diabetes",
+  "status": "running",
+  "pid": 12887,
+  "startedAt": ,
+  "endedAt": null,
+  "logFile": ""
+}

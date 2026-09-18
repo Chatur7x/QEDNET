@@ -1,0 +1,10 @@
+{
+  "jobId": "job_mu5wj0w2_cub3",
+  "experimentId": "exp_parkinsons",
+  "configName": "parkinsons",
+  "status": "running",
+  "pid": 7955,
+  "startedAt": 1789672046780,
+  "endedAt": null,
+  "logFile": "/home/z/my-project/experiments/jobs/job_mu5wj0w2_cub3.log"
+}

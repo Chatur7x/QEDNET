@@ -1,0 +1,48 @@
+cascade:
+  enabled: true
+  low_confidence_max: 0.65
+  low_confidence_min: 0.35
+  screening_model: logistic_regression
+certificate:
+  bottleneck_honesty_meter: true
+  dequantization_nystrom: true
+  dequantization_rff: true
+  enabled: true
+  entanglement_ablation: true
+compression:
+  method: pca
+  target_dim: 8
+dataset:
+  name: parkinsons
+  source: builtin
+  target: target
+evaluation:
+  bootstrap_enabled: true
+  bootstrap_samples: 2000
+  calibration: platt
+  decision_curve: true
+  delong_test: true
+experiment_id: exp_parkinsons
+model:
+  backend: numpy
+  encoding: angle
+  entanglement: true
+  layers: 3
+  n_qubits: 8
+  params: {}
+  type: vqc
+models: []
+notes: 'Flagship end-to-end experiment. Full classical suite + full quantum suite.
+  Compute-reduced protocol for the sandbox demo (5-fold outer CV, 3 seeds); the full
+  research protocol (inner-CV tuning enabled, 10 seeds) is configurable here and used
+  by scripts/reproduce.py --full.
+
+  '
+training:
+  inner_folds: 3
+  outer_folds: 5
+  seeds:
+  - 42
+  - 7
+  - 2026
+  shots: null

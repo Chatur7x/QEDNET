@@ -1,0 +1,77 @@
+# QED-Net 2.0 — full deployment profile.
+#
+# NOTE (honesty): this compose file defines the production-style deployment
+# (FastAPI + Celery + Redis + PostgreSQL + MinIO + dashboard). It has NOT
+# been executed in the development sandbox — verify with
+# `docker compose up --build` on a machine with Docker before relying on it.
+#
+# Sandbox/demo profile: `docker compose --profile sandbox up backend` runs
+# the Python core + FastAPI alone; the Next.js dashboard can also run
+# standalone against the CLI bridge.
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://qednet:qednet@postgres:5432/qednet
+      S3_ENDPOINT: http://minio:9000
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./experiments:/app/experiments
+      - ./data:/app/data
+
+  worker:
+    build: .
+    command: celery -A api.tasks.celery_app worker --loglevel=INFO
+    environment:
+      DATABASE_URL: postgresql://qednet:qednet@postgres:5432/qednet
+      S3_ENDPOINT: http://minio:9000
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - backend
+      - redis
+    volumes:
+      - ./experiments:/app/experiments
+      - ./data:/app/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: qednet
+      POSTGRES_PASSWORD: qednet
+      POSTGRES_DB: qednet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qednet"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: qednet
+      MINIO_ROOT_PASSWORD: qednet-secret
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+
+volumes:
+  pgdata:
+  miniodata:

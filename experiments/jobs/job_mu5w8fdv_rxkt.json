@@ -1,0 +1,10 @@
+{
+  "jobId": "job_mu5w8fdv_rxkt",
+  "experimentId": "exp_breast_cancer",
+  "configName": "breast_cancer",
+  "status": "running",
+  "pid": 6769,
+  "startedAt": 1789671552009,
+  "endedAt": null,
+  "logFile": "/home/z/my-project/experiments/jobs/job_mu5w8fdv_rxkt.log"
+}
