@@ -1,0 +1,17 @@
+CLASSICAL_DEDUP_STATUS_COUNTS={"completed": 468, "not_measured": 72}
+QUANTUM_DEDUP_STATUS_COUNTS={"completed": 135}
+RAW_QUANTUM_RECORD_COUNT=146 RAW_QUANTUM_ERROR_COUNT=1
+RAW_ERROR=dataset=heart_disease model=qsvm seed=42 fold=0 feature_setting=A message=IndexError: index 301 is out of bounds for axis 0 with size 297
+RESULTS_FINAL_METRIC_MISMATCH_COUNT=0
+RESULTS_FINAL_PAIRED_TEST_MISMATCH_COUNT=0
+CONTAINS_run_fold.py_error_and_rerun=True
+CONTAINS_Corrections_from_v2=True
+CHECK_classical_counts=PASS
+CHECK_quantum_counts=PASS
+CHECK_raw_quantum_count=PASS
+CHECK_raw_error_count=PASS
+CHECK_metric_mismatch_count_zero=PASS
+CHECK_paired_mismatch_count_zero=PASS
+CHECK_required_run_fold_section=PASS
+CHECK_required_corrections_section=PASS
+OVERALL=PASS
