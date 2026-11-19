@@ -1,0 +1,13 @@
+REPORT=RESULTS_FINAL.md
+PVALUE_CELLS_CHANGED=11
+breast_cancer / random|best_of_fold|wilcoxon_p|0.00390625|0.007212578345957219
+parkinsons / random|best_of_fold|wilcoxon_p|0.00390625|0.007420961287866498
+parkinsons / grouped|best_of_fold|wilcoxon_p|0.0390625|0.03546586462402558
+diabetes / random|best_of_fold|wilcoxon_p|0.0078125|0.01051714807334924
+breast_cancer / random|parameter_matched_mlp_vqc - qsvm|wilcoxon_p|0.23828125|0.21312246884125097
+breast_cancer / random|parameter_matched_mlp_reupload - qsvm|wilcoxon_p|0.41015625|0.3738398566319153
+heart_disease / random|parameter_matched_mlp_reupload - reupload|wilcoxon_p|0.25|0.20757844233562428
+parkinsons / random|parameter_matched_mlp_vqc - qsvm|wilcoxon_p|0.0703125|0.06836413860052828
+parkinsons / random|parameter_matched_mlp_reupload - qsvm|wilcoxon_p|0.1875|0.1747487117505534
+parkinsons / random|parameter_matched_mlp_reupload - vqc|wilcoxon_p|0.96875|0.9527235817670947
+parkinsons / grouped|parameter_matched_mlp_reupload - qsvm|wilcoxon_p|0.1953125|0.17269378073166064

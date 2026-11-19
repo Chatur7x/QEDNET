@@ -1,0 +1,1 @@
+RERUNS=[{"model":"qsvm","auc":0.5166666666666666,"status":"completed"},{"model":"vqc","auc":0.7111111111111111,"status":"completed"},{"model":"reupload","auc":0.4166666666666667,"status":"completed"}]

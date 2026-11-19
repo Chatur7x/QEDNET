@@ -1,0 +1,46 @@
+{
+  "dataset": "heart_disease",
+  "model": "reupload",
+  "seed": 42,
+  "fold": 0,
+  "feature_setting": "A",
+  "split_variant": "random",
+  "n_samples": 80,
+  "input_features": 13,
+  "model_input_features": 4,
+  "n_train": 53,
+  "n_test": 27,
+  "train_class_counts": {
+    "0": 28,
+    "1": 25
+  },
+  "test_class_counts": {
+    "0": 15,
+    "1": 12
+  },
+  "n_train_subjects": null,
+  "n_test_subjects": null,
+  "subject_overlap_count": 0,
+  "preprocess_seconds": 0.0897623000000749,
+  "train_seconds": 63.59010639999997,
+  "predict_seconds": 0.1565278999999009,
+  "auc": 0.48333333333333334,
+  "accuracy": 0.48148148148148145,
+  "balanced_accuracy": 0.4916666666666667,
+  "f1": 0.5,
+  "trainable_parameters": 16,
+  "metadata": {
+    "model": "reupload",
+    "n_qubits": 4,
+    "n_layers": 1,
+    "n_params": 16,
+    "two_qubit_gates": 4,
+    "shots": null,
+    "diff_method": "backprop",
+    "device": "default.qubit",
+    "fit_time_s": 63.58921217918396
+  },
+  "status": "completed",
+  "parent_elapsed_seconds": 78.89056049999999,
+  "timeout_seconds": 600.0
+}

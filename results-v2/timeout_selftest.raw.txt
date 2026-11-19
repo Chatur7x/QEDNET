@@ -1,0 +1,22 @@
+{
+  "test": "parent_process_tree_timeout",
+  "command": [
+    "C:\\Users\\chatu\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+    "D:\\Projects\\QEDNT\\results-v2\\timeout_sleep_child.py",
+    "--seconds",
+    "30"
+  ],
+  "configured_timeout_seconds": 5,
+  "child_sleep_seconds": 30,
+  "status": "timeout",
+  "elapsed_seconds": 5.896005899999977,
+  "child_returncode": 1,
+  "child_stdout": "",
+  "child_stderr": "",
+  "taskkill": {
+    "returncode": 0,
+    "stdout": "SUCCESS: The process with PID 32896 (child process of PID 26124) has been terminated.\n",
+    "stderr": ""
+  },
+  "passed": true
+}

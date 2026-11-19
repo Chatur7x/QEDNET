@@ -1,0 +1,7 @@
+manifest_sample_n=80 local_sample_positions_count=80 max_local_position=296
+manifest_source_sample_rows_count=80 source_301_present=True
+fold=0 train_samples=53 test_samples=27
+fold0_train_source_indices_count=53 fold0_test_source_indices_count=27
+rerun_key=(heart_disease,random,qsvm,seed=42,fold=0,setting=A) n=80 train=53 test=27
+rerun_missing_index_fields=['sample_source_row_indices', 'train_source_row_indices', 'test_source_row_indices', 'train_sample_indices', 'test_sample_indices']
+exact_source_row_and_fold_index_match=NOT ESTABLISHED from rerun record (index arrays are absent)

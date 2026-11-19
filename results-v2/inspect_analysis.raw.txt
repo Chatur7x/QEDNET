@@ -1,0 +1,46 @@
+
+dataset       split_variant n  mean   sd ttest_p wilcoxon_p
+-------       ------------- -  ----   -- ------- ----------
+breast_cancer random        9 -0.04 0.04    0.01       0.00
+heart_disease random        9 -0.12 0.08    0.00       0.00
+parkinsons    random        9 -0.16 0.07    0.00       0.00
+parkinsons    grouped       9 -0.10 0.13    0.06       0.04
+diabetes      random        9 -0.08 0.04    0.00       0.01
+
+
+pm_model                       quantum_model n  mean   sd ttest_p wilcoxon_p
+--------                       ------------- -  ----   -- ------- ----------
+parameter_matched_mlp_vqc      qsvm          9 -0.16 0.23    0.06       0.24
+parameter_matched_mlp_vqc      vqc           9  0.05 0.35    0.66       0.82
+parameter_matched_mlp_vqc      reupload      9 -0.02 0.23    0.75       0.82
+parameter_matched_mlp_reupload qsvm          9 -0.14 0.23    0.10       0.41
+parameter_matched_mlp_reupload vqc           9  0.07 0.33    0.52       0.57
+parameter_matched_mlp_reupload reupload      9 -0.00 0.23    0.96       1.00
+
+{"repeat": 1, "status": "completed", "fit_seconds": 9.510194099999353, "predict_seconds": 11.759371100000862, "parent_elapsed_seconds": 38.68317550000211, "auc": 0.5166666666666666, "n_samples": 80, "n_train": 53, "n_test": 27, "seed": 42, "fold": 0}
+{"repeat": 2, "status": "completed", "fit_seconds": 7.171762999998464, "predict_seconds": 7.426870299997972, "parent_elapsed_seconds": 25.614877500000148, "auc": 0.5166666666666666, "n_samples": 80, "n_train": 53, "n_test": 27, "seed": 42, "fold": 0}
+{"repeat": 3, "status": "completed", "fit_seconds": 8.194112699999096, "predict_seconds": 8.678616400000465, "parent_elapsed_seconds": 29.030399700001, "auc": 0.5166666666666666, "n_samples": 80, "n_train": 53, "n_test": 27, "seed": 42, "fold": 0}
+{"repeat": 4, "status": "completed", "fit_seconds": 8.036131099997874, "predict_seconds": 8.22492069999862, "parent_elapsed_seconds": 26.98157739999806, "auc": 0.5166666666666666, "n_samples": 80, "n_train": 53, "n_test": 27, "seed": 42, "fold": 0}
+{"repeat": 5, "status": "completed", "fit_seconds": 8.948771900002612, "predict_seconds": 9.625658299999486, "parent_elapsed_seconds": 32.438361099997564, "auc": 0.5166666666666666, "n_samples": 80, "n_train": 53, "n_test": 27, "seed": 42, "fold": 0}
+{
+  "test": "parent_process_tree_timeout",
+  "command": [
+    "C:\\Users\\chatu\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+    "D:\\Projects\\QEDNT\\results-v2\\timeout_sleep_child.py",
+    "--seconds",
+    "30"
+  ],
+  "configured_timeout_seconds": 5,
+  "child_sleep_seconds": 30,
+  "status": "timeout",
+  "elapsed_seconds": 5.896005899999977,
+  "child_returncode": 1,
+  "child_stdout": "",
+  "child_stderr": "",
+  "taskkill": {
+    "returncode": 0,
+    "stdout": "SUCCESS: The process with PID 32896 (child process of PID 26124) has been terminated.\n",
+    "stderr": ""
+  },
+  "passed": true
+}

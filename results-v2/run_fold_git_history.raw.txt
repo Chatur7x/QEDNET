@@ -1,0 +1,33 @@
+$ git log --oneline -- results-v2/run_fold.py
+EXIT=0
+
+
+FILE results-v2/run_fold.py bytes=8079 mtime_ns=1795075837060020000
+FILE results-v2/splits.json bytes=74564 mtime_ns=1795056347667227100
+FILE data/raw/heart_cleveland.data bytes=18461 mtime_ns=1789672879929141000
+$ git diff -- results-v2/run_fold.py
+EXIT=0
+
+
+FILE results-v2/run_fold.py bytes=8079 mtime_ns=1795075837060020000
+FILE results-v2/splits.json bytes=74564 mtime_ns=1795056347667227100
+FILE data/raw/heart_cleveland.data bytes=18461 mtime_ns=1789672879929141000
+$ git status --short --branch
+EXIT=0
+## results-v2
+?? "qednet-2.0-project (2)/"
+?? qednet-package/
+?? results-v2/
+?? results/
+
+FILE results-v2/run_fold.py bytes=8079 mtime_ns=1795075837060020000
+FILE results-v2/splits.json bytes=74564 mtime_ns=1795056347667227100
+FILE data/raw/heart_cleveland.data bytes=18461 mtime_ns=1789672879929141000
+$ git ls-files --error-unmatch results-v2/run_fold.py
+EXIT=1
+
+error: pathspec 'results-v2/run_fold.py' did not match any file(s) known to git
+Did you forget to 'git add'?
+FILE results-v2/run_fold.py bytes=8079 mtime_ns=1795075837060020000
+FILE results-v2/splits.json bytes=74564 mtime_ns=1795056347667227100
+FILE data/raw/heart_cleveland.data bytes=18461 mtime_ns=1789672879929141000

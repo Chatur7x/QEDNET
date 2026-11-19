@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "D:\Projects\QEDNT\results-v2\runner.py", line 179, in <module>
+    main()
+    ~~~~^^
+  File "D:\Projects\QEDNT\results-v2\runner.py", line 174, in main
+    result = run_fold(args.dataset, args.model, args.seed, args.fold, args.feature_setting, args.split_variant, args.timeout)
+  File "D:\Projects\QEDNT\results-v2\runner.py", line 153, in run_fold
+    append_json(raw_path, record)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "D:\Projects\QEDNT\results-v2\runner.py", line 116, in append_json
+    os.fsync(f.fileno())
+    ~~~~~~~~^^^^^^^^^^^^
+OSError: [Errno 9] Bad file descriptor

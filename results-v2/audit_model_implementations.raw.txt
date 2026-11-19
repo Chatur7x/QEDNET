@@ -1,0 +1,187 @@
+C:\Users\chatu\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandera\_pandas_deprecated.py:144: FutureWarning: Importing pandas-specific classes and functions from the
+top-level pandera module will be **removed in a future version of pandera**.
+If you're using pandera to validate pandas objects, we highly recommend updating
+your import:
+
+```
+# old import
+import pandera as pa
+
+# new import
+import pandera.pandas as pa
+```
+
+If you're using pandera to validate objects from other compatible libraries
+like pyspark or polars, see the supported libraries section of the documentation
+for more information on how to import pandera:
+
+https://pandera.readthedocs.io/en/stable/supported_libraries.html
+
+To disable this warning, set the environment variable:
+
+```
+export DISABLE_PANDERA_IMPORT_WARNING=True
+```
+
+  warnings.warn(_future_warning, FutureWarning)
+===== QSVM._get_encoding_fn =====
+    def _get_encoding_fn(self):
+        if self.encoding in ("zz", "iqp"):
+            return lambda x, wires: zz_feature_map(x, wires=wires)
+        elif self.encoding == "angle":
+            from qednet.encoding import angle_encoding
+            return angle_encoding
+        else:
+            raise ValueError(f"QSVM: unsupported encoding {self.encoding!r}")
+
+===== zz_feature_map =====
+def zz_feature_map(x, wires, reps: int = 1) -> None:
+    """Hadamard + RZ(x) + chain RZZ(x_i*x_j); reps=1..3. Requires d <= n_qubits."""
+    n_qubits = len(wires)
+    arr = validate_vector(x, n_qubits, "zz")
+    if reps < 1:
+        raise ValueError("zz: reps must be >= 1")
+    for _ in range(reps):
+        for i in range(n_qubits):
+            qml.Hadamard(wires=wires[i])
+        for i, v in enumerate(arr):
+            qml.RZ(float(v), wires=wires[i])
+        for i in range(len(arr) - 1):
+            qml.CNOT(wires=[wires[i], wires[i + 1]])
+            qml.RZ(float(arr[i] * arr[i + 1]), wires=wires[i + 1])
+            qml.CNOT(wires=[wires[i], wires[i + 1]])
+
+===== VQC._build =====
+    def _build(self):
+        diff = _resolve_diff_method(self.diff_method_req, self.device_name)
+        self.diff_method_ = diff
+        kwargs = {"wires": self.n_qubits}
+        if self.shots is not None:
+            kwargs["shots"] = self.shots
+        try:
+            self._dev = qml.device(self.device_name, **kwargs)
+        except Exception:
+            self._dev = qml.device("default.qubit", **kwargs)
+            self.device_name = "default.qubit"
+            self.diff_method_ = _resolve_diff_method(self.diff_method_req, self.device_name)
+
+        enc = self.encoding
+        nq, nl = self.n_qubits, self.n_layers
+        ent = self.use_entanglement
+
+        @qml.qnode(self._dev, diff_method=self.diff_method_)
+        def circuit(x, theta):
+            if enc == "angle":
+                for i in range(min(len(x), nq)):
+                    qml.RX(x[i], wires=i)
+            elif enc in ("zz", "iqp"):
+                for i in range(nq):
+                    qml.Hadamard(wires=i)
+                for i in range(min(len(x), nq)):
+                    qml.RZ(x[i], wires=i)
+                for i in range(min(len(x), nq) - 1):
+                    qml.CNOT(wires=[i, i + 1])
+                    qml.RZ(x[i] * x[i + 1], wires=i + 1)
+                    qml.CNOT(wires=[i, i + 1])
+            elif enc == "amplitude":
+                from qednet.encoding.base import pad_to_pow2
+
+                qml.StatePrep(pad_to_pow2(pnp.asarray(x, dtype=float), nq), wires=range(nq))
+            else:
+                raise ValueError(f"VQC: unsupported encoding {enc!r}")
+            for layer in range(nl):
+                for i in range(nq):
+                    qml.Rot(theta[layer, i, 0], theta[layer, i, 1],
+                            theta[layer, i, 2], wires=i)
+                if ent:
+                    for i in range(nq - 1):
+                        qml.CNOT(wires=[i, i + 1])
+                    if nq > 2:
+                        qml.CNOT(wires=[nq - 1, 0])
+            return qml.expval(qml.Z(0))
+
+        self._circuit = circuit
+        self._built = True
+
+===== ReuploadClassifier._build =====
+    def _build(self):
+        diff = self._resolve_diff()
+        self.diff_method_ = diff
+        kwargs = {"wires": self.n_qubits}
+        if self.shots is not None:
+            kwargs["shots"] = self.shots
+        try:
+            self._dev = qml.device(self.device_name, **kwargs)
+        except Exception:
+            self._dev = qml.device("default.qubit", **kwargs)
+            self.device_name = "default.qubit"
+            self.diff_method_ = self._resolve_diff()
+
+        nq, nl = self.n_qubits, self.n_layers
+
+        @qml.qnode(self._dev, diff_method=self.diff_method_)
+        def circuit(x, theta, phi):
+            # theta: (nl, nq, 3), phi: (nl, nq)
+            for layer in range(nl):
+                # trainable layer: Rot on each qubit
+                for i in range(nq):
+                    qml.Rot(theta[layer, i, 0], theta[layer, i, 1], theta[layer, i, 2], wires=i)
+                # data re-uploading layer: RY(x_i + phi_{l,i})
+                for i in range(nq):
+                    v = float(x[i]) if i < len(x) else 0.0
+                    qml.RY(v + phi[layer, i], wires=i)
+                # entangling layer
+                for i in range(nq - 1):
+                    qml.CNOT(wires=[i, i + 1])
+                if nq > 2:
+                    qml.CNOT(wires=[nq - 1, 0])
+            return qml.expval(qml.Z(0))
+
+        self._circuit = circuit
+        self._built = True
+
+===== HybridQNN.fit =====
+    def fit(self, X: NDArray, y: NDArray) -> "HybridQNN":
+        """Train the hybrid QNN using a mock (classical surrogate) when PyTorch/PennyLane not available."""
+        from qednet.models.quantum.mocks import MockHybridQNN
+        mock = MockHybridQNN(
+            n_qubits=self.n_qubits,
+            layers=self.n_layers,
+            encoding=self.encoding,
+            optimizer=self.optimizer,
+            learning_rate=self.learning_rate,
+            max_iter=self.max_iter,
+            shots=self.shots,
+            random_state=self.random_state,
+        )
+        mock.fit(X, y)
+        self._model = mock._model
+        self._fitted = True
+        return self
+
+===== MockHybridQNN.__init__ =====
+    def __init__(
+        self,
+        n_qubits: int = 8,
+        layers: int = 3,
+        encoding: str = "angle",
+        optimizer: str = "adam",
+        learning_rate: float = 0.01,
+        max_iter: int = 100,
+        shots: int = 1024,
+        random_state: int = 42,
+    ):
+        self.n_qubits = n_qubits
+        self.layers = layers
+        self.encoding = encoding
+        self.optimizer = optimizer
+        self.learning_rate = learning_rate
+        self.max_iter = max_iter
+        self.shots = shots
+        self.random_state = random_state
+        self._model = RandomForestClassifier(
+            n_estimators=100,
+            max_depth=layers * 2,
+            random_state=random_state,
+        )
+

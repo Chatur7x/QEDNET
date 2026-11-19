@@ -1,0 +1,16 @@
+BRANCH results-v2
+DATA_FILES
+data/raw/heart_cleveland.data
+data/raw/parkinsons.data
+data/raw/pima_diabetes.csv
+MODEL_CLASSES
+qednet/models/classical/logistic_regression.py: exists=True
+qednet/models/classical/random_forest.py: exists=True
+qednet/models/classical/rbf_svm.py: exists=True
+qednet/models/classical/mlp.py: exists=True
+qednet/models/classical/parameter_matched_mlp.py: exists=True
+qednet/models/quantum/qsvm.py: exists=True
+qednet/models/quantum/vqc.py: exists=True
+qednet/models/quantum/reupload.py: exists=True
+qednet/models/quantum/hybrid_qnn.py: exists=True
+PRIOR_ARTIFACTS_READ_ONLY: results/ contains prior files; no values from them are used as new benchmark results.

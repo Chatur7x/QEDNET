@@ -1,0 +1,17 @@
+PARKINSON_RF_SETTING_A split=random n=9 mean=0.8634920634920635 sample_sd=0.09222733607382565
+PARKINSON_RF_SETTING_A split=grouped n=9 mean=0.7067460317460317 sample_sd=0.2754061883729273
+QSVM_GATE_COUNTS train=53 test=27 fit_evaluations=1431 predict_evaluations=1431 combined=2862
+COUNT_METHOD=fit computes upper triangle including diagonal; prediction computes all test-by-train pairs; counter resets in fit and accumulates in predict
+WILCOXON_APPROX_ROW_COUNT=11
+WILCOXON_METHOD key=('best_of_fold', 'breast_cancer', 'random', '', '') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('best_of_fold', 'diabetes', 'random', '', '') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('best_of_fold', 'parkinsons', 'grouped', '', '') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('best_of_fold', 'parkinsons', 'random', '', '') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'breast_cancer', 'random', 'parameter_matched_mlp_reupload', 'qsvm') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'breast_cancer', 'random', 'parameter_matched_mlp_vqc', 'qsvm') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'heart_disease', 'random', 'parameter_matched_mlp_reupload', 'reupload') method=approx reason=zero differences n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'grouped', 'parameter_matched_mlp_reupload', 'qsvm') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_reupload', 'qsvm') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_reupload', 'vqc') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_vqc', 'qsvm') method=approx reason=absolute-difference ties n=9
+WILCOXON_EXACT_ROW_COUNT=24

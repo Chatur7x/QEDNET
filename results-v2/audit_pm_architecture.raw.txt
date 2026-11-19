@@ -1,0 +1,31 @@
+C:\Users\chatu\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandera\_pandas_deprecated.py:144: FutureWarning: Importing pandas-specific classes and functions from the
+top-level pandera module will be **removed in a future version of pandera**.
+If you're using pandera to validate pandas objects, we highly recommend updating
+your import:
+
+```
+# old import
+import pandera as pa
+
+# new import
+import pandera.pandas as pa
+```
+
+If you're using pandera to validate objects from other compatible libraries
+like pyspark or polars, see the supported libraries section of the documentation
+for more information on how to import pandera:
+
+https://pandera.readthedocs.io/en/stable/supported_libraries.html
+
+To disable this warning, set the environment variable:
+
+```
+export DISABLE_PANDERA_IMPORT_WARNING=True
+```
+
+  warnings.warn(_future_warning, FutureWarning)
+{"dataset":"breast_cancer","candidates":[{"architecture":"no_hidden","input_dim":30,"hidden_dims":[],"trainable_parameters":31,"within_10_percent_of_12":false,"within_10_percent_of_16":false},{"architecture":"one_hidden_unit","input_dim":30,"hidden_dims":[1],"trainable_parameters":33,"within_10_percent_of_12":false,"within_10_percent_of_16":false},{"architecture":"vqc_match_A","input_dim":30,"hidden_dims":[1,2],"trainable_parameters":38,"within_10_percent_of_12":false,"within_10_percent_of_16":false},{"architecture":"reupload_match_A","input_dim":30,"hidden_dims":[2,1],"trainable_parameters":67,"within_10_percent_of_12":false,"within_10_percent_of_16":false}]}
+{"dataset":"heart_disease","candidates":[{"architecture":"no_hidden","input_dim":13,"hidden_dims":[],"trainable_parameters":14,"within_10_percent_of_12":false,"within_10_percent_of_16":false},{"architecture":"one_hidden_unit","input_dim":13,"hidden_dims":[1],"trainable_parameters":16,"within_10_percent_of_12":false,"within_10_percent_of_16":true},{"architecture":"vqc_match_A","input_dim":13,"hidden_dims":[1,2],"trainable_parameters":21,"within_10_percent_of_12":false,"within_10_percent_of_16":false},{"architecture":"reupload_match_A","input_dim":13,"hidden_dims":[2,1],"trainable_parameters":33,"within_10_percent_of_12":false,"within_10_percent_of_16":false}]}
+{"dataset":"parkinsons","candidates":[{"architecture":"no_hidden","input_dim":22,"hidden_dims":[],"trainable_parameters":23,"within_10_percent_of_12":false,"within_10_percent_of_16":false},{"architecture":"one_hidden_unit","input_dim":22,"hidden_dims":[1],"trainable_parameters":25,"within_10_percent_of_12":false,"within_10_percent_of_16":false},{"architecture":"vqc_match_A","input_dim":22,"hidden_dims":[1,2],"trainable_parameters":30,"within_10_percent_of_12":false,"within_10_percent_of_16":false},{"architecture":"reupload_match_A","input_dim":22,"hidden_dims":[2,1],"trainable_parameters":51,"within_10_percent_of_12":false,"within_10_percent_of_16":false}]}
+{"dataset":"diabetes","candidates":[{"architecture":"no_hidden","input_dim":8,"hidden_dims":[],"trainable_parameters":9,"within_10_percent_of_12":false,"within_10_percent_of_16":false},{"architecture":"one_hidden_unit","input_dim":8,"hidden_dims":[1],"trainable_parameters":11,"within_10_percent_of_12":true,"within_10_percent_of_16":false},{"architecture":"vqc_match_A","input_dim":8,"hidden_dims":[1,2],"trainable_parameters":16,"within_10_percent_of_12":false,"within_10_percent_of_16":true},{"architecture":"reupload_match_A","input_dim":8,"hidden_dims":[2,1],"trainable_parameters":23,"within_10_percent_of_12":false,"within_10_percent_of_16":false}]}
+{"dataset":"feature_setting_A","candidates":[{"architecture":"no_hidden","input_dim":4,"hidden_dims":[],"trainable_parameters":5,"within_10_percent_of_12":false,"within_10_percent_of_16":false},{"architecture":"one_hidden_unit","input_dim":4,"hidden_dims":[1],"trainable_parameters":7,"within_10_percent_of_12":false,"within_10_percent_of_16":false},{"architecture":"vqc_match_A","input_dim":4,"hidden_dims":[1,2],"trainable_parameters":12,"within_10_percent_of_12":true,"within_10_percent_of_16":false},{"architecture":"reupload_match_A","input_dim":4,"hidden_dims":[2,1],"trainable_parameters":15,"within_10_percent_of_12":false,"within_10_percent_of_16":true}]}

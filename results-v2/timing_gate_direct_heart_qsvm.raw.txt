@@ -1,0 +1,49 @@
+{
+  "dataset": "heart_disease",
+  "model": "qsvm",
+  "seed": 42,
+  "fold": 0,
+  "feature_setting": "A",
+  "split_variant": "random",
+  "run_type": "timing_gate_direct",
+  "n_samples": 80,
+  "input_features": 13,
+  "model_input_features": 4,
+  "n_train": 53,
+  "n_test": 27,
+  "train_class_counts": {
+    "0": 28,
+    "1": 25
+  },
+  "test_class_counts": {
+    "0": 15,
+    "1": 12
+  },
+  "n_train_subjects": null,
+  "n_test_subjects": null,
+  "subject_overlap_count": 0,
+  "preprocess_seconds": 0.08734519999984514,
+  "train_seconds": 6.996467499999881,
+  "predict_seconds": 7.0287773999998535,
+  "auc": 0.5166666666666666,
+  "accuracy": 0.5185185185185185,
+  "balanced_accuracy": 0.5083333333333333,
+  "f1": 0.43478260869565216,
+  "trainable_parameters": null,
+  "metadata": {
+    "model": "qsvm",
+    "n_qubits": 4,
+    "encoding": "zz",
+    "use_swap_test": false,
+    "C": 1.0,
+    "kernel_evals": 2862,
+    "circuit_depth": 3,
+    "two_qubit_gates": 3,
+    "shots": null,
+    "device": "default.qubit",
+    "fit_time_s": 6.9963765144348145
+  },
+  "status": "completed",
+  "parent_elapsed_seconds": 24.536566100000073,
+  "timeout_seconds": 600.0
+}

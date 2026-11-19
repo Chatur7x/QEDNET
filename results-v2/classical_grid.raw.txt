@@ -1,0 +1,540 @@
+{"saved": ["breast_cancer", "A", "random", "logistic_regression", 42, 0], "status": "completed", "parent_elapsed_seconds": 22.51597260000017}
+{"saved": ["breast_cancer", "A", "random", "random_forest", 42, 0], "status": "completed", "parent_elapsed_seconds": 26.187401300000147}
+{"saved": ["breast_cancer", "A", "random", "rbf_svm", 42, 0], "status": "completed", "parent_elapsed_seconds": 29.236074099999996}
+{"saved": ["breast_cancer", "A", "random", "mlp_default", 42, 0], "status": "completed", "parent_elapsed_seconds": 19.54722700000002}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_vqc", 42, 0], "status": "completed", "parent_elapsed_seconds": 18.167262700000038}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_reupload", 42, 0], "status": "completed", "parent_elapsed_seconds": 21.754612699999825}
+{"saved": ["breast_cancer", "A", "random", "logistic_regression", 42, 1], "status": "completed", "parent_elapsed_seconds": 19.807046899999932}
+{"saved": ["breast_cancer", "A", "random", "random_forest", 42, 1], "status": "completed", "parent_elapsed_seconds": 13.308794799999987}
+{"saved": ["breast_cancer", "A", "random", "rbf_svm", 42, 1], "status": "completed", "parent_elapsed_seconds": 18.088849600000003}
+{"saved": ["breast_cancer", "A", "random", "mlp_default", 42, 1], "status": "completed", "parent_elapsed_seconds": 16.028656199999887}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_vqc", 42, 1], "status": "completed", "parent_elapsed_seconds": 19.97179219999998}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_reupload", 42, 1], "status": "completed", "parent_elapsed_seconds": 19.13729710000007}
+{"saved": ["breast_cancer", "A", "random", "logistic_regression", 42, 2], "status": "completed", "parent_elapsed_seconds": 12.90571100000011}
+{"saved": ["breast_cancer", "A", "random", "random_forest", 42, 2], "status": "completed", "parent_elapsed_seconds": 16.21238190000031}
+{"saved": ["breast_cancer", "A", "random", "rbf_svm", 42, 2], "status": "completed", "parent_elapsed_seconds": 16.777441700000054}
+{"saved": ["breast_cancer", "A", "random", "mlp_default", 42, 2], "status": "completed", "parent_elapsed_seconds": 31.25916589999997}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_vqc", 42, 2], "status": "completed", "parent_elapsed_seconds": 26.198949000000084}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_reupload", 42, 2], "status": "completed", "parent_elapsed_seconds": 18.511761300000217}
+{"saved": ["breast_cancer", "A", "random", "logistic_regression", 1729, 0], "status": "completed", "parent_elapsed_seconds": 13.369476500000019}
+{"saved": ["breast_cancer", "A", "random", "random_forest", 1729, 0], "status": "completed", "parent_elapsed_seconds": 14.774970600000415}
+{"saved": ["breast_cancer", "A", "random", "rbf_svm", 1729, 0], "status": "completed", "parent_elapsed_seconds": 11.019243700000061}
+{"saved": ["breast_cancer", "A", "random", "mlp_default", 1729, 0], "status": "completed", "parent_elapsed_seconds": 12.82935069999985}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_vqc", 1729, 0], "status": "completed", "parent_elapsed_seconds": 21.275990600000114}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_reupload", 1729, 0], "status": "completed", "parent_elapsed_seconds": 21.114588800000092}
+{"saved": ["breast_cancer", "A", "random", "logistic_regression", 1729, 1], "status": "completed", "parent_elapsed_seconds": 13.870849299999918}
+{"saved": ["breast_cancer", "A", "random", "random_forest", 1729, 1], "status": "completed", "parent_elapsed_seconds": 26.49343689999978}
+{"saved": ["breast_cancer", "A", "random", "rbf_svm", 1729, 1], "status": "completed", "parent_elapsed_seconds": 114.55368369999997}
+{"saved": ["breast_cancer", "A", "random", "mlp_default", 1729, 1], "status": "completed", "parent_elapsed_seconds": 16.020561400000133}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_vqc", 1729, 1], "status": "completed", "parent_elapsed_seconds": 27.59839349999993}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_reupload", 1729, 1], "status": "completed", "parent_elapsed_seconds": 28.485697999999957}
+{"saved": ["breast_cancer", "A", "random", "logistic_regression", 1729, 2], "status": "completed", "parent_elapsed_seconds": 23.94161639999993}
+{"saved": ["breast_cancer", "A", "random", "random_forest", 1729, 2], "status": "completed", "parent_elapsed_seconds": 31.03869420000001}
+{"saved": ["breast_cancer", "A", "random", "rbf_svm", 1729, 2], "status": "completed", "parent_elapsed_seconds": 26.214743}
+{"saved": ["breast_cancer", "A", "random", "mlp_default", 1729, 2], "status": "completed", "parent_elapsed_seconds": 15.002476899999692}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_vqc", 1729, 2], "status": "completed", "parent_elapsed_seconds": 18.95542519999981}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_reupload", 1729, 2], "status": "completed", "parent_elapsed_seconds": 15.080651000000216}
+{"saved": ["breast_cancer", "A", "random", "logistic_regression", 2024, 0], "status": "completed", "parent_elapsed_seconds": 14.193488399999751}
+{"saved": ["breast_cancer", "A", "random", "random_forest", 2024, 0], "status": "completed", "parent_elapsed_seconds": 31.051280199999837}
+{"saved": ["breast_cancer", "A", "random", "rbf_svm", 2024, 0], "status": "completed", "parent_elapsed_seconds": 27.505432700000256}
+{"saved": ["breast_cancer", "A", "random", "mlp_default", 2024, 0], "status": "completed", "parent_elapsed_seconds": 20.96738090000008}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_vqc", 2024, 0], "status": "completed", "parent_elapsed_seconds": 28.97429379999994}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_reupload", 2024, 0], "status": "completed", "parent_elapsed_seconds": 31.523166500000116}
+{"saved": ["breast_cancer", "A", "random", "logistic_regression", 2024, 1], "status": "completed", "parent_elapsed_seconds": 18.509676899999704}
+{"saved": ["breast_cancer", "A", "random", "random_forest", 2024, 1], "status": "completed", "parent_elapsed_seconds": 19.525451900000007}
+{"saved": ["breast_cancer", "A", "random", "rbf_svm", 2024, 1], "status": "completed", "parent_elapsed_seconds": 16.019331599999987}
+{"saved": ["breast_cancer", "A", "random", "mlp_default", 2024, 1], "status": "completed", "parent_elapsed_seconds": 26.45489710000038}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_vqc", 2024, 1], "status": "completed", "parent_elapsed_seconds": 21.657704300000205}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_reupload", 2024, 1], "status": "completed", "parent_elapsed_seconds": 22.253167700000176}
+{"saved": ["breast_cancer", "A", "random", "logistic_regression", 2024, 2], "status": "completed", "parent_elapsed_seconds": 15.859491600000183}
+{"saved": ["breast_cancer", "A", "random", "random_forest", 2024, 2], "status": "completed", "parent_elapsed_seconds": 12.304570299999796}
+{"saved": ["breast_cancer", "A", "random", "rbf_svm", 2024, 2], "status": "completed", "parent_elapsed_seconds": 68.9693115}
+{"saved": ["breast_cancer", "A", "random", "mlp_default", 2024, 2], "status": "completed", "parent_elapsed_seconds": 156.81010730000025}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_vqc", 2024, 2], "status": "completed", "parent_elapsed_seconds": 46.02906440000015}
+{"saved": ["breast_cancer", "A", "random", "parameter_matched_mlp_reupload", 2024, 2], "status": "completed", "parent_elapsed_seconds": 24.29490990000022}
+{"saved": ["breast_cancer", "B", "random", "logistic_regression", 42, 0], "status": "completed", "parent_elapsed_seconds": 39.10388560000001}
+{"saved": ["breast_cancer", "B", "random", "random_forest", 42, 0], "status": "completed", "parent_elapsed_seconds": 21.358952800000225}
+{"saved": ["breast_cancer", "B", "random", "rbf_svm", 42, 0], "status": "completed", "parent_elapsed_seconds": 23.643898499999978}
+{"saved": ["breast_cancer", "B", "random", "mlp_default", 42, 0], "status": "completed", "parent_elapsed_seconds": 30.985982299999705}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_vqc", 42, 0], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_reupload", 42, 0], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "logistic_regression", 42, 1], "status": "completed", "parent_elapsed_seconds": 30.710120099999585}
+{"saved": ["breast_cancer", "B", "random", "random_forest", 42, 1], "status": "completed", "parent_elapsed_seconds": 31.230671399999665}
+{"saved": ["breast_cancer", "B", "random", "rbf_svm", 42, 1], "status": "completed", "parent_elapsed_seconds": 21.979657100000168}
+{"saved": ["breast_cancer", "B", "random", "mlp_default", 42, 1], "status": "completed", "parent_elapsed_seconds": 25.78283599999986}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_vqc", 42, 1], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_reupload", 42, 1], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "logistic_regression", 42, 2], "status": "completed", "parent_elapsed_seconds": 40.70603949999986}
+{"saved": ["breast_cancer", "B", "random", "random_forest", 42, 2], "status": "completed", "parent_elapsed_seconds": 31.202976399999898}
+{"saved": ["breast_cancer", "B", "random", "rbf_svm", 42, 2], "status": "completed", "parent_elapsed_seconds": 22.38236770000003}
+{"saved": ["breast_cancer", "B", "random", "mlp_default", 42, 2], "status": "completed", "parent_elapsed_seconds": 25.200978100000157}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_vqc", 42, 2], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_reupload", 42, 2], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "logistic_regression", 1729, 0], "status": "completed", "parent_elapsed_seconds": 26.70447409999997}
+{"saved": ["breast_cancer", "B", "random", "random_forest", 1729, 0], "status": "completed", "parent_elapsed_seconds": 27.5940257999996}
+{"saved": ["breast_cancer", "B", "random", "rbf_svm", 1729, 0], "status": "completed", "parent_elapsed_seconds": 31.103206899999805}
+{"saved": ["breast_cancer", "B", "random", "mlp_default", 1729, 0], "status": "completed", "parent_elapsed_seconds": 25.432912100000067}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_vqc", 1729, 0], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_reupload", 1729, 0], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "logistic_regression", 1729, 1], "status": "completed", "parent_elapsed_seconds": 27.571331900000132}
+{"saved": ["breast_cancer", "B", "random", "random_forest", 1729, 1], "status": "completed", "parent_elapsed_seconds": 22.029813300000114}
+{"saved": ["breast_cancer", "B", "random", "rbf_svm", 1729, 1], "status": "completed", "parent_elapsed_seconds": 26.591303700000026}
+{"saved": ["breast_cancer", "B", "random", "mlp_default", 1729, 1], "status": "completed", "parent_elapsed_seconds": 25.498558499999945}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_vqc", 1729, 1], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_reupload", 1729, 1], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "logistic_regression", 1729, 2], "status": "completed", "parent_elapsed_seconds": 26.775930699999662}
+{"saved": ["breast_cancer", "B", "random", "random_forest", 1729, 2], "status": "completed", "parent_elapsed_seconds": 36.446777199999815}
+{"saved": ["breast_cancer", "B", "random", "rbf_svm", 1729, 2], "status": "completed", "parent_elapsed_seconds": 23.747058899999956}
+{"saved": ["breast_cancer", "B", "random", "mlp_default", 1729, 2], "status": "completed", "parent_elapsed_seconds": 25.577160600000298}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_vqc", 1729, 2], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_reupload", 1729, 2], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "logistic_regression", 2024, 0], "status": "completed", "parent_elapsed_seconds": 27.500450400000318}
+{"saved": ["breast_cancer", "B", "random", "random_forest", 2024, 0], "status": "completed", "parent_elapsed_seconds": 44.44698479999988}
+{"saved": ["breast_cancer", "B", "random", "rbf_svm", 2024, 0], "status": "completed", "parent_elapsed_seconds": 27.22812849999991}
+{"saved": ["breast_cancer", "B", "random", "mlp_default", 2024, 0], "status": "completed", "parent_elapsed_seconds": 31.38576630000034}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_vqc", 2024, 0], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_reupload", 2024, 0], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "logistic_regression", 2024, 1], "status": "completed", "parent_elapsed_seconds": 22.941471900000124}
+{"saved": ["breast_cancer", "B", "random", "random_forest", 2024, 1], "status": "completed", "parent_elapsed_seconds": 33.38163540000005}
+{"saved": ["breast_cancer", "B", "random", "rbf_svm", 2024, 1], "status": "completed", "parent_elapsed_seconds": 23.676691699999992}
+{"saved": ["breast_cancer", "B", "random", "mlp_default", 2024, 1], "status": "completed", "parent_elapsed_seconds": 19.37090100000023}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_vqc", 2024, 1], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_reupload", 2024, 1], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "logistic_regression", 2024, 2], "status": "completed", "parent_elapsed_seconds": 19.966291300000194}
+{"saved": ["breast_cancer", "B", "random", "random_forest", 2024, 2], "status": "completed", "parent_elapsed_seconds": 59.31717230000049}
+{"saved": ["breast_cancer", "B", "random", "rbf_svm", 2024, 2], "status": "completed", "parent_elapsed_seconds": 110.19738260000031}
+{"saved": ["breast_cancer", "B", "random", "mlp_default", 2024, 2], "status": "completed", "parent_elapsed_seconds": 28.153484200000094}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_vqc", 2024, 2], "status": "not_measured"}
+{"saved": ["breast_cancer", "B", "random", "parameter_matched_mlp_reupload", 2024, 2], "status": "not_measured"}
+{"saved": ["heart_disease", "A", "random", "logistic_regression", 42, 0], "status": "completed", "parent_elapsed_seconds": 20.47491319999972}
+{"saved": ["heart_disease", "A", "random", "random_forest", 42, 0], "status": "completed", "parent_elapsed_seconds": 39.56951209999988}
+{"saved": ["heart_disease", "A", "random", "rbf_svm", 42, 0], "status": "completed", "parent_elapsed_seconds": 19.638253400000394}
+{"saved": ["heart_disease", "A", "random", "mlp_default", 42, 0], "status": "completed", "parent_elapsed_seconds": 20.749579899999844}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_vqc", 42, 0], "status": "completed", "parent_elapsed_seconds": 42.257059200000185}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_reupload", 42, 0], "status": "completed", "parent_elapsed_seconds": 31.525227600000107}
+{"saved": ["heart_disease", "A", "random", "logistic_regression", 42, 1], "status": "completed", "parent_elapsed_seconds": 105.72640370000045}
+{"saved": ["heart_disease", "A", "random", "random_forest", 42, 1], "status": "completed", "parent_elapsed_seconds": 212.64292320000004}
+{"saved": ["heart_disease", "A", "random", "rbf_svm", 42, 1], "status": "completed", "parent_elapsed_seconds": 189.76153590000013}
+{"saved": ["heart_disease", "A", "random", "mlp_default", 42, 1], "status": "completed", "parent_elapsed_seconds": 110.11341730000004}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_vqc", 42, 1], "status": "completed", "parent_elapsed_seconds": 160.13357840000026}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_reupload", 42, 1], "status": "completed", "parent_elapsed_seconds": 79.92305099999976}
+{"saved": ["heart_disease", "A", "random", "logistic_regression", 42, 2], "status": "completed", "parent_elapsed_seconds": 31.461438699999235}
+{"saved": ["heart_disease", "A", "random", "random_forest", 42, 2], "status": "completed", "parent_elapsed_seconds": 25.020920599999954}
+{"saved": ["heart_disease", "A", "random", "rbf_svm", 42, 2], "status": "completed", "parent_elapsed_seconds": 18.125338699999702}
+{"saved": ["heart_disease", "A", "random", "mlp_default", 42, 2], "status": "completed", "parent_elapsed_seconds": 18.215192200000274}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_vqc", 42, 2], "status": "completed", "parent_elapsed_seconds": 25.922381000000314}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_reupload", 42, 2], "status": "completed", "parent_elapsed_seconds": 36.49649859999954}
+{"saved": ["heart_disease", "A", "random", "logistic_regression", 1729, 0], "status": "completed", "parent_elapsed_seconds": 18.618270899999516}
+{"saved": ["heart_disease", "A", "random", "random_forest", 1729, 0], "status": "completed", "parent_elapsed_seconds": 24.899953900000583}
+{"saved": ["heart_disease", "A", "random", "rbf_svm", 1729, 0], "status": "completed", "parent_elapsed_seconds": 19.878978699999607}
+{"saved": ["heart_disease", "A", "random", "mlp_default", 1729, 0], "status": "completed", "parent_elapsed_seconds": 17.35242870000002}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_vqc", 1729, 0], "status": "completed", "parent_elapsed_seconds": 16.364160000000084}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_reupload", 1729, 0], "status": "completed", "parent_elapsed_seconds": 15.730498900000384}
+{"saved": ["heart_disease", "A", "random", "logistic_regression", 1729, 1], "status": "completed", "parent_elapsed_seconds": 12.806878899999901}
+{"saved": ["heart_disease", "A", "random", "random_forest", 1729, 1], "status": "completed", "parent_elapsed_seconds": 14.068951400000515}
+{"saved": ["heart_disease", "A", "random", "rbf_svm", 1729, 1], "status": "completed", "parent_elapsed_seconds": 12.608033200000136}
+{"saved": ["heart_disease", "A", "random", "mlp_default", 1729, 1], "status": "completed", "parent_elapsed_seconds": 12.573887300000024}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_vqc", 1729, 1], "status": "completed", "parent_elapsed_seconds": 24.338866999999482}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_reupload", 1729, 1], "status": "completed", "parent_elapsed_seconds": 30.221171700000014}
+{"saved": ["heart_disease", "A", "random", "logistic_regression", 1729, 2], "status": "completed", "parent_elapsed_seconds": 25.522538399999576}
+{"saved": ["heart_disease", "A", "random", "random_forest", 1729, 2], "status": "completed", "parent_elapsed_seconds": 38.571587599999475}
+{"saved": ["heart_disease", "A", "random", "rbf_svm", 1729, 2], "status": "completed", "parent_elapsed_seconds": 22.395602200000212}
+{"saved": ["heart_disease", "A", "random", "mlp_default", 1729, 2], "status": "completed", "parent_elapsed_seconds": 22.892814599999838}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_vqc", 1729, 2], "status": "completed", "parent_elapsed_seconds": 31.854391099999702}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_reupload", 1729, 2], "status": "completed", "parent_elapsed_seconds": 35.3203139999996}
+{"saved": ["heart_disease", "A", "random", "logistic_regression", 2024, 0], "status": "completed", "parent_elapsed_seconds": 22.74915460000011}
+{"saved": ["heart_disease", "A", "random", "random_forest", 2024, 0], "status": "completed", "parent_elapsed_seconds": 20.927852799999528}
+{"saved": ["heart_disease", "A", "random", "rbf_svm", 2024, 0], "status": "completed", "parent_elapsed_seconds": 19.285264500000267}
+{"saved": ["heart_disease", "A", "random", "mlp_default", 2024, 0], "status": "completed", "parent_elapsed_seconds": 19.63459569999941}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_vqc", 2024, 0], "status": "completed", "parent_elapsed_seconds": 34.02881690000049}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_reupload", 2024, 0], "status": "completed", "parent_elapsed_seconds": 48.08179740000014}
+{"saved": ["heart_disease", "A", "random", "logistic_regression", 2024, 1], "status": "completed", "parent_elapsed_seconds": 27.102147599999626}
+{"saved": ["heart_disease", "A", "random", "random_forest", 2024, 1], "status": "completed", "parent_elapsed_seconds": 26.168173099999876}
+{"saved": ["heart_disease", "A", "random", "rbf_svm", 2024, 1], "status": "completed", "parent_elapsed_seconds": 23.48262270000032}
+{"saved": ["heart_disease", "A", "random", "mlp_default", 2024, 1], "status": "completed", "parent_elapsed_seconds": 23.128098400000454}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_vqc", 2024, 1], "status": "completed", "parent_elapsed_seconds": 27.409998000000087}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_reupload", 2024, 1], "status": "completed", "parent_elapsed_seconds": 29.0187719000005}
+{"saved": ["heart_disease", "A", "random", "logistic_regression", 2024, 2], "status": "completed", "parent_elapsed_seconds": 12.276607100000547}
+{"saved": ["heart_disease", "A", "random", "random_forest", 2024, 2], "status": "completed", "parent_elapsed_seconds": 13.450913499999842}
+{"saved": ["heart_disease", "A", "random", "rbf_svm", 2024, 2], "status": "completed", "parent_elapsed_seconds": 10.9752368999998}
+{"saved": ["heart_disease", "A", "random", "mlp_default", 2024, 2], "status": "completed", "parent_elapsed_seconds": 10.30465970000023}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_vqc", 2024, 2], "status": "completed", "parent_elapsed_seconds": 12.600337899999431}
+{"saved": ["heart_disease", "A", "random", "parameter_matched_mlp_reupload", 2024, 2], "status": "completed", "parent_elapsed_seconds": 12.531027699999868}
+{"saved": ["heart_disease", "B", "random", "logistic_regression", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.494960500000161}
+{"saved": ["heart_disease", "B", "random", "random_forest", 42, 0], "status": "completed", "parent_elapsed_seconds": 10.556388800000605}
+{"saved": ["heart_disease", "B", "random", "rbf_svm", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.074056200000086}
+{"saved": ["heart_disease", "B", "random", "mlp_default", 42, 0], "status": "completed", "parent_elapsed_seconds": 10.497305000000779}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_vqc", 42, 0], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_reupload", 42, 0], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "logistic_regression", 42, 1], "status": "completed", "parent_elapsed_seconds": 10.126289399999223}
+{"saved": ["heart_disease", "B", "random", "random_forest", 42, 1], "status": "completed", "parent_elapsed_seconds": 11.324765999999727}
+{"saved": ["heart_disease", "B", "random", "rbf_svm", 42, 1], "status": "completed", "parent_elapsed_seconds": 9.799740200000087}
+{"saved": ["heart_disease", "B", "random", "mlp_default", 42, 1], "status": "completed", "parent_elapsed_seconds": 10.551317800000106}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_vqc", 42, 1], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_reupload", 42, 1], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "logistic_regression", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.809017000000495}
+{"saved": ["heart_disease", "B", "random", "random_forest", 42, 2], "status": "completed", "parent_elapsed_seconds": 11.453471800000443}
+{"saved": ["heart_disease", "B", "random", "rbf_svm", 42, 2], "status": "completed", "parent_elapsed_seconds": 10.480198700000074}
+{"saved": ["heart_disease", "B", "random", "mlp_default", 42, 2], "status": "completed", "parent_elapsed_seconds": 10.985784400000739}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_vqc", 42, 2], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_reupload", 42, 2], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "logistic_regression", 1729, 0], "status": "completed", "parent_elapsed_seconds": 9.541838000000098}
+{"saved": ["heart_disease", "B", "random", "random_forest", 1729, 0], "status": "completed", "parent_elapsed_seconds": 10.935047099999792}
+{"saved": ["heart_disease", "B", "random", "rbf_svm", 1729, 0], "status": "completed", "parent_elapsed_seconds": 10.135245899999973}
+{"saved": ["heart_disease", "B", "random", "mlp_default", 1729, 0], "status": "completed", "parent_elapsed_seconds": 9.256944400000066}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_vqc", 1729, 0], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_reupload", 1729, 0], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "logistic_regression", 1729, 1], "status": "completed", "parent_elapsed_seconds": 9.184344600000259}
+{"saved": ["heart_disease", "B", "random", "random_forest", 1729, 1], "status": "completed", "parent_elapsed_seconds": 11.282498600000508}
+{"saved": ["heart_disease", "B", "random", "rbf_svm", 1729, 1], "status": "completed", "parent_elapsed_seconds": 9.120323500000268}
+{"saved": ["heart_disease", "B", "random", "mlp_default", 1729, 1], "status": "completed", "parent_elapsed_seconds": 10.056589800000438}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_vqc", 1729, 1], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_reupload", 1729, 1], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "logistic_regression", 1729, 2], "status": "completed", "parent_elapsed_seconds": 9.198207100000218}
+{"saved": ["heart_disease", "B", "random", "random_forest", 1729, 2], "status": "completed", "parent_elapsed_seconds": 27.822795099999894}
+{"saved": ["heart_disease", "B", "random", "rbf_svm", 1729, 2], "status": "completed", "parent_elapsed_seconds": 9.911705000000438}
+{"saved": ["heart_disease", "B", "random", "mlp_default", 1729, 2], "status": "completed", "parent_elapsed_seconds": 9.627561699999205}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_vqc", 1729, 2], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_reupload", 1729, 2], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "logistic_regression", 2024, 0], "status": "completed", "parent_elapsed_seconds": 16.156971800000065}
+{"saved": ["heart_disease", "B", "random", "random_forest", 2024, 0], "status": "completed", "parent_elapsed_seconds": 19.64426110000022}
+{"saved": ["heart_disease", "B", "random", "rbf_svm", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.28439249999974}
+{"saved": ["heart_disease", "B", "random", "mlp_default", 2024, 0], "status": "completed", "parent_elapsed_seconds": 8.140647700000045}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_vqc", 2024, 0], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_reupload", 2024, 0], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "logistic_regression", 2024, 1], "status": "completed", "parent_elapsed_seconds": 8.28006860000005}
+{"saved": ["heart_disease", "B", "random", "random_forest", 2024, 1], "status": "completed", "parent_elapsed_seconds": 10.423163999999815}
+{"saved": ["heart_disease", "B", "random", "rbf_svm", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.431106699999873}
+{"saved": ["heart_disease", "B", "random", "mlp_default", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.004586199999721}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_vqc", 2024, 1], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_reupload", 2024, 1], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "logistic_regression", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.279065800000353}
+{"saved": ["heart_disease", "B", "random", "random_forest", 2024, 2], "status": "completed", "parent_elapsed_seconds": 10.049023800000214}
+{"saved": ["heart_disease", "B", "random", "rbf_svm", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.368220199999996}
+{"saved": ["heart_disease", "B", "random", "mlp_default", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.827908000000207}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_vqc", 2024, 2], "status": "not_measured"}
+{"saved": ["heart_disease", "B", "random", "parameter_matched_mlp_reupload", 2024, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "A", "random", "logistic_regression", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.418377599999985}
+{"saved": ["parkinsons", "A", "random", "random_forest", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.508505100000548}
+{"saved": ["parkinsons", "A", "random", "rbf_svm", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.078962700000375}
+{"saved": ["parkinsons", "A", "random", "mlp_default", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.772178899999744}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_vqc", 42, 0], "status": "completed", "parent_elapsed_seconds": 12.123068700000658}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_reupload", 42, 0], "status": "completed", "parent_elapsed_seconds": 12.905248699999902}
+{"saved": ["parkinsons", "A", "random", "logistic_regression", 42, 1], "status": "completed", "parent_elapsed_seconds": 11.990459000000556}
+{"saved": ["parkinsons", "A", "random", "random_forest", 42, 1], "status": "completed", "parent_elapsed_seconds": 14.08815179999965}
+{"saved": ["parkinsons", "A", "random", "rbf_svm", 42, 1], "status": "completed", "parent_elapsed_seconds": 20.02786600000036}
+{"saved": ["parkinsons", "A", "random", "mlp_default", 42, 1], "status": "completed", "parent_elapsed_seconds": 11.332475199999863}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_vqc", 42, 1], "status": "completed", "parent_elapsed_seconds": 14.144887599999493}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_reupload", 42, 1], "status": "completed", "parent_elapsed_seconds": 13.74883729999965}
+{"saved": ["parkinsons", "A", "random", "logistic_regression", 42, 2], "status": "completed", "parent_elapsed_seconds": 10.149935299999925}
+{"saved": ["parkinsons", "A", "random", "random_forest", 42, 2], "status": "completed", "parent_elapsed_seconds": 12.000353100000211}
+{"saved": ["parkinsons", "A", "random", "rbf_svm", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.454715800000486}
+{"saved": ["parkinsons", "A", "random", "mlp_default", 42, 2], "status": "completed", "parent_elapsed_seconds": 8.774423099999694}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_vqc", 42, 2], "status": "completed", "parent_elapsed_seconds": 12.387624200000573}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_reupload", 42, 2], "status": "completed", "parent_elapsed_seconds": 12.651421700000355}
+{"saved": ["parkinsons", "A", "random", "logistic_regression", 1729, 0], "status": "completed", "parent_elapsed_seconds": 11.272920599999452}
+{"saved": ["parkinsons", "A", "random", "random_forest", 1729, 0], "status": "completed", "parent_elapsed_seconds": 11.993269199999304}
+{"saved": ["parkinsons", "A", "random", "rbf_svm", 1729, 0], "status": "completed", "parent_elapsed_seconds": 10.06962139999996}
+{"saved": ["parkinsons", "A", "random", "mlp_default", 1729, 0], "status": "completed", "parent_elapsed_seconds": 11.551262099999803}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_vqc", 1729, 0], "status": "completed", "parent_elapsed_seconds": 36.566071700000066}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_reupload", 1729, 0], "status": "completed", "parent_elapsed_seconds": 16.36657869999999}
+{"saved": ["parkinsons", "A", "random", "logistic_regression", 1729, 1], "status": "completed", "parent_elapsed_seconds": 11.102952299999743}
+{"saved": ["parkinsons", "A", "random", "random_forest", 1729, 1], "status": "completed", "parent_elapsed_seconds": 10.983646799999406}
+{"saved": ["parkinsons", "A", "random", "rbf_svm", 1729, 1], "status": "completed", "parent_elapsed_seconds": 9.887017699999888}
+{"saved": ["parkinsons", "A", "random", "mlp_default", 1729, 1], "status": "completed", "parent_elapsed_seconds": 9.828350499999942}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_vqc", 1729, 1], "status": "completed", "parent_elapsed_seconds": 14.70896840000023}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_reupload", 1729, 1], "status": "completed", "parent_elapsed_seconds": 13.30829470000026}
+{"saved": ["parkinsons", "A", "random", "logistic_regression", 1729, 2], "status": "completed", "parent_elapsed_seconds": 10.422912600000018}
+{"saved": ["parkinsons", "A", "random", "random_forest", 1729, 2], "status": "completed", "parent_elapsed_seconds": 11.031445699999495}
+{"saved": ["parkinsons", "A", "random", "rbf_svm", 1729, 2], "status": "completed", "parent_elapsed_seconds": 25.68265059999976}
+{"saved": ["parkinsons", "A", "random", "mlp_default", 1729, 2], "status": "completed", "parent_elapsed_seconds": 9.599391900000228}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_vqc", 1729, 2], "status": "completed", "parent_elapsed_seconds": 11.54068769999958}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_reupload", 1729, 2], "status": "completed", "parent_elapsed_seconds": 11.575386600000456}
+{"saved": ["parkinsons", "A", "random", "logistic_regression", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.364071299999523}
+{"saved": ["parkinsons", "A", "random", "random_forest", 2024, 0], "status": "completed", "parent_elapsed_seconds": 10.629305999999815}
+{"saved": ["parkinsons", "A", "random", "rbf_svm", 2024, 0], "status": "completed", "parent_elapsed_seconds": 8.999879099999816}
+{"saved": ["parkinsons", "A", "random", "mlp_default", 2024, 0], "status": "completed", "parent_elapsed_seconds": 8.8151900999992}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_vqc", 2024, 0], "status": "completed", "parent_elapsed_seconds": 11.770642600000429}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_reupload", 2024, 0], "status": "completed", "parent_elapsed_seconds": 12.082133299999441}
+{"saved": ["parkinsons", "A", "random", "logistic_regression", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.407725000000028}
+{"saved": ["parkinsons", "A", "random", "random_forest", 2024, 1], "status": "completed", "parent_elapsed_seconds": 10.948494899999787}
+{"saved": ["parkinsons", "A", "random", "rbf_svm", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.857019000000037}
+{"saved": ["parkinsons", "A", "random", "mlp_default", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.976741200000106}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_vqc", 2024, 1], "status": "completed", "parent_elapsed_seconds": 12.363207699999293}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_reupload", 2024, 1], "status": "completed", "parent_elapsed_seconds": 11.704820799999652}
+{"saved": ["parkinsons", "A", "random", "logistic_regression", 2024, 2], "status": "completed", "parent_elapsed_seconds": 8.930282499999521}
+{"saved": ["parkinsons", "A", "random", "random_forest", 2024, 2], "status": "completed", "parent_elapsed_seconds": 10.231276200000138}
+{"saved": ["parkinsons", "A", "random", "rbf_svm", 2024, 2], "status": "completed", "parent_elapsed_seconds": 26.506112799999755}
+{"saved": ["parkinsons", "A", "random", "mlp_default", 2024, 2], "status": "completed", "parent_elapsed_seconds": 8.76794179999979}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_vqc", 2024, 2], "status": "completed", "parent_elapsed_seconds": 10.647915800000192}
+{"saved": ["parkinsons", "A", "random", "parameter_matched_mlp_reupload", 2024, 2], "status": "completed", "parent_elapsed_seconds": 11.860652399999708}
+{"saved": ["parkinsons", "B", "random", "logistic_regression", 42, 0], "status": "completed", "parent_elapsed_seconds": 8.948629000000437}
+{"saved": ["parkinsons", "B", "random", "random_forest", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.50429350000013}
+{"saved": ["parkinsons", "B", "random", "rbf_svm", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.150505099999464}
+{"saved": ["parkinsons", "B", "random", "mlp_default", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.585398799999894}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_vqc", 42, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_reupload", 42, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "logistic_regression", 42, 1], "status": "completed", "parent_elapsed_seconds": 9.687131300000146}
+{"saved": ["parkinsons", "B", "random", "random_forest", 42, 1], "status": "completed", "parent_elapsed_seconds": 8.896099499999764}
+{"saved": ["parkinsons", "B", "random", "rbf_svm", 42, 1], "status": "completed", "parent_elapsed_seconds": 7.776865499999985}
+{"saved": ["parkinsons", "B", "random", "mlp_default", 42, 1], "status": "completed", "parent_elapsed_seconds": 8.170981400000528}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_vqc", 42, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_reupload", 42, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "logistic_regression", 42, 2], "status": "completed", "parent_elapsed_seconds": 8.472038500000053}
+{"saved": ["parkinsons", "B", "random", "random_forest", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.88523879999957}
+{"saved": ["parkinsons", "B", "random", "rbf_svm", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.334152999999787}
+{"saved": ["parkinsons", "B", "random", "mlp_default", 42, 2], "status": "completed", "parent_elapsed_seconds": 8.688335499999994}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_vqc", 42, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_reupload", 42, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "logistic_regression", 1729, 0], "status": "completed", "parent_elapsed_seconds": 8.424811500000033}
+{"saved": ["parkinsons", "B", "random", "random_forest", 1729, 0], "status": "completed", "parent_elapsed_seconds": 9.171674900000653}
+{"saved": ["parkinsons", "B", "random", "rbf_svm", 1729, 0], "status": "completed", "parent_elapsed_seconds": 8.089492099999916}
+{"saved": ["parkinsons", "B", "random", "mlp_default", 1729, 0], "status": "completed", "parent_elapsed_seconds": 8.668647899999996}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_vqc", 1729, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_reupload", 1729, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "logistic_regression", 1729, 1], "status": "completed", "parent_elapsed_seconds": 9.224913500000184}
+{"saved": ["parkinsons", "B", "random", "random_forest", 1729, 1], "status": "completed", "parent_elapsed_seconds": 9.33705110000028}
+{"saved": ["parkinsons", "B", "random", "rbf_svm", 1729, 1], "status": "completed", "parent_elapsed_seconds": 8.777458999999908}
+{"saved": ["parkinsons", "B", "random", "mlp_default", 1729, 1], "status": "completed", "parent_elapsed_seconds": 9.184404800000266}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_vqc", 1729, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_reupload", 1729, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "logistic_regression", 1729, 2], "status": "completed", "parent_elapsed_seconds": 9.312767800000074}
+{"saved": ["parkinsons", "B", "random", "random_forest", 1729, 2], "status": "completed", "parent_elapsed_seconds": 9.56995040000038}
+{"saved": ["parkinsons", "B", "random", "rbf_svm", 1729, 2], "status": "completed", "parent_elapsed_seconds": 8.762689000000137}
+{"saved": ["parkinsons", "B", "random", "mlp_default", 1729, 2], "status": "completed", "parent_elapsed_seconds": 9.503726099999767}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_vqc", 1729, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_reupload", 1729, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "logistic_regression", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.642050700000254}
+{"saved": ["parkinsons", "B", "random", "random_forest", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.772478900000351}
+{"saved": ["parkinsons", "B", "random", "rbf_svm", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.489086200000202}
+{"saved": ["parkinsons", "B", "random", "mlp_default", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.777826399999867}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_vqc", 2024, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_reupload", 2024, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "logistic_regression", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.406567899999573}
+{"saved": ["parkinsons", "B", "random", "random_forest", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.29140759999973}
+{"saved": ["parkinsons", "B", "random", "rbf_svm", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.42883140000049}
+{"saved": ["parkinsons", "B", "random", "mlp_default", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.372399900000346}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_vqc", 2024, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_reupload", 2024, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "logistic_regression", 2024, 2], "status": "completed", "parent_elapsed_seconds": 8.396917399999438}
+{"saved": ["parkinsons", "B", "random", "random_forest", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.678664900000513}
+{"saved": ["parkinsons", "B", "random", "rbf_svm", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.712120400000458}
+{"saved": ["parkinsons", "B", "random", "mlp_default", 2024, 2], "status": "completed", "parent_elapsed_seconds": 10.352439599999343}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_vqc", 2024, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "random", "parameter_matched_mlp_reupload", 2024, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "A", "grouped", "logistic_regression", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.872236899999734}
+{"saved": ["parkinsons", "A", "grouped", "random_forest", 42, 0], "status": "completed", "parent_elapsed_seconds": 10.506085900000471}
+{"saved": ["parkinsons", "A", "grouped", "rbf_svm", 42, 0], "status": "completed", "parent_elapsed_seconds": 8.946540599999935}
+{"saved": ["parkinsons", "A", "grouped", "mlp_default", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.61050140000043}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_vqc", 42, 0], "status": "completed", "parent_elapsed_seconds": 12.502469500000188}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_reupload", 42, 0], "status": "completed", "parent_elapsed_seconds": 11.85249499999918}
+{"saved": ["parkinsons", "A", "grouped", "logistic_regression", 42, 1], "status": "completed", "parent_elapsed_seconds": 9.31840910000028}
+{"saved": ["parkinsons", "A", "grouped", "random_forest", 42, 1], "status": "completed", "parent_elapsed_seconds": 10.472236900000098}
+{"saved": ["parkinsons", "A", "grouped", "rbf_svm", 42, 1], "status": "completed", "parent_elapsed_seconds": 8.815513500000634}
+{"saved": ["parkinsons", "A", "grouped", "mlp_default", 42, 1], "status": "completed", "parent_elapsed_seconds": 9.133490500000335}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_vqc", 42, 1], "status": "completed", "parent_elapsed_seconds": 12.054595900000095}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_reupload", 42, 1], "status": "completed", "parent_elapsed_seconds": 11.083603699999912}
+{"saved": ["parkinsons", "A", "grouped", "logistic_regression", 42, 2], "status": "completed", "parent_elapsed_seconds": 8.717965599999843}
+{"saved": ["parkinsons", "A", "grouped", "random_forest", 42, 2], "status": "completed", "parent_elapsed_seconds": 10.311665500000345}
+{"saved": ["parkinsons", "A", "grouped", "rbf_svm", 42, 2], "status": "completed", "parent_elapsed_seconds": 15.031528499999695}
+{"saved": ["parkinsons", "A", "grouped", "mlp_default", 42, 2], "status": "completed", "parent_elapsed_seconds": 13.076426499999798}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_vqc", 42, 2], "status": "completed", "parent_elapsed_seconds": 19.292280000000574}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_reupload", 42, 2], "status": "completed", "parent_elapsed_seconds": 20.264315100000204}
+{"saved": ["parkinsons", "A", "grouped", "logistic_regression", 1729, 0], "status": "completed", "parent_elapsed_seconds": 14.104418799999621}
+{"saved": ["parkinsons", "A", "grouped", "random_forest", 1729, 0], "status": "completed", "parent_elapsed_seconds": 14.604486000000179}
+{"saved": ["parkinsons", "A", "grouped", "rbf_svm", 1729, 0], "status": "completed", "parent_elapsed_seconds": 13.121480000000702}
+{"saved": ["parkinsons", "A", "grouped", "mlp_default", 1729, 0], "status": "completed", "parent_elapsed_seconds": 13.719681300000047}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_vqc", 1729, 0], "status": "completed", "parent_elapsed_seconds": 17.47306639999988}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_reupload", 1729, 0], "status": "completed", "parent_elapsed_seconds": 16.6612341}
+{"saved": ["parkinsons", "A", "grouped", "logistic_regression", 1729, 1], "status": "completed", "parent_elapsed_seconds": 12.615276200000153}
+{"saved": ["parkinsons", "A", "grouped", "random_forest", 1729, 1], "status": "completed", "parent_elapsed_seconds": 16.665413400000034}
+{"saved": ["parkinsons", "A", "grouped", "rbf_svm", 1729, 1], "status": "completed", "parent_elapsed_seconds": 12.616962500000227}
+{"saved": ["parkinsons", "A", "grouped", "mlp_default", 1729, 1], "status": "completed", "parent_elapsed_seconds": 12.289044799999829}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_vqc", 1729, 1], "status": "completed", "parent_elapsed_seconds": 16.20890800000052}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_reupload", 1729, 1], "status": "completed", "parent_elapsed_seconds": 16.562545499999942}
+{"saved": ["parkinsons", "A", "grouped", "logistic_regression", 1729, 2], "status": "completed", "parent_elapsed_seconds": 13.29127470000003}
+{"saved": ["parkinsons", "A", "grouped", "random_forest", 1729, 2], "status": "completed", "parent_elapsed_seconds": 16.918419900000117}
+{"saved": ["parkinsons", "A", "grouped", "rbf_svm", 1729, 2], "status": "completed", "parent_elapsed_seconds": 18.865592000000106}
+{"saved": ["parkinsons", "A", "grouped", "mlp_default", 1729, 2], "status": "completed", "parent_elapsed_seconds": 13.7035549000002}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_vqc", 1729, 2], "status": "completed", "parent_elapsed_seconds": 12.438299899999947}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_reupload", 1729, 2], "status": "completed", "parent_elapsed_seconds": 11.739888399999472}
+{"saved": ["parkinsons", "A", "grouped", "logistic_regression", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.66102150000006}
+{"saved": ["parkinsons", "A", "grouped", "random_forest", 2024, 0], "status": "completed", "parent_elapsed_seconds": 10.074052799999663}
+{"saved": ["parkinsons", "A", "grouped", "rbf_svm", 2024, 0], "status": "completed", "parent_elapsed_seconds": 10.681178200000431}
+{"saved": ["parkinsons", "A", "grouped", "mlp_default", 2024, 0], "status": "completed", "parent_elapsed_seconds": 10.082568399999218}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_vqc", 2024, 0], "status": "completed", "parent_elapsed_seconds": 13.034501499998441}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_reupload", 2024, 0], "status": "completed", "parent_elapsed_seconds": 14.881288099999438}
+{"saved": ["parkinsons", "A", "grouped", "logistic_regression", 2024, 1], "status": "completed", "parent_elapsed_seconds": 10.36298270000043}
+{"saved": ["parkinsons", "A", "grouped", "random_forest", 2024, 1], "status": "completed", "parent_elapsed_seconds": 11.411133200001132}
+{"saved": ["parkinsons", "A", "grouped", "rbf_svm", 2024, 1], "status": "completed", "parent_elapsed_seconds": 20.78260059999957}
+{"saved": ["parkinsons", "A", "grouped", "mlp_default", 2024, 1], "status": "completed", "parent_elapsed_seconds": 10.162326399999074}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_vqc", 2024, 1], "status": "completed", "parent_elapsed_seconds": 15.725867400000425}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_reupload", 2024, 1], "status": "completed", "parent_elapsed_seconds": 32.61415500000112}
+{"saved": ["parkinsons", "A", "grouped", "logistic_regression", 2024, 2], "status": "completed", "parent_elapsed_seconds": 27.37606059999962}
+{"saved": ["parkinsons", "A", "grouped", "random_forest", 2024, 2], "status": "completed", "parent_elapsed_seconds": 10.760676599998988}
+{"saved": ["parkinsons", "A", "grouped", "rbf_svm", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.070063499999378}
+{"saved": ["parkinsons", "A", "grouped", "mlp_default", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.454259300000558}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_vqc", 2024, 2], "status": "completed", "parent_elapsed_seconds": 13.578592800000479}
+{"saved": ["parkinsons", "A", "grouped", "parameter_matched_mlp_reupload", 2024, 2], "status": "completed", "parent_elapsed_seconds": 12.139645799999926}
+{"saved": ["parkinsons", "B", "grouped", "logistic_regression", 42, 0], "status": "completed", "parent_elapsed_seconds": 8.855785400000968}
+{"saved": ["parkinsons", "B", "grouped", "random_forest", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.969424299999446}
+{"saved": ["parkinsons", "B", "grouped", "rbf_svm", 42, 0], "status": "completed", "parent_elapsed_seconds": 8.877548800001023}
+{"saved": ["parkinsons", "B", "grouped", "mlp_default", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.655823000000964}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_vqc", 42, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_reupload", 42, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "logistic_regression", 42, 1], "status": "completed", "parent_elapsed_seconds": 9.078016499999649}
+{"saved": ["parkinsons", "B", "grouped", "random_forest", 42, 1], "status": "completed", "parent_elapsed_seconds": 10.482749099999637}
+{"saved": ["parkinsons", "B", "grouped", "rbf_svm", 42, 1], "status": "completed", "parent_elapsed_seconds": 9.156729000000269}
+{"saved": ["parkinsons", "B", "grouped", "mlp_default", 42, 1], "status": "completed", "parent_elapsed_seconds": 8.646816699998453}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_vqc", 42, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_reupload", 42, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "logistic_regression", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.283500700001241}
+{"saved": ["parkinsons", "B", "grouped", "random_forest", 42, 2], "status": "completed", "parent_elapsed_seconds": 11.453877900001316}
+{"saved": ["parkinsons", "B", "grouped", "rbf_svm", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.426684000000023}
+{"saved": ["parkinsons", "B", "grouped", "mlp_default", 42, 2], "status": "completed", "parent_elapsed_seconds": 8.276930499998343}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_vqc", 42, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_reupload", 42, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "logistic_regression", 1729, 0], "status": "completed", "parent_elapsed_seconds": 16.326955700000326}
+{"saved": ["parkinsons", "B", "grouped", "random_forest", 1729, 0], "status": "completed", "parent_elapsed_seconds": 11.552295299999969}
+{"saved": ["parkinsons", "B", "grouped", "rbf_svm", 1729, 0], "status": "completed", "parent_elapsed_seconds": 8.657426399999167}
+{"saved": ["parkinsons", "B", "grouped", "mlp_default", 1729, 0], "status": "completed", "parent_elapsed_seconds": 9.570637900000293}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_vqc", 1729, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_reupload", 1729, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "logistic_regression", 1729, 1], "status": "completed", "parent_elapsed_seconds": 9.387746100001095}
+{"saved": ["parkinsons", "B", "grouped", "random_forest", 1729, 1], "status": "completed", "parent_elapsed_seconds": 10.828088800000842}
+{"saved": ["parkinsons", "B", "grouped", "rbf_svm", 1729, 1], "status": "completed", "parent_elapsed_seconds": 15.388526300001104}
+{"saved": ["parkinsons", "B", "grouped", "mlp_default", 1729, 1], "status": "completed", "parent_elapsed_seconds": 18.502228999999716}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_vqc", 1729, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_reupload", 1729, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "logistic_regression", 1729, 2], "status": "completed", "parent_elapsed_seconds": 8.79496029999973}
+{"saved": ["parkinsons", "B", "grouped", "random_forest", 1729, 2], "status": "completed", "parent_elapsed_seconds": 8.959404999999606}
+{"saved": ["parkinsons", "B", "grouped", "rbf_svm", 1729, 2], "status": "completed", "parent_elapsed_seconds": 8.517787599999792}
+{"saved": ["parkinsons", "B", "grouped", "mlp_default", 1729, 2], "status": "completed", "parent_elapsed_seconds": 8.896797699999297}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_vqc", 1729, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_reupload", 1729, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "logistic_regression", 2024, 0], "status": "completed", "parent_elapsed_seconds": 8.714423000001261}
+{"saved": ["parkinsons", "B", "grouped", "random_forest", 2024, 0], "status": "completed", "parent_elapsed_seconds": 10.315253000000666}
+{"saved": ["parkinsons", "B", "grouped", "rbf_svm", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.129068899999766}
+{"saved": ["parkinsons", "B", "grouped", "mlp_default", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.851510899999994}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_vqc", 2024, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_reupload", 2024, 0], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "logistic_regression", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.02945489999911}
+{"saved": ["parkinsons", "B", "grouped", "random_forest", 2024, 1], "status": "completed", "parent_elapsed_seconds": 10.350412800000413}
+{"saved": ["parkinsons", "B", "grouped", "rbf_svm", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.42467360000046}
+{"saved": ["parkinsons", "B", "grouped", "mlp_default", 2024, 1], "status": "completed", "parent_elapsed_seconds": 8.934660100001565}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_vqc", 2024, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_reupload", 2024, 1], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "logistic_regression", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.15558460000102}
+{"saved": ["parkinsons", "B", "grouped", "random_forest", 2024, 2], "status": "completed", "parent_elapsed_seconds": 10.968149500000436}
+{"saved": ["parkinsons", "B", "grouped", "rbf_svm", 2024, 2], "status": "completed", "parent_elapsed_seconds": 8.85582710000017}
+{"saved": ["parkinsons", "B", "grouped", "mlp_default", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.488192099999651}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_vqc", 2024, 2], "status": "not_measured"}
+{"saved": ["parkinsons", "B", "grouped", "parameter_matched_mlp_reupload", 2024, 2], "status": "not_measured"}
+{"saved": ["diabetes", "A", "random", "logistic_regression", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.240634800000407}
+{"saved": ["diabetes", "A", "random", "random_forest", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.155743299999813}
+{"saved": ["diabetes", "A", "random", "rbf_svm", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.043870899999092}
+{"saved": ["diabetes", "A", "random", "mlp_default", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.39706169999954}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_vqc", 42, 0], "status": "completed", "parent_elapsed_seconds": 11.146944900001472}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_reupload", 42, 0], "status": "completed", "parent_elapsed_seconds": 11.897231999999349}
+{"saved": ["diabetes", "A", "random", "logistic_regression", 42, 1], "status": "completed", "parent_elapsed_seconds": 9.782171200000448}
+{"saved": ["diabetes", "A", "random", "random_forest", 42, 1], "status": "completed", "parent_elapsed_seconds": 8.778725400001349}
+{"saved": ["diabetes", "A", "random", "rbf_svm", 42, 1], "status": "completed", "parent_elapsed_seconds": 9.22909939999954}
+{"saved": ["diabetes", "A", "random", "mlp_default", 42, 1], "status": "completed", "parent_elapsed_seconds": 9.50850360000004}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_vqc", 42, 1], "status": "completed", "parent_elapsed_seconds": 11.274470999998812}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_reupload", 42, 1], "status": "completed", "parent_elapsed_seconds": 12.317827099999704}
+{"saved": ["diabetes", "A", "random", "logistic_regression", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.060301299999992}
+{"saved": ["diabetes", "A", "random", "random_forest", 42, 2], "status": "completed", "parent_elapsed_seconds": 10.045398899999782}
+{"saved": ["diabetes", "A", "random", "rbf_svm", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.698086700000204}
+{"saved": ["diabetes", "A", "random", "mlp_default", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.655671200000143}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_vqc", 42, 2], "status": "completed", "parent_elapsed_seconds": 16.64168670000072}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_reupload", 42, 2], "status": "completed", "parent_elapsed_seconds": 11.854156500001409}
+{"saved": ["diabetes", "A", "random", "logistic_regression", 1729, 0], "status": "completed", "parent_elapsed_seconds": 9.061472200000935}
+{"saved": ["diabetes", "A", "random", "random_forest", 1729, 0], "status": "completed", "parent_elapsed_seconds": 9.848571500000617}
+{"saved": ["diabetes", "A", "random", "rbf_svm", 1729, 0], "status": "completed", "parent_elapsed_seconds": 8.8917593999995}
+{"saved": ["diabetes", "A", "random", "mlp_default", 1729, 0], "status": "completed", "parent_elapsed_seconds": 8.98190760000034}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_vqc", 1729, 0], "status": "completed", "parent_elapsed_seconds": 11.767996499998844}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_reupload", 1729, 0], "status": "completed", "parent_elapsed_seconds": 11.662812599999597}
+{"saved": ["diabetes", "A", "random", "logistic_regression", 1729, 1], "status": "completed", "parent_elapsed_seconds": 9.751856900000348}
+{"saved": ["diabetes", "A", "random", "random_forest", 1729, 1], "status": "completed", "parent_elapsed_seconds": 10.095376999999644}
+{"saved": ["diabetes", "A", "random", "rbf_svm", 1729, 1], "status": "completed", "parent_elapsed_seconds": 8.731306800000311}
+{"saved": ["diabetes", "A", "random", "mlp_default", 1729, 1], "status": "completed", "parent_elapsed_seconds": 8.935336900000038}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_vqc", 1729, 1], "status": "completed", "parent_elapsed_seconds": 11.681043399999908}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_reupload", 1729, 1], "status": "completed", "parent_elapsed_seconds": 11.49181039999894}
+{"saved": ["diabetes", "A", "random", "logistic_regression", 1729, 2], "status": "completed", "parent_elapsed_seconds": 8.926053000001048}
+{"saved": ["diabetes", "A", "random", "random_forest", 1729, 2], "status": "completed", "parent_elapsed_seconds": 10.395728500001496}
+{"saved": ["diabetes", "A", "random", "rbf_svm", 1729, 2], "status": "completed", "parent_elapsed_seconds": 9.47468789999948}
+{"saved": ["diabetes", "A", "random", "mlp_default", 1729, 2], "status": "completed", "parent_elapsed_seconds": 9.481349700001374}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_vqc", 1729, 2], "status": "completed", "parent_elapsed_seconds": 11.780252599999585}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_reupload", 1729, 2], "status": "completed", "parent_elapsed_seconds": 11.4730141}
+{"saved": ["diabetes", "A", "random", "logistic_regression", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.141691799999535}
+{"saved": ["diabetes", "A", "random", "random_forest", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.549492600001031}
+{"saved": ["diabetes", "A", "random", "rbf_svm", 2024, 0], "status": "completed", "parent_elapsed_seconds": 8.742855300000883}
+{"saved": ["diabetes", "A", "random", "mlp_default", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.04746940000041}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_vqc", 2024, 0], "status": "completed", "parent_elapsed_seconds": 11.553275000000212}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_reupload", 2024, 0], "status": "completed", "parent_elapsed_seconds": 11.7910695999999}
+{"saved": ["diabetes", "A", "random", "logistic_regression", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.146658200001184}
+{"saved": ["diabetes", "A", "random", "random_forest", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.49153220000153}
+{"saved": ["diabetes", "A", "random", "rbf_svm", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.035859400000845}
+{"saved": ["diabetes", "A", "random", "mlp_default", 2024, 1], "status": "completed", "parent_elapsed_seconds": 8.867396800000279}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_vqc", 2024, 1], "status": "completed", "parent_elapsed_seconds": 11.362939700000425}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_reupload", 2024, 1], "status": "completed", "parent_elapsed_seconds": 11.210036700000273}
+{"saved": ["diabetes", "A", "random", "logistic_regression", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.031432199999472}
+{"saved": ["diabetes", "A", "random", "random_forest", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.317055100000289}
+{"saved": ["diabetes", "A", "random", "rbf_svm", 2024, 2], "status": "completed", "parent_elapsed_seconds": 8.295629700000063}
+{"saved": ["diabetes", "A", "random", "mlp_default", 2024, 2], "status": "completed", "parent_elapsed_seconds": 8.979907099999764}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_vqc", 2024, 2], "status": "completed", "parent_elapsed_seconds": 11.551491700000042}
+{"saved": ["diabetes", "A", "random", "parameter_matched_mlp_reupload", 2024, 2], "status": "completed", "parent_elapsed_seconds": 11.048081400000228}
+{"saved": ["diabetes", "B", "random", "logistic_regression", 42, 0], "status": "completed", "parent_elapsed_seconds": 8.730194499999925}
+{"saved": ["diabetes", "B", "random", "random_forest", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.594546700000137}
+{"saved": ["diabetes", "B", "random", "rbf_svm", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.102832200000194}
+{"saved": ["diabetes", "B", "random", "mlp_default", 42, 0], "status": "completed", "parent_elapsed_seconds": 9.799413900000218}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_vqc", 42, 0], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_reupload", 42, 0], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "logistic_regression", 42, 1], "status": "completed", "parent_elapsed_seconds": 9.75555229999918}
+{"saved": ["diabetes", "B", "random", "random_forest", 42, 1], "status": "completed", "parent_elapsed_seconds": 10.004819300000236}
+{"saved": ["diabetes", "B", "random", "rbf_svm", 42, 1], "status": "completed", "parent_elapsed_seconds": 8.744334899998648}
+{"saved": ["diabetes", "B", "random", "mlp_default", 42, 1], "status": "completed", "parent_elapsed_seconds": 8.946789999999964}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_vqc", 42, 1], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_reupload", 42, 1], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "logistic_regression", 42, 2], "status": "completed", "parent_elapsed_seconds": 8.912244199998895}
+{"saved": ["diabetes", "B", "random", "random_forest", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.417198499999358}
+{"saved": ["diabetes", "B", "random", "rbf_svm", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.03114640000058}
+{"saved": ["diabetes", "B", "random", "mlp_default", 42, 2], "status": "completed", "parent_elapsed_seconds": 9.362626099999034}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_vqc", 42, 2], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_reupload", 42, 2], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "logistic_regression", 1729, 0], "status": "completed", "parent_elapsed_seconds": 9.348552199999176}
+{"saved": ["diabetes", "B", "random", "random_forest", 1729, 0], "status": "completed", "parent_elapsed_seconds": 10.53710719999981}
+{"saved": ["diabetes", "B", "random", "rbf_svm", 1729, 0], "status": "completed", "parent_elapsed_seconds": 9.7593624000001}
+{"saved": ["diabetes", "B", "random", "mlp_default", 1729, 0], "status": "completed", "parent_elapsed_seconds": 8.496771399999488}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_vqc", 1729, 0], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_reupload", 1729, 0], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "logistic_regression", 1729, 1], "status": "completed", "parent_elapsed_seconds": 8.894295000000056}
+{"saved": ["diabetes", "B", "random", "random_forest", 1729, 1], "status": "completed", "parent_elapsed_seconds": 9.064774999998917}
+{"saved": ["diabetes", "B", "random", "rbf_svm", 1729, 1], "status": "completed", "parent_elapsed_seconds": 8.347229300001345}
+{"saved": ["diabetes", "B", "random", "mlp_default", 1729, 1], "status": "completed", "parent_elapsed_seconds": 8.324134800001048}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_vqc", 1729, 1], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_reupload", 1729, 1], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "logistic_regression", 1729, 2], "status": "completed", "parent_elapsed_seconds": 8.57189930000095}
+{"saved": ["diabetes", "B", "random", "random_forest", 1729, 2], "status": "completed", "parent_elapsed_seconds": 10.045890299999883}
+{"saved": ["diabetes", "B", "random", "rbf_svm", 1729, 2], "status": "completed", "parent_elapsed_seconds": 9.329392200001166}
+{"saved": ["diabetes", "B", "random", "mlp_default", 1729, 2], "status": "completed", "parent_elapsed_seconds": 9.025703700001031}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_vqc", 1729, 2], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_reupload", 1729, 2], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "logistic_regression", 2024, 0], "status": "completed", "parent_elapsed_seconds": 8.56004220000068}
+{"saved": ["diabetes", "B", "random", "random_forest", 2024, 0], "status": "completed", "parent_elapsed_seconds": 10.23315250000087}
+{"saved": ["diabetes", "B", "random", "rbf_svm", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.067277999998623}
+{"saved": ["diabetes", "B", "random", "mlp_default", 2024, 0], "status": "completed", "parent_elapsed_seconds": 9.205033899999762}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_vqc", 2024, 0], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_reupload", 2024, 0], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "logistic_regression", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.346218700000463}
+{"saved": ["diabetes", "B", "random", "random_forest", 2024, 1], "status": "completed", "parent_elapsed_seconds": 10.41668860000027}
+{"saved": ["diabetes", "B", "random", "rbf_svm", 2024, 1], "status": "completed", "parent_elapsed_seconds": 8.911315100000138}
+{"saved": ["diabetes", "B", "random", "mlp_default", 2024, 1], "status": "completed", "parent_elapsed_seconds": 9.303524899998592}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_vqc", 2024, 1], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_reupload", 2024, 1], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "logistic_regression", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.298527700000704}
+{"saved": ["diabetes", "B", "random", "random_forest", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.741495099999156}
+{"saved": ["diabetes", "B", "random", "rbf_svm", 2024, 2], "status": "completed", "parent_elapsed_seconds": 8.56804320000083}
+{"saved": ["diabetes", "B", "random", "mlp_default", 2024, 2], "status": "completed", "parent_elapsed_seconds": 9.103299099999276}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_vqc", 2024, 2], "status": "not_measured"}
+{"saved": ["diabetes", "B", "random", "parameter_matched_mlp_reupload", 2024, 2], "status": "not_measured"}

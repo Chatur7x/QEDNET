@@ -1,0 +1,21 @@
+dataset=breast_cancer n=80 input_features=30 class_counts={'0': 30, '1': 50}
+  split=random_folds fold=0 n_train=53 n_test=27 train_subjects=None test_subjects=None overlap=0
+  split=random_folds fold=1 n_train=53 n_test=27 train_subjects=None test_subjects=None overlap=0
+  split=random_folds fold=2 n_train=54 n_test=26 train_subjects=None test_subjects=None overlap=0
+dataset=heart_disease n=80 input_features=13 class_counts={'0': 43, '1': 37}
+  split=random_folds fold=0 n_train=53 n_test=27 train_subjects=None test_subjects=None overlap=0
+  split=random_folds fold=1 n_train=53 n_test=27 train_subjects=None test_subjects=None overlap=0
+  split=random_folds fold=2 n_train=54 n_test=26 train_subjects=None test_subjects=None overlap=0
+dataset=parkinsons n=80 input_features=22 class_counts={'0': 20, '1': 60}
+  split=random_folds fold=0 n_train=53 n_test=27 train_subjects=25 test_subjects=19 overlap=15
+  split=random_folds fold=1 n_train=53 n_test=27 train_subjects=28 test_subjects=17 overlap=16
+  split=random_folds fold=2 n_train=54 n_test=26 train_subjects=25 test_subjects=19 overlap=15
+  split=grouped_folds fold=0 n_train=53 n_test=27 train_subjects=19 test_subjects=10 overlap=0
+  split=grouped_folds fold=1 n_train=53 n_test=27 train_subjects=19 test_subjects=10 overlap=0
+  split=grouped_folds fold=2 n_train=54 n_test=26 train_subjects=20 test_subjects=9 overlap=0
+  sampled_subject_record_counts={'S01': 1, 'S02': 1, 'S04': 3, 'S05': 4, 'S06': 3, 'S07': 2, 'S08': 3, 'S10': 3, 'S13': 4, 'S16': 3, 'S17': 1, 'S18': 2, 'S19': 3, 'S20': 5, 'S21': 4, 'S22': 3, 'S24': 4, 'S27': 3, 'S31': 3, 'S32': 4, 'S33': 2, 'S34': 1, 'S35': 4, 'S37': 3, 'S39': 1, 'S42': 4, 'S43': 1, 'S49': 3, 'S50': 2}
+dataset=diabetes n=80 input_features=8 class_counts={'0': 52, '1': 28}
+  split=random_folds fold=0 n_train=53 n_test=27 train_subjects=None test_subjects=None overlap=0
+  split=random_folds fold=1 n_train=53 n_test=27 train_subjects=None test_subjects=None overlap=0
+  split=random_folds fold=2 n_train=54 n_test=26 train_subjects=None test_subjects=None overlap=0
+SAVED=D:\Projects\QEDNT\results-v2\splits.json

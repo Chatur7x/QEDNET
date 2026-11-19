@@ -1,0 +1,1 @@
+python results-v2/run_fold.py --dataset heart_disease --model qsvm --seed 42 --fold 0 --feature-setting A --split-variant random --run-type corrected_rerun

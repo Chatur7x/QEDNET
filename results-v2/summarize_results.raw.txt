@@ -1,0 +1,103 @@
+CSV=summary.csv COLUMNS=['dataset', 'feature_setting', 'model', 'seed', 'fold', 'status', 'auc', 'accuracy', 'balanced_accuracy', 'f1', 'train_seconds', 'predict_seconds', 'timeout_elapsed_seconds', 'n_train', 'n_test', 'trainable_parameters', 'notes']
+[
+  {
+    "dataset": "breast_cancer",
+    "feature_setting": "A",
+    "model": "logistic_regression",
+    "seed": "42",
+    "fold": "0",
+    "status": "completed",
+    "auc": "0.976470588235294",
+    "accuracy": "0.9259259259259259",
+    "balanced_accuracy": "0.9411764705882353",
+    "f1": "0.9375",
+    "train_seconds": "0.014956600000004983",
+    "predict_seconds": "0.0008003000000371685",
+    "timeout_elapsed_seconds": "",
+    "n_train": "53",
+    "n_test": "27",
+    "trainable_parameters": "5",
+    "notes": "split_variant=random; n_samples=80; input_features=30; model_input_features=4; subject_overlap_count=0; metadata={\"C\":1.0,\"model\":\"logistic_regression\",\"n_params\":5,\"penalty\":\"l2\",\"solver\":\"lbfgs\"}"
+  },
+  {
+    "dataset": "breast_cancer",
+    "feature_setting": "A",
+    "model": "mlp_default",
+    "seed": "42",
+    "fold": "0",
+    "status": "completed",
+    "auc": "0.9705882352941175",
+    "accuracy": "0.9259259259259259",
+    "balanced_accuracy": "0.9411764705882353",
+    "f1": "0.9375",
+    "train_seconds": "0.281075299999884",
+    "predict_seconds": "0.0005130999998073094",
+    "timeout_elapsed_seconds": "",
+    "n_train": "53",
+    "n_test": "27",
+    "trainable_parameters": "",
+    "notes": "split_variant=random; n_samples=80; input_features=30; model_input_features=4; subject_overlap_count=0"
+  },
+  {
+    "dataset": "breast_cancer",
+    "feature_setting": "A",
+    "model": "parameter_matched_mlp_reupload",
+    "seed": "42",
+    "fold": "0",
+    "status": "completed",
+    "auc": "0.861764705882353",
+    "accuracy": "0.6296296296296297",
+    "balanced_accuracy": "0.5",
+    "f1": "0.7727272727272727",
+    "train_seconds": "4.6645255999999335",
+    "predict_seconds": "0.002419400000007954",
+    "timeout_elapsed_seconds": "",
+    "n_train": "53",
+    "n_test": "27",
+    "trainable_parameters": "15",
+    "notes": "split_variant=random; n_samples=80; input_features=30; model_input_features=4; subject_overlap_count=0; metadata={\"hidden_dims\":[2,1],\"model\":\"parameter_matched_mlp\",\"n_params\":15,\"target_params\":15}"
+  }
+]
+CSV=summary.csv COLUMN_VALIDATION=PASS
+CSV=paired_differences.csv COLUMNS=['dataset', 'split_variant', 'seed', 'fold', 'best_quantum_model', 'best_quantum_auc', 'best_classical_model', 'best_classical_auc', 'difference']
+[
+  {
+    "dataset": "breast_cancer",
+    "split_variant": "random",
+    "seed": "42",
+    "fold": "0",
+    "best_quantum_model": "qsvm",
+    "best_quantum_auc": "0.9529411764705882",
+    "best_classical_model": "rbf_svm",
+    "best_classical_auc": "0.9764705882352941",
+    "difference": "-0.02352941176470591"
+  },
+  {
+    "dataset": "breast_cancer",
+    "split_variant": "random",
+    "seed": "42",
+    "fold": "1",
+    "best_quantum_model": "qsvm",
+    "best_quantum_auc": "0.8705882352941177",
+    "best_classical_model": "logistic_regression",
+    "best_classical_auc": "0.9647058823529412",
+    "difference": "-0.09411764705882353"
+  },
+  {
+    "dataset": "breast_cancer",
+    "split_variant": "random",
+    "seed": "42",
+    "fold": "2",
+    "best_quantum_model": "qsvm",
+    "best_quantum_auc": "0.99375",
+    "best_classical_model": "logistic_regression",
+    "best_classical_auc": "1.0",
+    "difference": "-0.006249999999999978"
+  }
+]
+CSV=paired_differences.csv COLUMN_VALIDATION=PASS
+RUN_COUNTS={"classical_benchmark": {"completed": 468, "error": 0, "not_measured": 72, "timeout": 0}, "quantum_benchmark": {"completed": 135, "error": 0, "not_measured": 0, "timeout": 0}, "quantum_timing_pilots_excluded": 11}
+SUMMARY_ROWS=675 PAIRED_ROWS=45
+SAVED=D:\Projects\QEDNT\results-v2\summary.csv
+SAVED=D:\Projects\QEDNT\results-v2\paired_differences.csv
+SAVED=D:\Projects\QEDNT\results-v2\analysis_summary.json

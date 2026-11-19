@@ -1,0 +1,42 @@
+SCIPY_VERSION=1.18.1
+WILCOXON_RULE=exact when n<=25, no absolute-difference ties, and no zero differences; otherwise approx
+COMPARISON_ROWS=35 REPORT_PVALUE_PAIRS_PARSED=35
+WILCOXON_METHOD key=('best_of_fold', 'breast_cancer', 'random', '', '') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('best_of_fold', 'diabetes', 'random', '', '') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('best_of_fold', 'heart_disease', 'random', '', '') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('best_of_fold', 'parkinsons', 'grouped', '', '') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('best_of_fold', 'parkinsons', 'random', '', '') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'breast_cancer', 'random', 'parameter_matched_mlp_reupload', 'qsvm') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'breast_cancer', 'random', 'parameter_matched_mlp_reupload', 'vqc') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'breast_cancer', 'random', 'parameter_matched_mlp_reupload', 'reupload') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'breast_cancer', 'random', 'parameter_matched_mlp_vqc', 'qsvm') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'breast_cancer', 'random', 'parameter_matched_mlp_vqc', 'vqc') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'breast_cancer', 'random', 'parameter_matched_mlp_vqc', 'reupload') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'diabetes', 'random', 'parameter_matched_mlp_reupload', 'qsvm') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'diabetes', 'random', 'parameter_matched_mlp_reupload', 'vqc') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'diabetes', 'random', 'parameter_matched_mlp_reupload', 'reupload') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'diabetes', 'random', 'parameter_matched_mlp_vqc', 'qsvm') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'diabetes', 'random', 'parameter_matched_mlp_vqc', 'vqc') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'diabetes', 'random', 'parameter_matched_mlp_vqc', 'reupload') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'heart_disease', 'random', 'parameter_matched_mlp_reupload', 'qsvm') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'heart_disease', 'random', 'parameter_matched_mlp_reupload', 'vqc') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'heart_disease', 'random', 'parameter_matched_mlp_reupload', 'reupload') method=approx reason=zero differences n=9
+WILCOXON_METHOD key=('parameter_matched', 'heart_disease', 'random', 'parameter_matched_mlp_vqc', 'qsvm') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'heart_disease', 'random', 'parameter_matched_mlp_vqc', 'vqc') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'heart_disease', 'random', 'parameter_matched_mlp_vqc', 'reupload') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'grouped', 'parameter_matched_mlp_reupload', 'qsvm') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'grouped', 'parameter_matched_mlp_reupload', 'vqc') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'grouped', 'parameter_matched_mlp_reupload', 'reupload') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'grouped', 'parameter_matched_mlp_vqc', 'qsvm') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'grouped', 'parameter_matched_mlp_vqc', 'vqc') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'grouped', 'parameter_matched_mlp_vqc', 'reupload') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_reupload', 'qsvm') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_reupload', 'vqc') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_reupload', 'reupload') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_vqc', 'qsvm') method=approx reason=absolute-difference ties n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_vqc', 'vqc') method=exact reason=no ties or zeros n=9
+WILCOXON_METHOD key=('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_vqc', 'reupload') method=exact reason=no ties or zeros n=9
+PVALUE_MISMATCH|COMPARISON_KEY|COLUMN|REPORT_VALUE|RECOMPUTED_VALUE
+PVALUE_MISMATCH_COUNT=0
+CSV_COLUMNS_MATCH=True ROW_SHAPES_VALID=True ROW_COUNT=35
+FIRST_3_ROWS=[{'comparison': 'best_of_fold', 'dataset': 'breast_cancer', 'split_variant': 'random', 'n': '9', 'mean_difference': '-0.04325980392156863', 'sample_sd': '0.039767534515865934', 't_test_p': '0.0114679412790751', 'wilcoxon_p': '0.007212578345957219'}, {'comparison': 'best_of_fold', 'dataset': 'diabetes', 'split_variant': 'random', 'n': '9', 'mean_difference': '-0.07933914306463329', 'sample_sd': '0.03998317666775984', 't_test_p': '0.0003408535030197856', 'wilcoxon_p': '0.01051714807334924'}, {'comparison': 'best_of_fold', 'dataset': 'heart_disease', 'split_variant': 'random', 'n': '9', 'mean_difference': '-0.12470831637498306', 'sample_sd': '0.08161277522869564', 't_test_p': '0.001792246854924303', 'wilcoxon_p': '0.00390625'}]

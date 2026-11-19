@@ -1,0 +1,5 @@
+CREATED=RESULTS_FINAL.md
+CHANGED_TABLE_CELLS=3
+heart disease � random folds � setting A|qsvm|Fit seconds|8.018959766666537 � 3.9284810318743806 (n=9)|8.501741977777783 � 3.8932783736114085 (n=9)|summary.csv
+heart disease � random folds � setting A|reupload|Fit seconds|69.41908447777799 � 26.84127206128184 (n=9)|76.17163291111117 � 28.48115382996333 (n=9)|summary.csv
+heart disease � random folds � setting A|vqc|Fit seconds|44.218291000000235 � 9.580374429809995 (n=9)|46.85081336666654 � 10.974763470096034 (n=9)|summary.csv

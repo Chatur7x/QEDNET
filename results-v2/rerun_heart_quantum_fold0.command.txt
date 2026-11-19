@@ -1,0 +1,2 @@
+python results-v2/run_fold.py --dataset heart_disease --model vqc --seed 42 --fold 0 --feature-setting A --split-variant random --run-type corrected_rerun
+python results-v2/run_fold.py --dataset heart_disease --model reupload --seed 42 --fold 0 --feature-setting A --split-variant random --run-type corrected_rerun

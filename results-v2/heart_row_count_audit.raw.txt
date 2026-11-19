@@ -1,0 +1,6 @@
+file=data\raw\heart_cleveland.data
+raw_data_rows=303
+clean_rows_dropna=297
+dropped_rows=6
+max_source_index=301
+position_valid_max=296

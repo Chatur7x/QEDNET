@@ -1,0 +1,39 @@
+{
+  "command": [
+    "C:\\Users\\chatu\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+    "D:\\Projects\\QEDNT\\results-v2\\run_fold.py",
+    "--dataset",
+    "breast_cancer",
+    "--model",
+    "logistic_regression",
+    "--seed",
+    "42",
+    "--fold",
+    "0",
+    "--feature-setting",
+    "A",
+    "--split-variant",
+    "random"
+  ],
+  "status": "completed",
+  "elapsed_seconds": 44.53475519999995,
+  "current": {
+    "auc": 0.976470588235294,
+    "accuracy": 0.9259259259259259,
+    "balanced_accuracy": 0.9411764705882353,
+    "n_train": 53,
+    "n_test": 27
+  },
+  "prior_record": {
+    "auc": 0.9941176470588236,
+    "accuracy": 0.9629629629629629,
+    "balanced_accuracy": 0.9705882352941176,
+    "n_train": 53,
+    "n_test": 27
+  },
+  "auc_exact_match": false,
+  "accuracy_exact_match": false,
+  "balanced_accuracy_exact_match": false,
+  "split_size_match": true,
+  "passed": false
+}

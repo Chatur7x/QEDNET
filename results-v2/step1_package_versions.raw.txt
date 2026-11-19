@@ -1,0 +1,32 @@
+Name: scikit-learn
+Version: 1.9.1
+Summary: A set of python modules for machine learning and data mining
+Home-page: https://scikit-learn.org
+Author: 
+Author-email: 
+License-Expression: BSD-3-Clause
+Location: C:\Users\chatu\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages
+Requires: joblib, narwhals, numpy, scipy, threadpoolctl
+Required-by: imbalanced-learn, qednet, shap, sklearn-compat, skops
+---
+Name: pennylane
+Version: 0.45.1
+Summary: PennyLane is a cross-platform Python library for quantum computing, quantum machine learning, and quantum chemistry. Train a quantum computer the same way as a neural network.
+Home-page: 
+Author: 
+Author-email: 
+License-Expression: Apache-2.0
+Location: C:\Users\chatu\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages
+Requires: appdirs, autograd, autoray, cachetools, diastatic-malt, gast, networkx, numpy, packaging, pennylane-lightning, requests, rustworkx, scipy, tomlkit, typing_extensions
+Required-by: pennylane_lightning, qednet
+---
+Name: numpy
+Version: 2.5.3
+Summary: Fundamental package for array computing in Python
+Home-page: https://numpy.org
+Author: Travis E. Oliphant et al.
+Author-email: 
+License-Expression: BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0
+Location: C:\Users\chatu\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages
+Requires: 
+Required-by: autograd, chromadb, contourpy, ibm-quantum-schemas, imbalanced-learn, lightgbm, matplotlib, numba, onnxruntime, opencv-python-headless, pandas, pennylane, pydeck, qednet, qiskit, qiskit-aer, qiskit-ibm-runtime, rustworkx, samplomatic, scikit-learn, scipy, shap, skops, soundfile, xgboost

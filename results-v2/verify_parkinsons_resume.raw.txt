@@ -1,0 +1,2 @@
+PARKINSON_RF_AUC dataset=parkinsons split=random setting=A model=random_forest n=9 mean=0.8634920634920635 sample_sd=0.09222733607382565
+PARKINSON_RF_AUC dataset=parkinsons split=grouped setting=A model=random_forest n=9 mean=0.7067460317460317 sample_sd=0.2754061883729273

@@ -1,0 +1,56 @@
+# QEDNET fixed benchmark v2 — Step 1 plan
+
+## Repository and environment read
+
+- Work branch: `results-v2` (created for this task; no commit will be made).
+- Package versions from the current `pip show` command: scikit-learn `1.9.1`, PennyLane `0.45.1`, NumPy `2.5.3`. Raw command output is in `step1_package_versions.raw.txt`.
+- Datasets found: scikit-learn breast cancer, `data/raw/heart_cleveland.data`, `data/raw/parkinsons.data`, and `data/raw/pima_diabetes.csv`.
+- Real classes found: LogisticRegression, RandomForest, RBF SVM, MLP, ParameterMatchedMLP, QSVM, VQC, ReuploadClassifier, and HybridQNN. The requested benchmark excludes HybridQNN.
+- No model or pipeline source files will be edited. Older `results/` artifacts will remain read-only; their numbers will not be used as new results, except the explicitly requested logistic-regression sanity comparison.
+
+## Parkinson's sampling constraint
+
+The current data audit found `32` unique subject IDs, while the requested Parkinson's sample has `80` rows. A sample with at most one row per subject is therefore impossible for that sample size. The grouped Parkinson's sample will include repeated recordings per subject, record its actual rows-per-subject counts, and use subject-grouped folds with zero train/test subject overlap.
+
+## Planned files under `results-v2/`
+
+Step-one evidence already created:
+
+- `step1_branch.command.txt`, `step1_branch.raw.txt`, `step1_branch.exit.txt`
+- `step1_package_versions.command.txt`, `step1_package_versions.raw.txt`, `step1_package_versions.exit.txt`
+- `step1_repo_inventory.py`, `step1_repo_inventory.command.txt`, `step1_repo_inventory.raw.txt`, `step1_repo_inventory.exit.txt`
+- `step1_parkinsons_subject_audit.py`, `step1_parkinsons_subject_audit.command.txt`, `step1_parkinsons_subject_audit.raw.txt`, `step1_parkinsons_subject_audit.exit.txt`
+- `PLAN.md`
+
+Planned after approval:
+
+- `run_fold.py` — dispatches to the repository's real estimator classes and emits one fold result.
+- `runner.py` — parent-controlled subprocess launcher, process-tree timeout termination, immediate JSON checkpointing, and stdout/stderr capture.
+- `timeout_sleep_child.py` and timeout self-test command/output/status files.
+- `make_splits.py`, `splits.json`, and split-audit command/raw files.
+- `classical_raw.json`, `quantum_raw.json`, per-fold logs, and command/raw/exit files for all runs.
+- `summary.csv`, `paired_differences.csv`, their three-row/header audits, and summary command/raw files.
+- `RESULTS.md` with measured outcomes, timeout and NOT MEASURED reasons, methods, limitations, and safe/unsafe resume claims.
+
+No data files or large outputs will be committed.
+
+## Run plan and gates
+
+- First, validate that the parent kills a fake sleeping child at the configured test timeout. If this fails, fix only `results-v2/runner.py` and repeat the check; do not start model grids until it passes.
+- Next, run the requested breast-cancer logistic-regression sanity fold and compare it to the prior raw record. If it differs, stop and report the discrepancy before any grid.
+- Generate one shared split manifest for all ordinary datasets and a separate subject-grouped Parkinson's sample/split manifest. Save row indices, subject IDs, class labels, and per-subject sample counts.
+- Run the requested classical settings and seeds, keeping all preprocessing fit within each training fold. The MLP variant will use `early_stopping=False`; ParameterMatchedMLP will be the real repository class, and its actual parameter count/architecture will be recorded from the fitted estimator.
+- Run one timing fold per quantum model before the quantum grid. If any single fit exceeds the user's stated threshold, stop and ask before continuing.
+- Run quantum fits only in child processes; checkpoint every completed or timed-out fold. Apply grouped Parkinson's splits to every requested classical and quantum model.
+- Build summary and paired-difference tables only from measured fold rows. Omit timeouts from averages, include paired-test p-values, and label results with insufficient completed pairs NOT MEASURED.
+- Run the five-repeat heart QSVM timing measurement and report each observed fit time plus measured min/median/max.
+- Print three rows for each created CSV and check every field against its header and source records.
+
+## Runtime estimates
+
+- Classical grid: **NOT MEASURED**. No current-run timing pilot has been run, and the request forbids copying or estimating from earlier benchmark timings.
+- Quantum grid: **NOT MEASURED**. The per-model timing gate must run after approval; the user also requires stopping if a fit exceeds the specified threshold.
+- ParameterMatchedMLP: **NOT MEASURED**. No current-run fit has been timed; the earlier attempt is not being used to estimate this run.
+
+The full run will not start until you approve this plan. After approval, the timing gates will provide current-run runtime measurements before the long grids.
+

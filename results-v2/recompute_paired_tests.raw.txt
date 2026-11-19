@@ -1,0 +1,18 @@
+SCIPY_VERSION=1.18.1
+WILCOXON_RULE=exact when n<=25, no absolute-difference ties, and no zero differences; otherwise approx
+COMPARISON_ROWS=35 REPORT_PVALUE_PAIRS_PARSED=35
+PVALUE_MISMATCH|COMPARISON_KEY|COLUMN|REPORT_VALUE|RECOMPUTED_VALUE
+('best_of_fold', 'breast_cancer', 'random', '', '')|wilcoxon_p|0.00390625|0.007212578345957219
+('best_of_fold', 'diabetes', 'random', '', '')|wilcoxon_p|0.0078125|0.01051714807334924
+('best_of_fold', 'parkinsons', 'grouped', '', '')|wilcoxon_p|0.0390625|0.03546586462402558
+('best_of_fold', 'parkinsons', 'random', '', '')|wilcoxon_p|0.00390625|0.007420961287866498
+('parameter_matched', 'breast_cancer', 'random', 'parameter_matched_mlp_reupload', 'qsvm')|wilcoxon_p|0.41015625|0.3738398566319153
+('parameter_matched', 'breast_cancer', 'random', 'parameter_matched_mlp_vqc', 'qsvm')|wilcoxon_p|0.23828125|0.21312246884125097
+('parameter_matched', 'heart_disease', 'random', 'parameter_matched_mlp_reupload', 'reupload')|wilcoxon_p|0.25|0.20757844233562428
+('parameter_matched', 'parkinsons', 'grouped', 'parameter_matched_mlp_reupload', 'qsvm')|wilcoxon_p|0.1953125|0.17269378073166064
+('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_reupload', 'qsvm')|wilcoxon_p|0.1875|0.1747487117505534
+('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_reupload', 'vqc')|wilcoxon_p|0.96875|0.9527235817670947
+('parameter_matched', 'parkinsons', 'random', 'parameter_matched_mlp_vqc', 'qsvm')|wilcoxon_p|0.0703125|0.06836413860052828
+PVALUE_MISMATCH_COUNT=11
+CSV_COLUMNS_MATCH=True ROW_SHAPES_VALID=True ROW_COUNT=35
+FIRST_3_ROWS=[{'comparison': 'best_of_fold', 'dataset': 'breast_cancer', 'split_variant': 'random', 'n': '9', 'mean_difference': '-0.04325980392156863', 'sample_sd': '0.039767534515865934', 't_test_p': '0.0114679412790751', 'wilcoxon_p': '0.007212578345957219'}, {'comparison': 'best_of_fold', 'dataset': 'diabetes', 'split_variant': 'random', 'n': '9', 'mean_difference': '-0.07933914306463329', 'sample_sd': '0.03998317666775984', 't_test_p': '0.0003408535030197856', 'wilcoxon_p': '0.01051714807334924'}, {'comparison': 'best_of_fold', 'dataset': 'heart_disease', 'split_variant': 'random', 'n': '9', 'mean_difference': '-0.12470831637498306', 'sample_sd': '0.08161277522869564', 't_test_p': '0.001792246854924303', 'wilcoxon_p': '0.00390625'}]

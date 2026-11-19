@@ -1,0 +1,1 @@
+python results-v2/runner.py --dataset heart_disease --model reupload --seed 42 --fold 0 --feature-setting A --split-variant random --timeout 600

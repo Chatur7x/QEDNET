@@ -1,0 +1,3714 @@
+{
+  "tables": [
+    {
+      "dataset": "breast_cancer",
+      "split_variant": "random",
+      "feature_setting": "A",
+      "models": [
+        {
+          "model": "logistic_regression",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.9803921568627451,
+              "sd": 0.015563243006262306
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.9377967711301045,
+              "sd": 0.017806267806267817
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.9372549019607843,
+              "sd": 0.013070874143111113
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.9494578134284016,
+              "sd": 0.015262618398660614
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.021033933333380144,
+              "sd": 0.012901393391200396
+            }
+          },
+          "parameter_counts": [
+            5
+          ]
+        },
+        {
+          "model": "mlp_default",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.9777777777777777,
+              "sd": 0.016838788271880074
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.9629629629629629,
+              "sd": 0.032075014954979206
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.9637254901960784,
+              "sd": 0.02747285542980796
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.9696428571428571,
+              "sd": 0.027096412331238426
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.42125601111112904,
+              "sd": 0.3598221976159699
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_reupload",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7967320261437909,
+              "sd": 0.22787686210532235
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.5416270971826528,
+              "sd": 0.12508423996010173
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5,
+              "sd": 0.0
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.5127465127465127,
+              "sd": 0.38458526484529926
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 4.47598109999995,
+              "sd": 1.4882456808674278
+            }
+          },
+          "parameter_counts": [
+            15
+          ]
+        },
+        {
+          "model": "parameter_matched_mlp_vqc",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7764705882352941,
+              "sd": 0.2235342491736629
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7166824944602722,
+              "sd": 0.13941285569510323
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6245098039215686,
+              "sd": 0.1881663476673331
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8210253798489092,
+              "sd": 0.07952619812759348
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 5.0003103888888445,
+              "sd": 0.917534757449783
+            }
+          },
+          "parameter_counts": [
+            12
+          ]
+        },
+        {
+          "model": "qsvm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.939093137254902,
+              "sd": 0.05433252626619829
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.8632478632478633,
+              "sd": 0.04765164867144657
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.8372549019607843,
+              "sd": 0.05611407067158508
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8961314255431903,
+              "sd": 0.03462206953955891
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 6.124928455555265,
+              "sd": 0.3029804954620155
+            }
+          },
+          "parameter_counts": [
+            0
+          ]
+        },
+        {
+          "model": "random_forest",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.9581699346405229,
+              "sd": 0.03619493125877399
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.9377967711301045,
+              "sd": 0.017806267806267817
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.9372549019607843,
+              "sd": 0.013070874143111113
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.9494578134284016,
+              "sd": 0.015262618398660614
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 1.5307536000000508,
+              "sd": 0.7815794642701469
+            }
+          },
+          "parameter_counts": [
+            3242,
+            3378,
+            3586,
+            4160,
+            4224,
+            4370,
+            4686,
+            4724,
+            4892
+          ]
+        },
+        {
+          "model": "rbf_svm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.9745098039215686,
+              "sd": 0.022971322576196055
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.9588477366255144,
+              "sd": 0.0343689158199384
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.9604575163398693,
+              "sd": 0.03541984686176493
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.9667137056842939,
+              "sd": 0.02773000095793527
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.010724999999916286,
+              "sd": 0.007809981555403035
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "reupload",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.8009803921568628,
+              "sd": 0.07305268249979069
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7169990503323836,
+              "sd": 0.06117068533784583
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6290849673202614,
+              "sd": 0.07704036100736134
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8132318148578311,
+              "sd": 0.03661860531503132
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 50.337041844444684,
+              "sd": 1.4837914033855535
+            }
+          },
+          "parameter_counts": [
+            16
+          ]
+        },
+        {
+          "model": "vqc",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7235702614379085,
+              "sd": 0.17365569040302758
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6327951883507439,
+              "sd": 0.12166521851037077
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5733251633986928,
+              "sd": 0.09379164139915433
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.7177589054422995,
+              "sd": 0.1367821839591741
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 38.38536309999957,
+              "sd": 1.4972875502255352
+            }
+          },
+          "parameter_counts": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "breast_cancer",
+      "split_variant": "random",
+      "feature_setting": "B",
+      "models": [
+        {
+          "model": "logistic_regression",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.9859068627450981,
+              "sd": 0.010770552996536911
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.9624881291547958,
+              "sd": 0.0007122507122506727
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.9568627450980391,
+              "sd": 0.010294117647058842
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.9702741702741703,
+              "sd": 0.0008658008658008476
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.04695054444437119,
+              "sd": 0.022227282023232455
+            }
+          },
+          "parameter_counts": [
+            31
+          ]
+        },
+        {
+          "model": "mlp_default",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.9873366013071896,
+              "sd": 0.011168109402572802
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.9624881291547958,
+              "sd": 0.0007122507122506727
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.9568627450980391,
+              "sd": 0.010294117647058842
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.9702741702741703,
+              "sd": 0.0008658008658008476
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.3223296444444309,
+              "sd": 0.15392978934999607
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_reupload",
+          "status_counts": {
+            "completed": 0,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 9
+          },
+          "metrics": {
+            "auc": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "balanced_accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "f1": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "train_seconds": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_vqc",
+          "status_counts": {
+            "completed": 0,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 9
+          },
+          "metrics": {
+            "auc": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "balanced_accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "f1": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "train_seconds": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "random_forest",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.9738562091503268,
+              "sd": 0.031002722158513542
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.9544159544159544,
+              "sd": 0.024580390209027626
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.9526143790849674,
+              "sd": 0.028074158947600666
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.9635571400277283,
+              "sd": 0.019426955109057426
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 2.413265199999943,
+              "sd": 2.024903866127336
+            }
+          },
+          "parameter_counts": [
+            2642,
+            2660,
+            2696,
+            3166,
+            3194,
+            3204,
+            3504,
+            3508
+          ]
+        },
+        {
+          "model": "rbf_svm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.9862745098039216,
+              "sd": 0.010604562574894049
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.9382716049382716,
+              "sd": 0.06676946806414794
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.9441176470588235,
+              "sd": 0.05113334897268739
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.946031746031746,
+              "sd": 0.06079593016573191
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.03870117777776411,
+              "sd": 0.034083329700333266
+            }
+          },
+          "parameter_counts": []
+        }
+      ]
+    },
+    {
+      "dataset": "heart_disease",
+      "split_variant": "random",
+      "feature_setting": "A",
+      "models": [
+        {
+          "model": "logistic_regression",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.8168633835300502,
+              "sd": 0.05725800717384856
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7500791389680278,
+              "sd": 0.051858069540835924
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7431318681318682,
+              "sd": 0.06354443707860853
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.7064124551480874,
+              "sd": 0.11502467749242425
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.07153511111128966,
+              "sd": 0.1375646931522988
+            }
+          },
+          "parameter_counts": [
+            5
+          ]
+        },
+        {
+          "model": "mlp_default",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7661884411884412,
+              "sd": 0.06377112481027535
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6918328584995251,
+              "sd": 0.05037380259284025
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.68491045991046,
+              "sd": 0.05973040678490612
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.6409515327643982,
+              "sd": 0.10739906184160372
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.4292120000000068,
+              "sd": 0.15764037104015924
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_reupload",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.624859245692579,
+              "sd": 0.13559559955297742
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.4874960430515986,
+              "sd": 0.04080256611384774
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5,
+              "sd": 0.0
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.42154745838956365,
+              "sd": 0.3163977019017836
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 6.468942066666589,
+              "sd": 2.8233583296032645
+            }
+          },
+          "parameter_counts": [
+            15
+          ]
+        },
+        {
+          "model": "parameter_matched_mlp_vqc",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.619459706959707,
+              "sd": 0.13302850328942734
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.5794555238999683,
+              "sd": 0.13176402896524558
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5943630443630443,
+              "sd": 0.12159733553370879
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.5860642521360762,
+              "sd": 0.23591978839686173
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 11.069124566666789,
+              "sd": 15.166646215302166
+            }
+          },
+          "parameter_counts": [
+            12
+          ]
+        },
+        {
+          "model": "qsvm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.6813932980599647,
+              "sd": 0.1050475752658384
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6449825894270339,
+              "sd": 0.12257703931823402
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6353174603174603,
+              "sd": 0.12599216795381454
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.5688196666457536,
+              "sd": 0.15296736983159023
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 8.018959766666537,
+              "sd": 3.9284810318743806
+            }
+          },
+          "parameter_counts": [
+            0
+          ]
+        },
+        {
+          "model": "random_forest",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.8161036494369828,
+              "sd": 0.07913060324088159
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7209559987337765,
+              "sd": 0.06389029608246645
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.712006512006512,
+              "sd": 0.07748131434634208
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.6605661983822904,
+              "sd": 0.14544616143366035
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 3.7624701333334087,
+              "sd": 6.826440170078434
+            }
+          },
+          "parameter_counts": [
+            6620,
+            6646,
+            6662,
+            6756,
+            6820,
+            7048,
+            7084,
+            7142,
+            7156
+          ]
+        },
+        {
+          "model": "rbf_svm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.8031372948039615,
+              "sd": 0.05491595683889003
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7082937638493194,
+              "sd": 0.06127748231719137
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7013634513634514,
+              "sd": 0.06073269539448832
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.6661405261405261,
+              "sd": 0.07896847108264357
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.022010866666581325,
+              "sd": 0.026162374762332435
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "reupload",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.5882342965676299,
+              "sd": 0.0942099832081913
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.5419436530547641,
+              "sd": 0.0792236409961567
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5427248677248677,
+              "sd": 0.07937850630762971
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.5214891599272938,
+              "sd": 0.10956561980076533
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 69.41908447777799,
+              "sd": 26.84127206128184
+            }
+          },
+          "parameter_counts": [
+            16
+          ]
+        },
+        {
+          "model": "vqc",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.631396689730023,
+              "sd": 0.1022748437452225
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.5751820196264641,
+              "sd": 0.09027838263472807
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5801689051689052,
+              "sd": 0.09108213370019387
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.5699175985716587,
+              "sd": 0.11408184777532196
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 44.218291000000235,
+              "sd": 9.580374429809995
+            }
+          },
+          "parameter_counts": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "heart_disease",
+      "split_variant": "random",
+      "feature_setting": "B",
+      "models": [
+        {
+          "model": "logistic_regression",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.8350427350427351,
+              "sd": 0.04560807317063611
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7621082621082621,
+              "sd": 0.06832040112888868
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7566239316239317,
+              "sd": 0.076313829354792
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.7257142857142856,
+              "sd": 0.11142857142857142
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.007354833333718286,
+              "sd": 0.0014509946976512447
+            }
+          },
+          "parameter_counts": [
+            14
+          ]
+        },
+        {
+          "model": "mlp_default",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7899267399267399,
+              "sd": 0.07987218970367772
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7204811649256093,
+              "sd": 0.09033736598861793
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7115181115181115,
+              "sd": 0.09978605165742764
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.6608339649319159,
+              "sd": 0.14790138450039952
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.18525306666672098,
+              "sd": 0.041791278615866664
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_reupload",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7976546601546601,
+              "sd": 0.07942405881194187
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7453308008863564,
+              "sd": 0.08484391286650844
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7447700447700447,
+              "sd": 0.08238462716746722
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.7317869276040191,
+              "sd": 0.08628222884936727
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 3.6850975111107496,
+              "sd": 2.449000644900039
+            }
+          },
+          "parameter_counts": [
+            16
+          ]
+        },
+        {
+          "model": "parameter_matched_mlp_vqc",
+          "status_counts": {
+            "completed": 0,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 9
+          },
+          "metrics": {
+            "auc": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "balanced_accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "f1": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "train_seconds": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "random_forest",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.844047619047619,
+              "sd": 0.04790150080336682
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7831592276036721,
+              "sd": 0.0555088642357481
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.773951973951974,
+              "sd": 0.06644389957394942
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.7341164358708219,
+              "sd": 0.10752581430066945
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.8759515444444332,
+              "sd": 0.37593324769750713
+            }
+          },
+          "parameter_counts": [
+            7314,
+            7344,
+            7414,
+            7732,
+            7764,
+            7828,
+            8094,
+            8110,
+            8168
+          ]
+        },
+        {
+          "model": "rbf_svm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.810958485958486,
+              "sd": 0.041924218095613044
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7503956948401392,
+              "sd": 0.06526244792966886
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7404456654456655,
+              "sd": 0.07688080722021323
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.6929204760420731,
+              "sd": 0.13003401479588475
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.0035630777777745,
+              "sd": 0.0012765901613306842
+            }
+          },
+          "parameter_counts": []
+        }
+      ]
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "random",
+      "feature_setting": "A",
+      "models": [
+        {
+          "model": "logistic_regression",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.9177248677248677,
+              "sd": 0.0628038093440835
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.8285849952516618,
+              "sd": 0.04868378202460129
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.8317460317460318,
+              "sd": 0.07974857742246586
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.878595194384668,
+              "sd": 0.03192344098837125
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.007561222222041882,
+              "sd": 0.002188259541137377
+            }
+          },
+          "parameter_counts": [
+            5
+          ]
+        },
+        {
+          "model": "mlp_default",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.907010582010582,
+              "sd": 0.06447954806697737
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.8741690408357075,
+              "sd": 0.05237343719757759
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.8003968253968254,
+              "sd": 0.044180141700032205
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.918136127438453,
+              "sd": 0.03605487300112278
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.18383477777762083,
+              "sd": 0.03496643831629048
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_reupload",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.5863095238095238,
+              "sd": 0.13195570724098823
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.5834124723013612,
+              "sd": 0.2506425447717701
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5,
+              "sd": 0.0
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.5714873059923938,
+              "sd": 0.4286820260822748
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 2.332776322222142,
+              "sd": 0.24240947132994708
+            }
+          },
+          "parameter_counts": [
+            15
+          ]
+        },
+        {
+          "model": "parameter_matched_mlp_vqc",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.5783730158730158,
+              "sd": 0.14093133992727147
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7374169040835707,
+              "sd": 0.03367974477930738
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.49166666666666664,
+              "sd": 0.025000000000000005
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8484678986582909,
+              "sd": 0.02309768839815375
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 2.3925152555554328,
+              "sd": 0.2819207909146418
+            }
+          },
+          "parameter_counts": [
+            12
+          ]
+        },
+        {
+          "model": "qsvm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7203703703703703,
+              "sd": 0.17629043621601984
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.795346628679962,
+              "sd": 0.07135316117588714
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.611904761904762,
+              "sd": 0.13233978248134942
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8787079103754017,
+              "sd": 0.0394230121068836
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 11.721235133333217,
+              "sd": 4.1935530472158
+            }
+          },
+          "parameter_counts": [
+            0
+          ]
+        },
+        {
+          "model": "random_forest",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.8634920634920635,
+              "sd": 0.09222733607382565
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.8200379867046533,
+              "sd": 0.08072035080630877
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7667989417989418,
+              "sd": 0.07742316715815233
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8773418589208063,
+              "sd": 0.05682889254311859
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.8893376111110329,
+              "sd": 0.4193839005941754
+            }
+          },
+          "parameter_counts": [
+            5286,
+            5314,
+            5376,
+            5418,
+            5934,
+            5944,
+            5996,
+            6040,
+            6164
+          ]
+        },
+        {
+          "model": "rbf_svm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.8923280423280423,
+              "sd": 0.0821301558311598
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.836815447926559,
+              "sd": 0.0553868755213724
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7572751322751323,
+              "sd": 0.059736063364720746
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8934153890478337,
+              "sd": 0.03698108762656037
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.004051555555633968,
+              "sd": 0.0016863562116068939
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "reupload",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.646957671957672,
+              "sd": 0.14856302335130847
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7238050015827794,
+              "sd": 0.11634663771441195
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5904761904761905,
+              "sd": 0.12279950890681568
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8199223436886511,
+              "sd": 0.08392595678610287
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 84.90340650000002,
+              "sd": 28.065042079945176
+            }
+          },
+          "parameter_counts": [
+            16
+          ]
+        },
+        {
+          "model": "vqc",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.5735449735449736,
+              "sd": 0.15499270539325288
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6405508072174739,
+              "sd": 0.1902389519536719
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5387566137566138,
+              "sd": 0.16811984583884734
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.7387859861855558,
+              "sd": 0.16684224235904782
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 69.07072964444443,
+              "sd": 21.715501937712983
+            }
+          },
+          "parameter_counts": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "random",
+      "feature_setting": "B",
+      "models": [
+        {
+          "model": "logistic_regression",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.8472222222222222,
+              "sd": 0.019019696796036285
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7882241215574549,
+              "sd": 0.046312729934498184
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7420634920634921,
+              "sd": 0.0323132608289047
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8536036036036037,
+              "sd": 0.03871450635345077
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.008099344444316457,
+              "sd": 0.00200640056821354
+            }
+          },
+          "parameter_counts": [
+            23
+          ]
+        },
+        {
+          "model": "mlp_default",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.903042328042328,
+              "sd": 0.05930349439083642
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.8795504906616017,
+              "sd": 0.05096008811285238
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.8276455026455026,
+              "sd": 0.05747601841962995
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.9192728890403309,
+              "sd": 0.03704333576803114
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.16691174444430443,
+              "sd": 0.027702951902496296
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_reupload",
+          "status_counts": {
+            "completed": 0,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 9
+          },
+          "metrics": {
+            "auc": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "balanced_accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "f1": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "train_seconds": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_vqc",
+          "status_counts": {
+            "completed": 0,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 9
+          },
+          "metrics": {
+            "auc": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "balanced_accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "f1": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "train_seconds": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "random_forest",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.9148148148148147,
+              "sd": 0.017077329199484095
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.8206710984488762,
+              "sd": 0.017982665354700004
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.8055555555555555,
+              "sd": 0.04098507139310001
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.874583085109401,
+              "sd": 0.01186789677138356
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.6442753111110101,
+              "sd": 0.05731438384806726
+            }
+          },
+          "parameter_counts": [
+            4464,
+            4490,
+            4500,
+            4502,
+            4544,
+            4568,
+            4980,
+            5028,
+            5076
+          ]
+        },
+        {
+          "model": "rbf_svm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.873015873015873,
+              "sd": 0.07155742346261293
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.792022792022792,
+              "sd": 0.057648324833362574
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6686507936507936,
+              "sd": 0.05555201235866712
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8673054842726104,
+              "sd": 0.04227041744498207
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.00343487777798954,
+              "sd": 0.001081774428782131
+            }
+          },
+          "parameter_counts": []
+        }
+      ]
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "grouped",
+      "feature_setting": "A",
+      "models": [
+        {
+          "model": "logistic_regression",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.880952380952381,
+              "sd": 0.05261042808091512
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7640075973409306,
+              "sd": 0.09597429685564049
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7138888888888889,
+              "sd": 0.13910371707581506
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8315980315980316,
+              "sd": 0.08533138424356536
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.007814066666671553,
+              "sd": 0.0032800574457695175
+            }
+          },
+          "parameter_counts": [
+            5
+          ]
+        },
+        {
+          "model": "mlp_default",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.8117724867724867,
+              "sd": 0.1265107744996444
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.8179803735359291,
+              "sd": 0.09031209212540475
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7345238095238095,
+              "sd": 0.18587447303998242
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.881979591451815,
+              "sd": 0.05710976048387276
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.22107242222237902,
+              "sd": 0.06716349464722969
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_reupload",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.6265873015873016,
+              "sd": 0.16492607256110492
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.5834124723013612,
+              "sd": 0.2506425447717701
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5,
+              "sd": 0.0
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.5714873059923938,
+              "sd": 0.4286820260822748
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 4.240375977778058,
+              "sd": 4.269016690436787
+            }
+          },
+          "parameter_counts": [
+            15
+          ]
+        },
+        {
+          "model": "parameter_matched_mlp_vqc",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.4932539682539682,
+              "sd": 0.14080212138537299
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7502374169040835,
+              "sd": 0.014245014245014287
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5,
+              "sd": 0.0
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8572309589885908,
+              "sd": 0.009250693802035137
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 3.0463810333331924,
+              "sd": 0.8176953177648922
+            }
+          },
+          "parameter_counts": [
+            12
+          ]
+        },
+        {
+          "model": "qsvm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7464285714285714,
+              "sd": 0.13671700375464005
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7959797404241848,
+              "sd": 0.04494961019322829
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6623015873015873,
+              "sd": 0.15046460549135443
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8731880921260853,
+              "sd": 0.018705762318128715
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 7.412456611111136,
+              "sd": 0.88658888579211
+            }
+          },
+          "parameter_counts": [
+            0
+          ]
+        },
+        {
+          "model": "random_forest",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7067460317460317,
+              "sd": 0.2754061883729273
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.8385565052231719,
+              "sd": 0.06538756363264106
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7638888888888888,
+              "sd": 0.14690809018379908
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8948100274187231,
+              "sd": 0.041442488465430374
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.8784105888888816,
+              "sd": 0.239039709263122
+            }
+          },
+          "parameter_counts": [
+            4254,
+            4268,
+            4446,
+            4804,
+            4858,
+            4928,
+            5526,
+            5638,
+            5722
+          ]
+        },
+        {
+          "model": "rbf_svm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.6857142857142857,
+              "sd": 0.3243321238030736
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.8179803735359291,
+              "sd": 0.09031209212540475
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7345238095238095,
+              "sd": 0.18587447303998242
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.881979591451815,
+              "sd": 0.05710976048387276
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.009288077777758494,
+              "sd": 0.018831647191741675
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "reupload",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.6891534391534392,
+              "sd": 0.28123752456864215
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7098765432098766,
+              "sd": 0.14357462159778908
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6288359788359789,
+              "sd": 0.23427499021031856
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8077239030349259,
+              "sd": 0.09062796218618642
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 59.440486333333155,
+              "sd": 9.152799570103092
+            }
+          },
+          "parameter_counts": [
+            16
+          ]
+        },
+        {
+          "model": "vqc",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.6404761904761904,
+              "sd": 0.2686199455924076
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6546375435264324,
+              "sd": 0.16512409684164378
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5835978835978836,
+              "sd": 0.205814516354783
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.7511655885283872,
+              "sd": 0.14423168396968516
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 43.11949024444463,
+              "sd": 4.5672120110771175
+            }
+          },
+          "parameter_counts": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "grouped",
+      "feature_setting": "B",
+      "models": [
+        {
+          "model": "logistic_regression",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7805555555555556,
+              "sd": 0.12472901465779992
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7141500474833808,
+              "sd": 0.127403317315305
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6496031746031746,
+              "sd": 0.1441803795924065
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.7954133700263731,
+              "sd": 0.11337703112411408
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.011728533333452005,
+              "sd": 0.013066577380400003
+            }
+          },
+          "parameter_counts": [
+            23
+          ]
+        },
+        {
+          "model": "mlp_default",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7707671957671958,
+              "sd": 0.1423118450786338
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7220639442861665,
+              "sd": 0.1025627286144827
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6448412698412698,
+              "sd": 0.13947382494864402
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8059224784381803,
+              "sd": 0.09104415909838887
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.15882285555603126,
+              "sd": 0.01702146130557119
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_reupload",
+          "status_counts": {
+            "completed": 0,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 9
+          },
+          "metrics": {
+            "auc": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "balanced_accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "f1": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "train_seconds": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_vqc",
+          "status_counts": {
+            "completed": 0,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 9
+          },
+          "metrics": {
+            "auc": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "balanced_accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "f1": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "train_seconds": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "random_forest",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.8958994708994709,
+              "sd": 0.05380607049835713
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7562519784742007,
+              "sd": 0.14352239686467286
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.698015873015873,
+              "sd": 0.16127657368618245
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8174640831037238,
+              "sd": 0.135431938234487
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.6976061333334656,
+              "sd": 0.06396075921950552
+            }
+          },
+          "parameter_counts": [
+            3804,
+            3828,
+            3860,
+            4134,
+            4140,
+            4174,
+            5208,
+            5222,
+            5366
+          ]
+        },
+        {
+          "model": "rbf_svm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.667063492063492,
+              "sd": 0.239827773852636
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7388414055080722,
+              "sd": 0.10135004789912112
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6054232804232804,
+              "sd": 0.13265280079242608
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.8271316975757309,
+              "sd": 0.08489692818775933
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.003860033333290226,
+              "sd": 0.002067218743012757
+            }
+          },
+          "parameter_counts": []
+        }
+      ]
+    },
+    {
+      "dataset": "diabetes",
+      "split_variant": "random",
+      "feature_setting": "A",
+      "models": [
+        {
+          "model": "logistic_regression",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7438150568869523,
+              "sd": 0.09409344373740941
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7127255460588794,
+              "sd": 0.03481296128162375
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6995642701525054,
+              "sd": 0.011552876911316049
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.6143790849673203,
+              "sd": 0.039215686274509776
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.006220388888929544,
+              "sd": 0.0028915356344530385
+            }
+          },
+          "parameter_counts": [
+            5
+          ]
+        },
+        {
+          "model": "mlp_default",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.6997014443637537,
+              "sd": 0.09415404501168506
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6839189616967395,
+              "sd": 0.052433672424876
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6462599854756718,
+              "sd": 0.07562325778183511
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.5307486631016043,
+              "sd": 0.1242520122503335
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.16395708888881522,
+              "sd": 0.009615484028301048
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_reupload",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.4855805696764302,
+              "sd": 0.23681599130722028
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.4499841722063944,
+              "sd": 0.15092900891558464
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5,
+              "sd": 0.0
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.3455169455169455,
+              "sd": 0.2595453012043888
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 2.2375194777780254,
+              "sd": 0.19446560372591334
+            }
+          },
+          "parameter_counts": [
+            15
+          ]
+        },
+        {
+          "model": "parameter_matched_mlp_vqc",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.4274146695715323,
+              "sd": 0.12154322728725123
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6500474833808167,
+              "sd": 0.016288599182377857
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5,
+              "sd": 0.0
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.0,
+              "sd": 0.0
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 2.77438143333307,
+              "sd": 1.5536141526009144
+            }
+          },
+          "parameter_counts": [
+            12
+          ]
+        },
+        {
+          "model": "qsvm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.6701767126603728,
+              "sd": 0.09523564072269543
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6628679962013295,
+              "sd": 0.027289521453943026
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5626361655773421,
+              "sd": 0.057556015356081826
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.2976608187134503,
+              "sd": 0.17209757301702502
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 8.194211411111407,
+              "sd": 3.209194608373654
+            }
+          },
+          "parameter_counts": [
+            0
+          ]
+        },
+        {
+          "model": "random_forest",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.736084886629549,
+              "sd": 0.08278594324364696
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6788540677429566,
+              "sd": 0.030386581365980308
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.676325344952796,
+              "sd": 0.0329523397961528
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.5891690009337068,
+              "sd": 0.06601602680666067
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.6264057777775128,
+              "sd": 0.07411411409157323
+            }
+          },
+          "parameter_counts": [
+            7168,
+            7218,
+            7352,
+            7540,
+            7600,
+            7604,
+            7682,
+            7722,
+            7812
+          ]
+        },
+        {
+          "model": "rbf_svm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7688574195110143,
+              "sd": 0.12424886348453809
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.704653371320038,
+              "sd": 0.09728155834140005
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6375090777051561,
+              "sd": 0.12305253616601672
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.48540500893442073,
+              "sd": 0.1886028135357079
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.0030107555554018794,
+              "sd": 0.0008791811024848658
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "reupload",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.6698297425966271,
+              "sd": 0.08756894078724121
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6418170307059196,
+              "sd": 0.08859755037685932
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6055918663761801,
+              "sd": 0.1182469776358479
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.4772114853384203,
+              "sd": 0.18123249935998956
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 63.721494311111705,
+              "sd": 4.816513595083818
+            }
+          },
+          "parameter_counts": [
+            16
+          ]
+        },
+        {
+          "model": "vqc",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.6550552731380618,
+              "sd": 0.09598140562386949
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6327951883507439,
+              "sd": 0.08954206156895675
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5993100944081337,
+              "sd": 0.09627462134931744
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.4810634354752002,
+              "sd": 0.12932897264345675
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 49.933136444445054,
+              "sd": 4.43925808656789
+            }
+          },
+          "parameter_counts": [
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "dataset": "diabetes",
+      "split_variant": "random",
+      "feature_setting": "B",
+      "models": [
+        {
+          "model": "logistic_regression",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7863229242314209,
+              "sd": 0.08767374527488511
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7625830959164293,
+              "sd": 0.016794624106198884
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.723202614379085,
+              "sd": 0.04436838695934112
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.6289788642729819,
+              "sd": 0.07407873738182101
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.005935477777610585,
+              "sd": 0.001105466206623682
+            }
+          },
+          "parameter_counts": [
+            9
+          ]
+        },
+        {
+          "model": "mlp_default",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7222625675784717,
+              "sd": 0.05713140537403273
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.6832858499525166,
+              "sd": 0.038355874694690185
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6403413217138707,
+              "sd": 0.05192354667017702
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.5182737126471142,
+              "sd": 0.10196468698530416
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.1653470777776723,
+              "sd": 0.011988515162608319
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_reupload",
+          "status_counts": {
+            "completed": 0,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 9
+          },
+          "metrics": {
+            "auc": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "balanced_accuracy": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "f1": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            },
+            "train_seconds": {
+              "n": 0,
+              "mean": null,
+              "sd": null
+            }
+          },
+          "parameter_counts": []
+        },
+        {
+          "model": "parameter_matched_mlp_vqc",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.5485475671750182,
+              "sd": 0.11376378285399716
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.5830959164292497,
+              "sd": 0.08962197249419573
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.5159767610748003,
+              "sd": 0.0497144233756228
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.19916068901576148,
+              "sd": 0.2601372644337272
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 3.0173742000010355,
+              "sd": 1.8301031156668501
+            }
+          },
+          "parameter_counts": [
+            11
+          ]
+        },
+        {
+          "model": "random_forest",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7514968127168562,
+              "sd": 0.06120709268382999
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7420069642291864,
+              "sd": 0.04858178751159988
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.7132171387073348,
+              "sd": 0.06931786062320039
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.6216907638476266,
+              "sd": 0.10339560010626274
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.61942006666666,
+              "sd": 0.0656310780493089
+            }
+          },
+          "parameter_counts": [
+            7436,
+            7468,
+            7572,
+            8044,
+            8056,
+            8162,
+            8180,
+            8206,
+            8264
+          ]
+        },
+        {
+          "model": "rbf_svm",
+          "status_counts": {
+            "completed": 9,
+            "timeout": 0,
+            "error": 0,
+            "not_measured": 0
+          },
+          "metrics": {
+            "auc": {
+              "n": 9,
+              "mean": 0.7977729363350278,
+              "sd": 0.08009969507009736
+            },
+            "accuracy": {
+              "n": 9,
+              "mean": 0.7171573282684394,
+              "sd": 0.0749527083874224
+            },
+            "balanced_accuracy": {
+              "n": 9,
+              "mean": 0.6497095134350036,
+              "sd": 0.08555282249157943
+            },
+            "f1": {
+              "n": 9,
+              "mean": 0.4930994930994931,
+              "sd": 0.1514447334326672
+            },
+            "train_seconds": {
+              "n": 9,
+              "mean": 0.003228222222080351,
+              "sd": 0.0012912273307722707
+            }
+          },
+          "parameter_counts": []
+        }
+      ]
+    }
+  ],
+  "paired_best": [
+    {
+      "dataset": "breast_cancer",
+      "split_variant": "random",
+      "n": 9,
+      "mean": -0.04325980392156863,
+      "sd": 0.039767534515865934,
+      "ttest_p": 0.0114679412790751,
+      "wilcoxon_p": 0.00390625
+    },
+    {
+      "dataset": "heart_disease",
+      "split_variant": "random",
+      "n": 9,
+      "mean": -0.12470831637498306,
+      "sd": 0.08161277522869564,
+      "ttest_p": 0.001792246854924303,
+      "wilcoxon_p": 0.00390625
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "random",
+      "n": 9,
+      "mean": -0.15687830687830692,
+      "sd": 0.06948949785702335,
+      "ttest_p": 0.00014171323118845961,
+      "wilcoxon_p": 0.00390625
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "grouped",
+      "n": 9,
+      "mean": -0.096957671957672,
+      "sd": 0.13089164055487038,
+      "ttest_p": 0.05698239188796903,
+      "wilcoxon_p": 0.0390625
+    },
+    {
+      "dataset": "diabetes",
+      "split_variant": "random",
+      "n": 9,
+      "mean": -0.07933914306463329,
+      "sd": 0.03998317666775984,
+      "ttest_p": 0.0003408535030197856,
+      "wilcoxon_p": 0.0078125
+    }
+  ],
+  "parameter_matched": [
+    {
+      "dataset": "breast_cancer",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "qsvm",
+      "n": 9,
+      "mean": -0.16262254901960785,
+      "sd": 0.2267629206889752,
+      "ttest_p": 0.0636320209250788,
+      "wilcoxon_p": 0.23828125
+    },
+    {
+      "dataset": "breast_cancer",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "vqc",
+      "n": 9,
+      "mean": 0.05290032679738564,
+      "sd": 0.3492268480084339,
+      "ttest_p": 0.6615921786353989,
+      "wilcoxon_p": 0.8203125
+    },
+    {
+      "dataset": "breast_cancer",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "reupload",
+      "n": 9,
+      "mean": -0.024509803921568638,
+      "sd": 0.2274315341480013,
+      "ttest_p": 0.754754600052047,
+      "wilcoxon_p": 0.8203125
+    },
+    {
+      "dataset": "breast_cancer",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "qsvm",
+      "n": 9,
+      "mean": -0.1423611111111111,
+      "sd": 0.22848508826538444,
+      "ttest_p": 0.09852872588599243,
+      "wilcoxon_p": 0.41015625
+    },
+    {
+      "dataset": "breast_cancer",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "vqc",
+      "n": 9,
+      "mean": 0.07316176470588238,
+      "sd": 0.3265230089240786,
+      "ttest_p": 0.5204002114478247,
+      "wilcoxon_p": 0.5703125
+    },
+    {
+      "dataset": "breast_cancer",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "reupload",
+      "n": 9,
+      "mean": -0.0042483660130718925,
+      "sd": 0.23129552114905724,
+      "ttest_p": 0.9574076248147254,
+      "wilcoxon_p": 1.0
+    },
+    {
+      "dataset": "heart_disease",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "qsvm",
+      "n": 9,
+      "mean": -0.06193359110025776,
+      "sd": 0.1887076107809167,
+      "ttest_p": 0.35365967280043265,
+      "wilcoxon_p": 0.359375
+    },
+    {
+      "dataset": "heart_disease",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "vqc",
+      "n": 9,
+      "mean": -0.011936982770316086,
+      "sd": 0.16261273830212947,
+      "ttest_p": 0.8312139447269266,
+      "wilcoxon_p": 0.65234375
+    },
+    {
+      "dataset": "heart_disease",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "reupload",
+      "n": 9,
+      "mean": 0.031225410392077053,
+      "sd": 0.17566403833745084,
+      "ttest_p": 0.608339177436416,
+      "wilcoxon_p": 0.734375
+    },
+    {
+      "dataset": "heart_disease",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "qsvm",
+      "n": 9,
+      "mean": -0.056534052367385686,
+      "sd": 0.1437988199787786,
+      "ttest_p": 0.2721062193010978,
+      "wilcoxon_p": 0.49609375
+    },
+    {
+      "dataset": "heart_disease",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "vqc",
+      "n": 9,
+      "mean": -0.006537444037444014,
+      "sd": 0.14780310757706563,
+      "ttest_p": 0.8977136186460837,
+      "wilcoxon_p": 1.0
+    },
+    {
+      "dataset": "heart_disease",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "reupload",
+      "n": 9,
+      "mean": 0.036624949124949124,
+      "sd": 0.10459152769091587,
+      "ttest_p": 0.32417721287622225,
+      "wilcoxon_p": 0.25
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "qsvm",
+      "n": 9,
+      "mean": -0.14199735449735446,
+      "sd": 0.18091838435516172,
+      "ttest_p": 0.04634660212406741,
+      "wilcoxon_p": 0.0703125
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "vqc",
+      "n": 9,
+      "mean": 0.004828042328042311,
+      "sd": 0.17925623760790135,
+      "ttest_p": 0.9375848727432077,
+      "wilcoxon_p": 1.0
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "reupload",
+      "n": 9,
+      "mean": -0.0685846560846561,
+      "sd": 0.1699886246990807,
+      "ttest_p": 0.26067118700295844,
+      "wilcoxon_p": 0.30078125
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "qsvm",
+      "n": 9,
+      "mean": -0.1340608465608465,
+      "sd": 0.23348432951754922,
+      "ttest_p": 0.12327256208330588,
+      "wilcoxon_p": 0.1875
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "vqc",
+      "n": 9,
+      "mean": 0.01276455026455028,
+      "sd": 0.2739500660128235,
+      "ttest_p": 0.8922863295198997,
+      "wilcoxon_p": 0.96875
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "reupload",
+      "n": 9,
+      "mean": -0.060648148148148125,
+      "sd": 0.17239939957273945,
+      "ttest_p": 0.32208462966514834,
+      "wilcoxon_p": 0.359375
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "grouped",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "qsvm",
+      "n": 9,
+      "mean": -0.25317460317460316,
+      "sd": 0.15061729322781756,
+      "ttest_p": 0.0009982184276098908,
+      "wilcoxon_p": 0.00390625
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "grouped",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "vqc",
+      "n": 9,
+      "mean": -0.1472222222222222,
+      "sd": 0.3041024475585672,
+      "ttest_p": 0.18446627029837073,
+      "wilcoxon_p": 0.09765625
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "grouped",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "reupload",
+      "n": 9,
+      "mean": -0.1958994708994709,
+      "sd": 0.2442245737031364,
+      "ttest_p": 0.0427486446514936,
+      "wilcoxon_p": 0.0546875
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "grouped",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "qsvm",
+      "n": 9,
+      "mean": -0.11984126984126982,
+      "sd": 0.2392020405706271,
+      "ttest_p": 0.1712408482317672,
+      "wilcoxon_p": 0.1953125
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "grouped",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "vqc",
+      "n": 9,
+      "mean": -0.013888888888888852,
+      "sd": 0.36107851326790985,
+      "ttest_p": 0.9109759235479428,
+      "wilcoxon_p": 0.91015625
+    },
+    {
+      "dataset": "parkinsons",
+      "split_variant": "grouped",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "reupload",
+      "n": 9,
+      "mean": -0.06256613756613755,
+      "sd": 0.35448720544383716,
+      "ttest_p": 0.6108378011788957,
+      "wilcoxon_p": 0.5703125
+    },
+    {
+      "dataset": "diabetes",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "qsvm",
+      "n": 9,
+      "mean": -0.24276204308884047,
+      "sd": 0.16208312284905918,
+      "ttest_p": 0.0020199438789196564,
+      "wilcoxon_p": 0.0078125
+    },
+    {
+      "dataset": "diabetes",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "vqc",
+      "n": 9,
+      "mean": -0.2276406035665295,
+      "sd": 0.17585742770168783,
+      "ttest_p": 0.00465249405124849,
+      "wilcoxon_p": 0.01171875
+    },
+    {
+      "dataset": "diabetes",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_vqc",
+      "quantum_model": "reupload",
+      "n": 9,
+      "mean": -0.24241507302509477,
+      "sd": 0.14521696435082374,
+      "ttest_p": 0.0010423732665590126,
+      "wilcoxon_p": 0.00390625
+    },
+    {
+      "dataset": "diabetes",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "qsvm",
+      "n": 9,
+      "mean": -0.18459614298394256,
+      "sd": 0.23574168567266623,
+      "ttest_p": 0.0467445234973095,
+      "wilcoxon_p": 0.07421875
+    },
+    {
+      "dataset": "diabetes",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "vqc",
+      "n": 9,
+      "mean": -0.16947470346163157,
+      "sd": 0.2585405630806329,
+      "ttest_p": 0.08479938742024737,
+      "wilcoxon_p": 0.12890625
+    },
+    {
+      "dataset": "diabetes",
+      "split_variant": "random",
+      "pm_model": "parameter_matched_mlp_reupload",
+      "quantum_model": "reupload",
+      "n": 9,
+      "mean": -0.18424917292019685,
+      "sd": 0.22703069226589426,
+      "ttest_p": 0.04090241242499053,
+      "wilcoxon_p": 0.0546875
+    }
+  ],
+  "run_counts": {
+    "classical_benchmark": {
+      "completed": 468,
+      "timeout": 0,
+      "error": 0,
+      "not_measured": 72
+    },
+    "quantum_benchmark": {
+      "completed": 135,
+      "timeout": 0,
+      "error": 0,
+      "not_measured": 0
+    },
+    "quantum_timing_pilots_excluded": 11
+  },
+  "splits": {
+    "breast_cancer": {
+      "n": 80,
+      "input_features": 30,
+      "class_counts": {
+        "0": 30,
+        "1": 50
+      },
+      "fold_sizes_random": [
+        [
+          53,
+          27
+        ],
+        [
+          53,
+          27
+        ],
+        [
+          54,
+          26
+        ]
+      ],
+      "fold_sizes_grouped": null,
+      "group_audit": []
+    },
+    "heart_disease": {
+      "n": 80,
+      "input_features": 13,
+      "class_counts": {
+        "0": 43,
+        "1": 37
+      },
+      "fold_sizes_random": [
+        [
+          53,
+          27
+        ],
+        [
+          53,
+          27
+        ],
+        [
+          54,
+          26
+        ]
+      ],
+      "fold_sizes_grouped": null,
+      "group_audit": []
+    },
+    "parkinsons": {
+      "n": 80,
+      "input_features": 22,
+      "class_counts": {
+        "0": 20,
+        "1": 60
+      },
+      "fold_sizes_random": [
+        [
+          53,
+          27
+        ],
+        [
+          53,
+          27
+        ],
+        [
+          54,
+          26
+        ]
+      ],
+      "fold_sizes_grouped": [
+        [
+          53,
+          27
+        ],
+        [
+          53,
+          27
+        ],
+        [
+          54,
+          26
+        ]
+      ],
+      "group_audit": [
+        {
+          "fold": 0,
+          "n_train_subjects": 19,
+          "n_test_subjects": 10,
+          "overlap": 0
+        },
+        {
+          "fold": 1,
+          "n_train_subjects": 19,
+          "n_test_subjects": 10,
+          "overlap": 0
+        },
+        {
+          "fold": 2,
+          "n_train_subjects": 20,
+          "n_test_subjects": 9,
+          "overlap": 0
+        }
+      ]
+    },
+    "diabetes": {
+      "n": 80,
+      "input_features": 8,
+      "class_counts": {
+        "0": 52,
+        "1": 28
+      },
+      "fold_sizes_random": [
+        [
+          53,
+          27
+        ],
+        [
+          53,
+          27
+        ],
+        [
+          54,
+          26
+        ]
+      ],
+      "fold_sizes_grouped": null,
+      "group_audit": []
+    }
+  },
+  "csv_audit": {
+    "summary.csv": {
+      "expected_columns": [
+        "dataset",
+        "feature_setting",
+        "model",
+        "seed",
+        "fold",
+        "status",
+        "auc",
+        "accuracy",
+        "balanced_accuracy",
+        "f1",
+        "train_seconds",
+        "predict_seconds",
+        "timeout_elapsed_seconds",
+        "n_train",
+        "n_test",
+        "trainable_parameters",
+        "notes"
+      ],
+      "actual_columns": [
+        "dataset",
+        "feature_setting",
+        "model",
+        "seed",
+        "fold",
+        "status",
+        "auc",
+        "accuracy",
+        "balanced_accuracy",
+        "f1",
+        "train_seconds",
+        "predict_seconds",
+        "timeout_elapsed_seconds",
+        "n_train",
+        "n_test",
+        "trainable_parameters",
+        "notes"
+      ],
+      "row_count": 675,
+      "three_sample_rows": [
+        {
+          "dataset": "breast_cancer",
+          "feature_setting": "A",
+          "model": "logistic_regression",
+          "seed": "42",
+          "fold": "0",
+          "status": "completed",
+          "auc": "0.976470588235294",
+          "accuracy": "0.9259259259259259",
+          "balanced_accuracy": "0.9411764705882353",
+          "f1": "0.9375",
+          "train_seconds": "0.014956600000004983",
+          "predict_seconds": "0.0008003000000371685",
+          "timeout_elapsed_seconds": "",
+          "n_train": "53",
+          "n_test": "27",
+          "trainable_parameters": "5",
+          "notes": "split_variant=random; n_samples=80; input_features=30; model_input_features=4; subject_overlap_count=0; metadata={\"C\":1.0,\"model\":\"logistic_regression\",\"n_params\":5,\"penalty\":\"l2\",\"solver\":\"lbfgs\"}"
+        },
+        {
+          "dataset": "breast_cancer",
+          "feature_setting": "A",
+          "model": "mlp_default",
+          "seed": "42",
+          "fold": "0",
+          "status": "completed",
+          "auc": "0.9705882352941175",
+          "accuracy": "0.9259259259259259",
+          "balanced_accuracy": "0.9411764705882353",
+          "f1": "0.9375",
+          "train_seconds": "0.281075299999884",
+          "predict_seconds": "0.0005130999998073094",
+          "timeout_elapsed_seconds": "",
+          "n_train": "53",
+          "n_test": "27",
+          "trainable_parameters": "",
+          "notes": "split_variant=random; n_samples=80; input_features=30; model_input_features=4; subject_overlap_count=0"
+        },
+        {
+          "dataset": "breast_cancer",
+          "feature_setting": "A",
+          "model": "parameter_matched_mlp_reupload",
+          "seed": "42",
+          "fold": "0",
+          "status": "completed",
+          "auc": "0.861764705882353",
+          "accuracy": "0.6296296296296297",
+          "balanced_accuracy": "0.5",
+          "f1": "0.7727272727272727",
+          "train_seconds": "4.6645255999999335",
+          "predict_seconds": "0.002419400000007954",
+          "timeout_elapsed_seconds": "",
+          "n_train": "53",
+          "n_test": "27",
+          "trainable_parameters": "15",
+          "notes": "split_variant=random; n_samples=80; input_features=30; model_input_features=4; subject_overlap_count=0; metadata={\"hidden_dims\":[2,1],\"model\":\"parameter_matched_mlp\",\"n_params\":15,\"target_params\":15}"
+        }
+      ],
+      "row_shape_valid": true,
+      "semantic_values_match_source": true,
+      "column_validation_pass": true
+    },
+    "paired_differences.csv": {
+      "expected_columns": [
+        "dataset",
+        "split_variant",
+        "seed",
+        "fold",
+        "best_quantum_model",
+        "best_quantum_auc",
+        "best_classical_model",
+        "best_classical_auc",
+        "difference"
+      ],
+      "actual_columns": [
+        "dataset",
+        "split_variant",
+        "seed",
+        "fold",
+        "best_quantum_model",
+        "best_quantum_auc",
+        "best_classical_model",
+        "best_classical_auc",
+        "difference"
+      ],
+      "row_count": 45,
+      "three_sample_rows": [
+        {
+          "dataset": "breast_cancer",
+          "split_variant": "random",
+          "seed": "42",
+          "fold": "0",
+          "best_quantum_model": "qsvm",
+          "best_quantum_auc": "0.9529411764705882",
+          "best_classical_model": "rbf_svm",
+          "best_classical_auc": "0.9764705882352941",
+          "difference": "-0.02352941176470591"
+        },
+        {
+          "dataset": "breast_cancer",
+          "split_variant": "random",
+          "seed": "42",
+          "fold": "1",
+          "best_quantum_model": "qsvm",
+          "best_quantum_auc": "0.8705882352941177",
+          "best_classical_model": "logistic_regression",
+          "best_classical_auc": "0.9647058823529412",
+          "difference": "-0.09411764705882353"
+        },
+        {
+          "dataset": "breast_cancer",
+          "split_variant": "random",
+          "seed": "42",
+          "fold": "2",
+          "best_quantum_model": "qsvm",
+          "best_quantum_auc": "0.99375",
+          "best_classical_model": "logistic_regression",
+          "best_classical_auc": "1.0",
+          "difference": "-0.006249999999999978"
+        }
+      ],
+      "row_shape_valid": true,
+      "semantic_values_match_source": true,
+      "column_validation_pass": true
+    }
+  }
+}

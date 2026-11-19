@@ -1,0 +1,10 @@
+SECTION|MODEL|COLUMN|REPORT_VALUE|RECOMPUTED_VALUE|N
+heart_disease|random|A|qsvm|Fit seconds mean � SD (n) mean|8.018959766666537|8.501741977777783|9
+heart_disease|random|A|qsvm|Fit seconds mean � SD (n) SD|3.9284810318743806|3.8932783736114085|9
+heart_disease|random|A|reupload|Fit seconds mean � SD (n) mean|69.41908447777799|76.17163291111117|9
+heart_disease|random|A|reupload|Fit seconds mean � SD (n) SD|26.84127206128184|28.48115382996333|9
+heart_disease|random|A|vqc|Fit seconds mean � SD (n) mean|44.218291000000235|46.85081336666654|9
+heart_disease|random|A|vqc|Fit seconds mean � SD (n) SD|9.580374429809995|10.974763470096034|9
+MISMATCH_COUNT=6
+DATA_ROWS_PARSED=75
+KNOWN_HEART_SETTING_A_TIMING_MISMATCHES_FOUND=6

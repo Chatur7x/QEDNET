@@ -1,0 +1,58 @@
+RECORD_COUNT=146
+ERROR_COUNT=1
+ERROR index=0 key=('heart_disease', 'random', 'qsvm', 42, 0, 'A') status=error auc=None message=C:\Users\chatu\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandera\_pandas_deprecated.py:144: FutureWarning: Importing pandas-specific classes and functions from the
+top-level pandera module will be **removed in a future version of pandera**.
+If you're using pandera to validate pandas objects, we highly recommend updating
+your import:
+
+```
+# old import
+import pandera as pa
+
+# new import
+import pandera.pandas as pa
+```
+
+If you're using pandera to validate objects from other compatible libraries
+like pyspark or polars, see the supported libraries section of the documentation
+for more information on how to import pandera:
+
+https://pandera.readthedocs.io/en/stable/supported_libraries.html
+
+To disable this warning, set the environment variable:
+
+```
+export DISABLE_PANDERA_IMPORT_WARNING=True
+```
+
+  warnings.warn(_future_warning, FutureWarning)
+Traceback (most recent call last):
+  File "D:\Projects\QEDNT\results-v2\run_fold.py", line 160, in <module>
+    main()
+    ~~~~^^
+  File "D:\Projects\QEDNT\results-v2\run_fold.py", line 156, in main
+    run(args)
+    ~~~^^^^^^
+  File "D:\Projects\QEDNT\results-v2\run_fold.py", line 96, in run
+    X = X_full[sample_rows]
+        ~~~~~~^^^^^^^^^^^^^
+IndexError: index 301 is out of bounds for axis 0 with size 297
+
+DUPLICATE_KEY_COUNT=3
+DUPLICATE key=('heart_disease', 'random', 'qsvm', 42, 0, 'A') count=8
+  index=0 status=error auc=None run_type=timing_gate_two_stage sample_protocol=80-row draw from fixed 150-row sample; timing pilot before final direct-sampling manifest
+  index=3 status=completed auc=0.5166666666666666 run_type=timing_gate_direct sample_protocol=None
+  index=33 status=completed auc=0.5166666666666666 run_type=benchmark sample_protocol=None
+  index=141 status=completed auc=0.5166666666666666 run_type=heart_qsvm_timing_repeat_1 sample_protocol=None
+  index=142 status=completed auc=0.5166666666666666 run_type=heart_qsvm_timing_repeat_2 sample_protocol=None
+  index=143 status=completed auc=0.5166666666666666 run_type=heart_qsvm_timing_repeat_3 sample_protocol=None
+  index=144 status=completed auc=0.5166666666666666 run_type=heart_qsvm_timing_repeat_4 sample_protocol=None
+  index=145 status=completed auc=0.5166666666666666 run_type=heart_qsvm_timing_repeat_5 sample_protocol=None
+DUPLICATE key=('heart_disease', 'random', 'vqc', 42, 0, 'A') count=3
+  index=1 status=completed auc=0.6166666666666667 run_type=timing_gate_two_stage sample_protocol=80-row draw from fixed 150-row sample; timing pilot before final direct-sampling manifest
+  index=4 status=completed auc=0.7111111111111111 run_type=timing_gate_direct sample_protocol=None
+  index=34 status=completed auc=0.7111111111111111 run_type=benchmark sample_protocol=None
+DUPLICATE key=('heart_disease', 'random', 'reupload', 42, 0, 'A') count=3
+  index=2 status=completed auc=0.48333333333333334 run_type=timing_gate_two_stage sample_protocol=80-row draw from fixed 150-row sample; timing pilot before final direct-sampling manifest
+  index=5 status=completed auc=0.4166666666666667 run_type=timing_gate_direct sample_protocol=None
+  index=35 status=completed auc=0.4166666666666667 run_type=benchmark sample_protocol=None

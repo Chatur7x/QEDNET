@@ -1,0 +1,5 @@
+{
+  "file": "D:\\Projects\\QEDNT\\results-v2\\quantum_raw.json",
+  "rows_tagged": 3,
+  "total_rows": 3
+}

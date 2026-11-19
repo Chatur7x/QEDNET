@@ -1,0 +1,44 @@
+{
+  "checks": {
+    "preprocessor_fit_transform_train_only": true,
+    "test_preprocessor_transform_only": true,
+    "model_fit_train_only": true,
+    "selector_and_pca_are_in_fold_local_preprocessor": true,
+    "all_grouped_parkinsons_folds_have_zero_subject_overlap": true
+  },
+  "passed": true,
+  "grouped_parkinsons": [
+    {
+      "fold": 0,
+      "train_subject_count": 19,
+      "test_subject_count": 10,
+      "overlap_count": 0
+    },
+    {
+      "fold": 1,
+      "train_subject_count": 19,
+      "test_subject_count": 10,
+      "overlap_count": 0
+    },
+    {
+      "fold": 2,
+      "train_subject_count": 20,
+      "test_subject_count": 9,
+      "overlap_count": 0
+    }
+  ],
+  "random_parkinsons": [
+    {
+      "fold": 0,
+      "overlap_count": 15
+    },
+    {
+      "fold": 1,
+      "overlap_count": 16
+    },
+    {
+      "fold": 2,
+      "overlap_count": 15
+    }
+  ]
+}
