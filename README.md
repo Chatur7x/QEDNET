@@ -270,6 +270,16 @@ pipeline = PreprocessingPipeline(compression="pca", n_components=8)
 - MLflow tracking for all experiments
 - Random seeds controlled throughout pipeline
 
+## Benchmark snapshot
+
+The v2 exploratory benchmark compared four classical baselines with three PennyLane quantum classifiers (QSVM, VQC, and data re-upload) on 80-row stratified samples from four biomedical datasets. It used three-fold cross-validation, fold-local preprocessing, and fit seeds 42, 1729, and 2024. The quantum models ran on the analytic `default.qubit` simulator with four qubits; no quantum hardware was used.
+
+On these samples, classical models had the higher mean AUC on breast cancer, heart disease, and diabetes. Quantum AUC was lower on those datasets. The paired p-values are exploratory because the same folds were reused across seeds; they are not evidence of general model superiority.
+
+Parkinson's random-row folds leaked subject identity across train and test. On the 80-row sample, setting A RandomForest mean AUC was 0.8634920634920635 (sample SD 0.09222733607382565) on random folds and 0.7067460317460317 (sample SD 0.2754061883729273) on subject-grouped folds. The grouped folds had zero subject overlap. These are sample-specific exploratory results with substantial fold variation, not a claim of subject-independent performance from the random-row evaluation.
+
+See [the full v2 report](results-v2/RESULTS_FINAL.md) for per-model tables, paired comparisons, methods, and limitations. The supporting run records and audits are in [`results-v2/`](results-v2/).
+
 ## Testing
 
 ```bash
