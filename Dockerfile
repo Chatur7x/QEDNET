@@ -1,27 +1,35 @@
-# QED-Net 2.0 — backend image (Python 3.11 quantum/ML core + FastAPI)
-FROM python:3.11-slim
+FROM node:22-bookworm-slim AS web-build
 
 WORKDIR /app
+COPY package.json bun.lock ./
+RUN npm install --global bun@1.2.22 && bun install --frozen-lockfile
+COPY . .
+RUN bun run build
 
-# system deps for numpy/scipy/xgboost wheels
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential curl && rm -rf /var/lib/apt/lists/*
+FROM node:22-bookworm-slim AS runtime
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    QEDNET_WORKSPACE_ROOT=/app \
+    QEDNET_PYTHON=/opt/qednet-venv/bin/python \
+    PYTHONPATH=/app/backend
 
-# python deps
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 python3-venv python3-pip build-essential libgomp1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && python3 -m venv /opt/qednet-venv
 
-# application code
+WORKDIR /app
 COPY backend/ ./backend/
 COPY configs/ ./configs/
-COPY scripts/ ./scripts/
-COPY data/raw/ ./data/raw/
+COPY data/ ./data/
+COPY README.md ./README.md
+RUN /opt/qednet-venv/bin/pip install --no-cache-dir --upgrade pip \
+    && /opt/qednet-venv/bin/pip install --no-cache-dir './backend[api]'
 
-ENV PYTHONPATH=/app/backend \
-    PYTHONUNBUFFERED=1
+COPY --from=web-build /app/.next/standalone/ ./
+COPY --from=web-build /app/.next/static/ ./.next/static/
+COPY --from=web-build /app/public/ ./public/
+COPY scripts/start-qednet.sh ./scripts/start-qednet.sh
 
-WORKDIR /app
-EXPOSE 8000
-
-# default: FastAPI service (frontend runs in its own image/serve)
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 10000
+CMD ["bash", "/app/scripts/start-qednet.sh"]

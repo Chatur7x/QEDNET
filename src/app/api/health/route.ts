@@ -34,35 +34,11 @@ export async function GET() {
     });
   }
 
-  // Cloud / Serverless Fallback (e.g. Vercel without local Python):
-  // Research artifacts exist on disk and are served directly.
-  const fallbackData = {
-    qednet_version: "2.0.0",
-    python: "3.11 (Research Archive)",
-    packages: {
-      numpy: "2.1.0",
-      sklearn: "1.5.0",
-      pandas: "2.2.2",
-      xgboost: "2.1.0",
-      shap: "0.45.1",
-      pennylane: "0.45.1",
-      imblearn: "0.12.3",
-      mlflow: null,
-      yaml: "6.0.1",
-      autograd: "present",
-    },
-    critical_missing: [],
-    ok: true,
-    mode: "cloud_archive",
-    research_status:
-      "RESEARCH AND EDUCATIONAL USE ONLY. QED-Net 2.0 is not a medical device, is not clinically validated, and is not intended for diagnosis or real patient-care decisions.",
-  };
-  cached = { at: Date.now(), data: fallbackData };
-
   return NextResponse.json({
-    ok: true,
-    backend: fallbackData,
+    ok: false,
+    backend: null,
+    error: res.error || "Python research backend unavailable",
     research_status:
       "RESEARCH AND EDUCATIONAL USE ONLY — not a medical device, not clinically validated, not for diagnosis.",
-  });
+  }, { status: 503 });
 }

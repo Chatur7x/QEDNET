@@ -12,10 +12,12 @@ dependencies = [
   "numpy>=1.26", "scipy>=1.11", "scikit-learn>=1.4", "pandas>=2.1",
   "xgboost>=2.0", "shap>=0.44", "pennylane>=0.36", "imbalanced-learn>=0.12",
   "pyyaml>=6.0",
+  "sqlalchemy>=2.0", "alembic>=1.13", "psycopg[binary]>=3.1",
+  "minio>=7.2", "redis>=5.0",
 ]
 
 [project.optional-dependencies]
-api = ["fastapi>=0.110", "uvicorn>=0.29", "pydantic>=2.6", "celery>=5.3", "redis>=5.0"]
+api = ["fastapi>=0.110", "uvicorn>=0.29", "pydantic>=2.6", "arq>=0.26"]
 tracking = ["mlflow>=2.11"]
 tests = ["pytest>=8.0", "hypothesis>=6.98", "httpx>=0.27"]
 

@@ -65,3 +65,16 @@ env/
 .mypy_cache/
 *.pkl
 .zscripts/
+preserved/
+results/
+results-v2/
+data/raw/
+data/processed/
+data/uploads/
+experiments/runs/
+experiments/jobs/
+**/node_modules/
+**/.next/
+**/.vercel/
+*.sqlite3
+*.tsbuildinfo

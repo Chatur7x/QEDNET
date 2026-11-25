@@ -12,9 +12,7 @@ export async function GET() {
     });
   }
   const fallback = getExperimentsFallback();
-  return NextResponse.json({
-    ok: true,
-    experiments: fallback,
-  });
+  if (res.ok) return NextResponse.json({ ok: true, experiments: fallback });
+  return NextResponse.json({ ok: false, experiments: fallback, error: res.error || "Experiment registry unavailable" }, { status: 503 });
 }
 

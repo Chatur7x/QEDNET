@@ -5,7 +5,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Loader2, Play, ShieldAlert, GitBranch, Sparkles, Zap, AlertTriangle, Shuffle, RotateCcw } from "lucide-react";
+import { Loader2, Play, ShieldAlert, GitBranch, Sparkles, Zap, AlertTriangle, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import {
   useExperiment,
@@ -80,21 +80,6 @@ function getPresetValues(dataset: string, featureNames: string[], type: "low" | 
   return res;
 }
 
-function getRandomValues(featureNames: string[]): Record<number, string> {
-  const res: Record<number, string> = {};
-  featureNames.forEach((name, i) => {
-    let base = 10;
-    if (name.includes("area")) base = 500 + Math.random() * 400;
-    else if (name.includes("perimeter")) base = 70 + Math.random() * 50;
-    else if (name.includes("texture")) base = 12 + Math.random() * 15;
-    else if (name.includes("smoothness") || name.includes("concav") || name.includes("compact")) base = 0.05 + Math.random() * 0.15;
-    else if (name.includes("radius")) base = 10 + Math.random() * 12;
-    else base = 10 + Math.random() * 50;
-    res[i] = base.toFixed(2);
-  });
-  return res;
-}
-
 export function PredictionView() {
   const experiments = useExperiments();
   const [expId, setExpId] = useState<string | null>(null);
@@ -136,35 +121,7 @@ export function PredictionView() {
   function applyPreset(type: "low" | "borderline" | "high") {
     const newVals = getPresetValues(datasetName, featureNames, type);
     setValues(newVals);
-    const arr: number[] = [];
-    for (let i = 0; i < nFeatures; i++) {
-      arr.push(parseFloat(newVals[i] ?? "0") || 0);
-    }
-    runWithFeatures(arr);
-    if (type === "borderline") {
-      toast.info("Applied Borderline Case preset", {
-        description: "Ambiguous screening value lands in [0.35, 0.65] band — triggers Quantum Second Opinion!",
-      });
-    } else if (type === "low") {
-      toast.success("Applied Low Risk preset", {
-        description: "Classical screening classifies with high confidence without routing to quantum.",
-      });
-    } else {
-      toast.warning("Applied High Risk preset", {
-        description: "Classical screening classifies as positive with high confidence.",
-      });
-    }
-  }
-
-  function applyRandom() {
-    const newVals = getRandomValues(featureNames);
-    setValues(newVals);
-    const arr: number[] = [];
-    for (let i = 0; i < nFeatures; i++) {
-      arr.push(parseFloat(newVals[i] ?? "0") || 0);
-    }
-    runWithFeatures(arr);
-    toast.info("Randomized features");
+    toast.info("Illustrative values filled; submit them to request a backend prediction.");
   }
 
   function clearValues() {
@@ -242,10 +199,10 @@ export function PredictionView() {
         {nFeatures > 0 && (
           <SectionCard
             title="Input features (original scale)"
-            subtitle={`${featureNames.length} features — load realistic 1-click presets or enter values`}
+            subtitle={`${featureNames.length} features — illustrative presets (not patient measurements) or enter values`}
             right={
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[11px] text-stone-400 mr-1">1-click test:</span>
+                <span className="text-[11px] text-stone-400 mr-1">Illustrative values:</span>
                 <Button
                   type="button"
                   variant="outline"
@@ -253,7 +210,7 @@ export function PredictionView() {
                   onClick={() => applyPreset("low")}
                   className="h-7 gap-1 px-2 text-[11px] text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
                 >
-                  <Sparkles className="h-3 w-3" /> Low Risk
+                  <Sparkles className="h-3 w-3" /> Preset A
                 </Button>
                 <Button
                   type="button"
@@ -262,7 +219,7 @@ export function PredictionView() {
                   onClick={() => applyPreset("borderline")}
                   className="h-7 gap-1 px-2 text-[11px] border-violet-300 bg-violet-50/70 text-violet-800 hover:bg-violet-100 hover:text-violet-900 font-medium shadow-xs"
                 >
-                  <Zap className="h-3 w-3 text-violet-600 fill-violet-600" /> ⚡ Borderline (Quantum Cascade)
+                  <Zap className="h-3 w-3 text-violet-600 fill-violet-600" /> Preset B
                 </Button>
                 <Button
                   type="button"
@@ -271,16 +228,7 @@ export function PredictionView() {
                   onClick={() => applyPreset("high")}
                   className="h-7 gap-1 px-2 text-[11px] text-rose-700 hover:bg-rose-50 hover:text-rose-800"
                 >
-                  <AlertTriangle className="h-3 w-3" /> High Risk
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={applyRandom}
-                  className="h-7 gap-1 px-2 text-[11px] text-stone-600 hover:bg-stone-100"
-                >
-                  <Shuffle className="h-3 w-3" /> Random
+                  <AlertTriangle className="h-3 w-3" /> Preset C
                 </Button>
                 <Button
                   type="button"
@@ -323,7 +271,7 @@ export function PredictionView() {
                 run cascade prediction
               </Button>
               <span className="text-[11px] text-stone-400">
-                Tip: Click <strong>⚡ Borderline</strong> to trigger the Quantum Second-Opinion Cascade.
+                Presets are illustrative only; the returned route depends on a trained experiment and its backend output.
               </span>
             </div>
           </SectionCard>

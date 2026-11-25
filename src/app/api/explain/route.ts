@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { cli, getExplainFallback } from "@/lib/qednet";
+import { cli, getExplainFallback, isSafeId } from "@/lib/qednet";
 
 export const dynamic = "force-dynamic";
 
@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
   const model = url.searchParams.get("model");
-  if (!id) {
+  if (!id || !isSafeId(id)) {
     return NextResponse.json({ ok: false, error: "id is required" }, { status: 400 });
   }
   const args = ["explain", "--id", id, ...(model ? ["--model", model] : [])];
@@ -31,6 +31,6 @@ export async function GET(req: Request) {
     ok: false,
     explainability: null,
     error: res.error ?? (res.data as any)?.error ?? "Explainability data not found",
-  }, { status: 404 });
+  }, { status: res.ok ? 404 : 503 });
 }
 

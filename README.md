@@ -76,7 +76,7 @@ QED-Net 2.0 repository
 │   ├── components/qednet/ # 8 dashboard views + design system + charts
 │   └── lib/               # typed API client, Python bridge
 ├── configs/experiments/   # YAML experiment configurations
-├── data/raw/              # bundled open datasets
+├── data/raw/              # optional local datasets (not committed)
 ├── experiments/runs/      # machine-readable results + certificates + reports
 ├── scripts/               # reproduce.py, dataset setup, experiment launcher
 ├── Dockerfile / docker-compose.yml
@@ -116,11 +116,9 @@ The demo runs the dashboard (Next.js) against the Python core through the CLI br
 # 1. Python environment (Python 3.11+)
 pip install -r requirements.txt
 
-# 2. Fetch the open datasets (sklearn provides breast cancer)
-mkdir -p data/raw && cd data/raw
-curl -LO https://archive.ics.uci.edu/ml/machine-learning-databases/heart-disease/processed.cleveland.data
-curl -LO https://archive.ics.uci.edu/ml/machine-learning-databases/parkinsons/parkinsons.data
-curl -LO  https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.csv
+# 2. Add the optional local data files required for heart disease,
+#    Parkinson's, and Pima diabetes. Those files are not included in Git.
+#    Breast cancer can be loaded from scikit-learn.
 
 # 3. Run the test suite (leakage guard, quantum equivalence, integration)
 cd backend && python -m pytest && cd ..
@@ -185,9 +183,9 @@ Or in the dashboard: **Prediction** view → set features → run cascade.
 | Tier | Dataset | Samples × features | Status |
 |------|---------|--------------------|--------|
 | 1 (must) | Wisconsin Breast Cancer | 569 × 30 | bundled (sklearn) |
-| 1 (must) | UCI Heart Disease (Cleveland) | 303 × 13 | bundled |
-| 1 (must) | UCI Parkinson's (voice) | 195 × 22 | bundled |
-| 2 (should) | Pima Indian Diabetes | 768 × 8 | bundled |
+| 1 (must) | UCI Heart Disease (Cleveland) | NOT MEASURED here | local source file required; not bundled |
+| 1 (must) | UCI Parkinson's (voice) | NOT MEASURED here | local source file required; not bundled |
+| 2 (should) | Pima Indian Diabetes | NOT MEASURED here | local source file required; not bundled |
 | 3 (stretch) | TCGA / MIMIC-IV | — | NOT bundled (restricted; platform works fully without them) |
 
 CSV upload with schema discovery, profiling and validation is available in the **Datasets** view.

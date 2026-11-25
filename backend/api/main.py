@@ -2,8 +2,8 @@
 
 In the sandbox the Next.js dashboard talks to the Python core directly via
 the CLI; in the full docker-compose deployment this FastAPI service exposes
-the same capabilities over HTTP with Celery+Redis handling long-running
-training jobs and PostgreSQL/MinIO providing durable storage.
+the same capabilities over HTTP with ARQ+Redis handling durable training
+jobs and PostgreSQL/MinIO providing persistent metadata and artifacts.
 
 Run: uvicorn api.main:app --host 0.0.0.0 --port 8000
 """
@@ -11,18 +11,22 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+import re
 import subprocess
 import sys
+import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import BackgroundTasks, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from qednet import RESEARCH_STATUS  # noqa: E402
+from qednet.data.ingestion import safe_filename  # noqa: E402
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("qednet.api")
@@ -34,20 +38,40 @@ app = FastAPI(
     version="2.0.0",
 )
 app.add_middleware(
-    CORSMiddleware, allow_origins=["*"], allow_methods=["*"],
+    CORSMiddleware,
+    allow_origins=[origin.strip() for origin in os.getenv(
+        "QEDNET_CORS_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000",
+    ).split(",") if origin.strip()],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
 ROOT = Path(__file__).resolve().parents[2]
+MAX_UPLOAD_BYTES = 25 * 1024 * 1024
+_SAFE_ID = re.compile(r"[A-Za-z0-9_-]{1,128}\Z")
+
+
+def _validate_id(value: str, field: str) -> str:
+    if not _SAFE_ID.fullmatch(value):
+        raise HTTPException(400, f"Invalid {field}")
+    return value
 
 
 def _cli(args: List[str], timeout: int = 300) -> Dict[str, Any]:
     """Invoke the qednet CLI and parse its JSON stdout."""
-    proc = subprocess.run(
-        [sys.executable, "-m", "qednet.cli", *args],
-        cwd=str(ROOT), capture_output=True, text=True, timeout=timeout,
-        env={"PYTHONPATH": str(ROOT / "backend"), "PATH": "/usr/bin:/usr/local/bin"},
-    )
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(ROOT / "backend")
+    try:
+        proc = subprocess.run(
+            [sys.executable, "-m", "qednet.cli", *args],
+        cwd=str(ROOT / "backend"), capture_output=True, text=True, timeout=timeout,
+            env=env,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise HTTPException(504, "Research command exceeded its time limit") from exc
+    except OSError as exc:
+        raise HTTPException(503, "Research command could not be started") from exc
     for line in reversed(proc.stdout.strip().split("\n")):
         if line.startswith("{") and line.endswith("}"):
             try:
@@ -62,7 +86,7 @@ class ValidateRequest(BaseModel):
 
 
 class PredictRequest(BaseModel):
-    experiment_id: str = Field(alias="experimentId")
+    experiment_id: str = Field(alias="experimentId", pattern=r"^[A-Za-z0-9_-]{1,128}$")
     features: List[float]
 
     model_config = {"populate_by_name": True}
@@ -70,8 +94,22 @@ class PredictRequest(BaseModel):
 
 @app.get("/health")
 def health() -> Dict[str, Any]:
-    data = _cli(["env"], timeout=60)
-    return {"ok": True, "backend": data, "research_status": RESEARCH_STATUS}
+    """Liveness — process is up. Use /ready for dependency readiness."""
+    from qednet.api.health import health as liveness
+    payload = liveness()
+    payload.update({"ok": True, "kind": "liveness"})
+    return payload
+
+
+@app.get("/ready")
+def ready() -> Dict[str, Any]:
+    """Readiness — Postgres + Redis + S3 when USE_DB_STORAGE is enabled (503 if unready)."""
+    from fastapi.responses import JSONResponse
+    from qednet.api.health import readiness
+    from qednet.db.settings import StorageSettings
+
+    payload, code = readiness(StorageSettings.from_env())
+    return JSONResponse(status_code=code, content=payload)
 
 
 @app.get("/datasets")
@@ -83,14 +121,23 @@ def datasets() -> Dict[str, Any]:
 async def upload_dataset(file: UploadFile = File(...),
                          target: Optional[str] = Form(default=None),
                          name: Optional[str] = Form(default=None)) -> Dict[str, Any]:
-    if not file.filename.lower().endswith((".csv", ".tsv")):
+    filename = Path(file.filename or "").name
+    if Path(filename).suffix.lower() not in (".csv", ".tsv"):
         raise HTTPException(400, "Only CSV/TSV files are accepted")
-    dest = ROOT / "data" / "uploads" / file.filename.replace("/", "_")
+    safe_name = safe_filename(filename)
+    dest = ROOT / "data" / "uploads" / f"{uuid.uuid4().hex}_{safe_name}"
     dest.parent.mkdir(parents=True, exist_ok=True)
-    content = await file.read()
-    if len(content) > 25 * 1024 * 1024:
-        raise HTTPException(400, "File exceeds 25 MB limit")
-    dest.write_bytes(content)
+    size = 0
+    try:
+        with dest.open("wb") as output:
+            while chunk := await file.read(1024 * 1024):
+                size += len(chunk)
+                if size > MAX_UPLOAD_BYTES:
+                    raise HTTPException(413, "File exceeds the upload size limit")
+                output.write(chunk)
+    except HTTPException:
+        dest.unlink(missing_ok=True)
+        raise
     args = ["upload", "--csv", str(dest)]
     if target:
         args += ["--target", target]
@@ -111,20 +158,41 @@ def models() -> Dict[str, Any]:
 
 
 @app.post("/train")
-def train(background_tasks: Any, config: str = Form(...),
+def train(background_tasks: BackgroundTasks, config: str = Form(...),
           experiment_id: Optional[str] = Form(default=None)) -> Dict[str, Any]:
-    """Start a training job. With Celery+Redis available the job is queued;
-    otherwise it degrades to a background task in this process."""
+    """Start a training job. With USE_DB_STORAGE the job is durably queued via
+    ARQ+Redis; otherwise it degrades to an in-process background task."""
+    config = _validate_id(config, "config name")
+    if experiment_id is not None:
+        experiment_id = _validate_id(experiment_id, "experiment ID")
     cfg_path = ROOT / "configs" / "experiments" / f"{config}.yaml"
     if not cfg_path.exists():
         raise HTTPException(404, f"Unknown config: {config}")
     exp_id = experiment_id or f"exp_{config}_{int(__import__('time').time())}"
 
-    try:
-        from celery import Celery  # noqa: F401
-        queued = _queue_celery(str(cfg_path), exp_id)
-    except Exception:  # noqa: BLE001 - Celery optional in this profile
-        queued = None
+    # Phase 1: durable DB + ARQ path when enabled. Falls back to the Phase 0
+    # in-process background task only when the flag is off (demo mode).
+    from qednet.db.settings import StorageSettings
+    settings = StorageSettings.from_env()
+    if settings.use_db_storage:
+        from qednet.config import config_to_dict, load_config
+        from qednet.api.integration import start_db_job
+
+        cfg = load_config(cfg_path)
+        cfg.experiment_id = exp_id
+        try:
+            return start_db_job(
+                settings,
+                cfg_path=cfg_path,
+                experiment_id=exp_id,
+                config_json=json.dumps(config_to_dict(cfg)),
+                config_hash=cfg.config_hash(),
+                dataset=cfg.dataset.name,
+            )
+        except Exception as exc:  # noqa: BLE001 - surface queue/DB failure
+            raise HTTPException(503, f"training queue unavailable: {exc}")
+
+    queued: Any = None
     if queued is None:
         import time
         from qednet.config import load_config
@@ -146,16 +214,6 @@ def train(background_tasks: Any, config: str = Form(...),
     return {"ok": True, "experiment_id": exp_id, "execution": queued}
 
 
-def _queue_celery(cfg_path: str, exp_id: str):
-    """Queue through Celery if a broker is reachable (best effort)."""
-    import time
-    from celery import Celery
-    celery_app = Celery(__name__, broker="redis://redis:6379/0",
-                        backend="redis://redis:6379/1")
-    celery_app.send_task("qednet.train.run_experiment", args=[cfg_path, exp_id])
-    return "celery queue"
-
-
 @app.get("/experiments")
 def experiments() -> Dict[str, Any]:
     return _cli(["list-experiments"], timeout=120)
@@ -163,6 +221,7 @@ def experiments() -> Dict[str, Any]:
 
 @app.get("/experiments/{experiment_id}")
 def experiment_detail(experiment_id: str) -> Dict[str, Any]:
+    _validate_id(experiment_id, "experiment ID")
     return _cli(["get-experiment", "--id", experiment_id], timeout=300)
 
 
@@ -175,6 +234,7 @@ def predict(req: PredictRequest) -> Dict[str, Any]:
 @app.post("/explain")
 def explain(experiment_id: str = Form(...),
             model: Optional[str] = Form(default=None)) -> Dict[str, Any]:
+    _validate_id(experiment_id, "experiment ID")
     args = ["explain", "--id", experiment_id]
     if model:
         args += ["--model", model]
@@ -183,12 +243,14 @@ def explain(experiment_id: str = Form(...),
 
 @app.get("/benchmark/{experiment_id}")
 def benchmark(experiment_id: str) -> Dict[str, Any]:
+    _validate_id(experiment_id, "experiment ID")
     data = _cli(["get-experiment", "--id", experiment_id], timeout=300)
     return {"ok": True, "benchmark": (data or {}).get("result", {}).get("models")}
 
 
 @app.get("/certificate/{experiment_id}")
 def certificate(experiment_id: str) -> Dict[str, Any]:
+    _validate_id(experiment_id, "experiment ID")
     return _cli(["certificate", "--id", experiment_id], timeout=300)
 
 

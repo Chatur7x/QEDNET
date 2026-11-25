@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-import { cli, RUNS_DIR, getExperimentFallback } from "@/lib/qednet";
+import { cli, RUNS_DIR, getExperimentFallback, isSafeId } from "@/lib/qednet";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +10,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+  if (!isSafeId(id)) return NextResponse.json({ ok: false, error: "Invalid experiment ID" }, { status: 400 });
   const res = await cli(["get-experiment", "--id", id], 120_000);
   const reportPath = path.join(RUNS_DIR, id, "report.md");
   const report = fs.existsSync(reportPath) ? fs.readFileSync(reportPath, "utf-8") : null;

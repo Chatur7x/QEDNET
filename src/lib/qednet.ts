@@ -7,6 +7,7 @@
  * detached and tracked through job descriptor files.
  */
 import { execFile, spawn } from "child_process";
+import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
 import os from "os";
@@ -72,12 +73,18 @@ export const RUNS_DIR = path.join(ROOT, "experiments", "runs");
 export const UPLOADS_DIR = path.join(ROOT, "data", "uploads");
 export const CONFIGS_DIR = path.join(ROOT, "configs", "experiments");
 
+export function isSafeId(value: string): boolean {
+  return /^[A-Za-z0-9_-]{1,128}$/.test(value);
+}
+
 export interface CliResult<T = unknown> {
   ok: boolean;
   data: T | null;
   error?: string;
   stderrTail?: string;
 }
+
+export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
 
 /** Run a qednet CLI command and parse its JSON stdout payload. */
 export function cli<T = unknown>(args: string[], timeoutMs = 120_000): Promise<CliResult<T>> {
@@ -152,7 +159,7 @@ export interface JobDescriptor {
 const memoryJobs = new Map<string, JobDescriptor>();
 const memoryDatasets = new Map<string, Record<string, unknown>>();
 
-/** Spawn a detached training job; returns its descriptor. Falls back to simulated run if Python is not present. */
+/** Spawn a real detached training job; unavailable runtimes fail explicitly. */
 export function startTrainingJob(configName: string, experimentId: string): JobDescriptor {
   const jobsDir = getJobsDir();
   const jobId = `job_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
@@ -180,18 +187,19 @@ export function startTrainingJob(configName: string, experimentId: string): JobD
     spawnFailed = true;
   }
 
-  const isSim = spawnFailed || !child || !child.pid;
+  const started = !spawnFailed && !!child?.pid;
 
   const job: JobDescriptor = {
     jobId,
     experimentId,
     configName,
-    status: "running",
+    status: started ? "running" : "failed",
     pid: child?.pid ?? null,
     startedAt: Date.now(),
     endedAt: null,
     logFile,
-    isSimulated: isSim,
+    isSimulated: false,
+    error: started ? undefined : "Python training process could not be started",
   };
 
   memoryJobs.set(jobId, job);
@@ -226,19 +234,7 @@ export function cancelJob(jobId: string): boolean {
 /** Read a job descriptor and refresh its live status from the process table or simulation timeline. */
 export function refreshJob(job: JobDescriptor): JobDescriptor {
   if (job.isSimulated) {
-    if (job.status === "cancelled") return job;
-    const elapsed = Date.now() - job.startedAt;
-    const SIM_DURATION_MS = 25_000;
-    if (elapsed >= SIM_DURATION_MS) {
-      const updated: JobDescriptor = {
-        ...job,
-        status: "completed",
-        endedAt: job.endedAt || job.startedAt + SIM_DURATION_MS,
-      };
-      memoryJobs.set(job.jobId, updated);
-      return updated;
-    }
-    return { ...job, status: "running" };
+    return { ...job, status: "failed", endedAt: job.endedAt || Date.now(), error: "Simulated job record is not a measured run" };
   }
 
   const alive = job.pid ? isPidAlive(job.pid) : false;
@@ -276,24 +272,6 @@ export function readLogTail(logFile: string, n = 1500): string | undefined {
       if (text.length > 0) return text.length > n ? text.slice(-n) : text;
     }
   } catch {}
-
-  // Check if simulated job has progress logs
-  for (const job of memoryJobs.values()) {
-    if (job.logFile === logFile) {
-      const elapsed = (Date.now() - job.startedAt) / 1000;
-      const lines = [
-        `[info] QED-Net 2.0 pipeline initialized for ${job.experimentId} (${job.configName}.yaml)`,
-        `[info] Leakage guard validation: 0 errors, 0 target leaks`,
-      ];
-      if (elapsed >= 3) lines.push(`[info] Seed 42: Fold 1/5 classical screening refit (AUROC 0.832)`);
-      if (elapsed >= 8) lines.push(`[info] Seed 42: Fold 2/5 ensemble baselines (AUROC 0.854)`);
-      if (elapsed >= 13) lines.push(`[info] Seed 7: Fold 3/5 VQC quantum circuit simulation (AUROC 0.871)`);
-      if (elapsed >= 18) lines.push(`[info] Seed 7: Fold 4/5 QK-SVM quantum kernel evaluation (AUROC 0.880)`);
-      if (elapsed >= 22) lines.push(`[info] Seed 2026: Fold 5/5 Honesty meter & cascade ambiguity [0.35, 0.65] calibrated`);
-      if (elapsed >= 25) lines.push(`[info] Run complete. Deployment artifacts saved to experiments/runs/${job.experimentId}`);
-      return lines.slice(-8).join("\n");
-    }
-  }
 
   return undefined;
 }
@@ -341,91 +319,15 @@ export function readProgress(experimentId: string): Record<string, unknown> | nu
     }
   } catch {}
 
-  // Check in-memory simulated jobs
-  for (const job of memoryJobs.values()) {
-    if (job.experimentId === experimentId) {
-      if (job.status === "cancelled") {
-        return { stage: "cancelled", auroc: 0, completed_fits: 0 };
-      }
-      const elapsedSec = (Date.now() - job.startedAt) / 1000;
-      if (elapsedSec < 4) {
-        return {
-          stage: "F1/F2: Ingestion & leakage validation",
-          fold: 1,
-          seed: 42,
-          model: "data-validator",
-          auroc: 0.8320,
-          completed_fits: 1,
-          fits_per_seed: 5,
-          seeds_total: 3,
-        };
-      } else if (elapsedSec < 9) {
-        return {
-          stage: "F3/F4: Fitting classical baselines",
-          fold: 2,
-          seed: 42,
-          model: "xgboost",
-          auroc: 0.8540,
-          completed_fits: 4,
-          fits_per_seed: 5,
-          seeds_total: 3,
-        };
-      } else if (elapsedSec < 14) {
-        return {
-          stage: "F5/F6/F7: PCA compression & quantum zoo",
-          fold: 3,
-          seed: 7,
-          model: "vqc",
-          auroc: 0.8715,
-          completed_fits: 8,
-          fits_per_seed: 5,
-          seeds_total: 3,
-        };
-      } else if (elapsedSec < 19) {
-        return {
-          stage: "F8/F9/F10: Nested CV benchmarking",
-          fold: 4,
-          seed: 7,
-          model: "qk_svm",
-          auroc: 0.8805,
-          completed_fits: 11,
-          fits_per_seed: 5,
-          seeds_total: 3,
-        };
-      } else if (elapsedSec < 25) {
-        return {
-          stage: "F11/F12: Honesty meter & cascade calibration",
-          fold: 5,
-          seed: 2026,
-          model: "cascade",
-          auroc: 0.8865,
-          completed_fits: 15,
-          fits_per_seed: 5,
-          seeds_total: 3,
-        };
-      } else {
-        return {
-          stage: "completed",
-          fold: 5,
-          seed: 2026,
-          model: "refit-final",
-          auroc: 0.8865,
-          completed_fits: 15,
-          fits_per_seed: 5,
-          seeds_total: 3,
-        };
-      }
-    }
-  }
-
   return null;
 }
 
 export async function saveUploadedCsv(file: File): Promise<string> {
   const uploadsDir = getUploadsDir();
   const safe = file.name.replace(/[^a-zA-Z0-9_.-]+/g, "_").slice(0, 80);
-  const dest = path.join(uploadsDir, `${Date.now().toString(36)}_${safe}`);
+  const dest = path.join(uploadsDir, `${randomUUID()}_${safe}`);
   const bytes = Buffer.from(await file.arrayBuffer());
+  if (bytes.byteLength > MAX_UPLOAD_BYTES) throw new Error("File exceeds the upload size limit");
   fs.writeFileSync(dest, bytes);
   return dest;
 }
@@ -479,31 +381,6 @@ export function getExperimentsFallback(): Array<Record<string, unknown>> {
     } catch {}
   }
 
-  // Include completed simulated jobs as experiment runs
-  for (const job of memoryJobs.values()) {
-    if (job.status === "completed" && !existingIds.has(job.experimentId)) {
-      existingIds.add(job.experimentId);
-      out.unshift({
-        experiment_id: job.experimentId,
-        dataset: job.configName,
-        n_samples: 303,
-        n_features: 13,
-        models: ["logistic_regression", "random_forest", "xgboost", "vqc", "qk_svm"],
-        protocol: {
-          outer_folds: 5,
-          inner_folds: 3,
-          seeds: [42, 7, 2026],
-        },
-        runtime_s: 25.2,
-        created: job.startedAt,
-        has_certificate: true,
-        config_file: `${CONFIGS_DIR}/${job.configName}.yaml`,
-        validation_passed: true,
-        evidence_classification: "preliminary_quantum_advantage",
-      });
-    }
-  }
-
   return out.sort((a, b) => Number(b.created || 0) - Number(a.created || 0));
 }
 
@@ -513,21 +390,6 @@ export function getExperimentFallback(id: string): Record<string, unknown> | nul
     try {
       return JSON.parse(fs.readFileSync(resultPath, "utf-8"));
     } catch {}
-  }
-
-  // If this is a simulated job or custom experiment id, clone from default base run
-  for (const job of memoryJobs.values()) {
-    if (job.experimentId === id) {
-      const baseName = job.configName.includes("heart") ? "exp_heart_disease" : "exp_breast_cancer";
-      const base = getExperimentFallback(baseName);
-      if (base) {
-        return {
-          ...base,
-          experiment_id: id,
-          dataset: job.configName,
-        };
-      }
-    }
   }
 
   return null;
@@ -544,20 +406,6 @@ export function getCertificateFallback(id: string): { certificate: Record<string
     } catch {}
   }
 
-  // Fallback for custom or simulated experiment
-  for (const job of memoryJobs.values()) {
-    if (job.experimentId === id) {
-      const baseName = job.configName.includes("heart") ? "exp_heart_disease" : "exp_breast_cancer";
-      const base = getCertificateFallback(baseName);
-      if (base) {
-        return {
-          certificate: { ...base.certificate, experiment_id: id },
-          markdown: base.markdown,
-        };
-      }
-    }
-  }
-
   return null;
 }
 
@@ -569,16 +417,6 @@ export function getExplainFallback(id: string): Record<string, unknown> | null {
     } catch {}
   }
 
-  for (const job of memoryJobs.values()) {
-    if (job.experimentId === id) {
-      const baseName = job.configName.includes("heart") ? "exp_heart_disease" : "exp_breast_cancer";
-      const base = getExplainFallback(baseName);
-      if (base) {
-        return { ...base, experiment_id: id };
-      }
-    }
-  }
-
   return null;
 }
 
@@ -586,8 +424,13 @@ export function getDatasetsFallback(): Array<Record<string, unknown>> {
   const list: Array<Record<string, unknown>> = [];
   if (fs.existsSync(DATA_REGISTRY_PATH)) {
     try {
-      const data = JSON.parse(fs.readFileSync(DATA_REGISTRY_PATH, "utf-8"));
-      list.push(...Object.values(data));
+      const data = JSON.parse(fs.readFileSync(DATA_REGISTRY_PATH, "utf-8")) as unknown;
+      if (data && typeof data === "object" && !Array.isArray(data)) {
+        list.push(...Object.values(data).filter(
+          (value): value is Record<string, unknown> =>
+            !!value && typeof value === "object" && !Array.isArray(value),
+        ));
+      }
     } catch {}
   }
 
@@ -598,112 +441,7 @@ export function getDatasetsFallback(): Array<Record<string, unknown>> {
   return list;
 }
 
-export function getValidationFallback(dataset: string): Record<string, unknown> {
-  const expId = `exp_${dataset}`;
-  const res = getExperimentFallback(expId);
-  if (res?.validation) {
-    return res.validation as Record<string, unknown>;
-  }
-  return {
-    passed: true,
-    dataset,
-    issues: [],
-    leakage_guards_active: true,
-  };
-}
-
-export function predictFallback(experimentId: string, features: number[]): Record<string, unknown> {
-  const bandLo = 0.35;
-  const bandHi = 0.65;
-
-  let classicalProb: number;
-  const expLower = experimentId.toLowerCase();
-
-  if (expLower.includes("heart") && features.length >= 13) {
-    // heart_disease: age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal
-    const [age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal] = features;
-    let risk = 0;
-    if (age > 60) risk += 0.8; else if (age > 50) risk += 0.4;
-    if (sex === 1) risk += 0.3;
-    if (cp > 1) risk += 0.9;
-    if (trestbps > 140) risk += 0.6; else if (trestbps > 130) risk += 0.3;
-    if (chol > 280) risk += 0.7; else if (chol > 230) risk += 0.3;
-    if (fbs === 1) risk += 0.3;
-    if (thalach < 120) risk += 0.8; else if (thalach < 145) risk += 0.4;
-    if (exang === 1) risk += 0.9;
-    if (oldpeak > 2.0) risk += 1.0; else if (oldpeak > 0.8) risk += 0.4;
-    if (ca >= 2) risk += 1.2; else if (ca >= 1) risk += 0.5;
-    if (thal === 3) risk += 0.8;
-    classicalProb = 1 / (1 + Math.exp(-(risk - 3.2)));
-  } else if (expLower.includes("breast") && features.length >= 30) {
-    const radius = features[0] ?? 14;
-    const area = features[3] ?? 600;
-    const concavity = features[6] ?? 0.1;
-    const z = (radius - 14.5) * 0.8 + (area - 650) * 0.005 + (concavity - 0.08) * 10;
-    classicalProb = 1 / (1 + Math.exp(-z));
-  } else if (expLower.includes("parkinson") && features.length >= 22) {
-    const hnr = features[4] ?? 22;
-    const ppe = features[features.length - 1] ?? 0.2;
-    const z = (22 - hnr) * 0.2 + (ppe - 0.2) * 8;
-    classicalProb = 1 / (1 + Math.exp(-z));
-  } else if (expLower.includes("diabetes") && features.length >= 8) {
-    const glucose = features[1] ?? 120;
-    const bmi = features[5] ?? 32;
-    const age = features[7] ?? 33;
-    const z = (glucose - 125) * 0.04 + (bmi - 30) * 0.1 + (age - 30) * 0.03;
-    classicalProb = 1 / (1 + Math.exp(-z));
-  } else {
-    let sum = 0;
-    for (let i = 0; i < features.length; i++) {
-      const v = features[i] ?? 0;
-      const normalized = Math.abs(v) > 50 ? v / 100 : Math.abs(v) > 10 ? v / 20 : v;
-      sum += normalized * (Math.sin(i * 1.5 + 0.3) * 0.5);
-    }
-    classicalProb = 1 / (1 + Math.exp(-sum / Math.max(1, Math.sqrt(features.length))));
-  }
-
-  classicalProb = Math.max(0.02, Math.min(0.98, classicalProb));
-  const insideBand = classicalProb >= bandLo && classicalProb <= bandHi;
-  const route = insideBand ? "quantum" : "classical";
-
-  let quantumProb = classicalProb;
-  if (insideBand) {
-    const shift = (classicalProb >= 0.5 ? 0.08 : -0.07);
-    quantumProb = Math.max(0.04, Math.min(0.96, classicalProb + shift));
-  }
-
-  const probUsed = insideBand ? quantumProb : classicalProb;
-  const confidence = Math.abs(probUsed - 0.5) * 2;
-  const p = Math.max(1e-6, Math.min(1 - 1e-6, probUsed));
-  const entropy = -(p * Math.log2(p) + (1 - p) * Math.log2(1 - p));
-  const shouldAbstain = confidence < 0.12;
-
-  return {
-    ok: true,
-    stage: "cascade",
-    route,
-    classical_screening_probability: Number(classicalProb.toFixed(4)),
-    model_used: insideBand ? "vqc" : "xgboost",
-    probability_used: Number(probUsed.toFixed(4)),
-    prediction: shouldAbstain ? null : probUsed >= 0.5 ? 1 : 0,
-    confidence: Number(confidence.toFixed(4)),
-    uncertainty_entropy: Number(entropy.toFixed(4)),
-    abstention: {
-      abstain: shouldAbstain,
-      reasons: {
-        high_entropy: entropy > 0.95,
-        low_confidence: confidence < 0.12,
-      },
-    },
-    status: shouldAbstain ? "abstain" : insideBand ? "quantum_cascade_resolved" : "confident",
-    abstention_rule: {
-      min_confidence: 0.12,
-      ambiguity_band: [bandLo, bandHi],
-      conformal_alpha: 0.1,
-    },
-    experiment_id: experimentId,
-  };
-}
+export function getValidationFallback(_dataset: string): null { return null; }
 
 export { ROOT };
 

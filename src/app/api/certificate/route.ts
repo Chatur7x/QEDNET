@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { cli, getCertificateFallback } from "@/lib/qednet";
+import { cli, getCertificateFallback, isSafeId } from "@/lib/qednet";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   const id = new URL(req.url).searchParams.get("id");
-  if (!id) {
+  if (!id || !isSafeId(id)) {
     return NextResponse.json({ ok: false, error: "id is required" }, { status: 400 });
   }
   const res = await cli(["certificate", "--id", id], 120_000);
@@ -31,6 +31,6 @@ export async function GET(req: Request) {
     certificate: null,
     markdown: null,
     error: res.error ?? (res.data as any)?.error ?? "Certificate not found",
-  }, { status: 404 });
+  }, { status: res.ok ? 404 : 503 });
 }
 
