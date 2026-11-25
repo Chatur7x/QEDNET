@@ -2,7 +2,7 @@ FROM node:22-bookworm-slim AS web-build
 
 WORKDIR /app
 COPY package.json bun.lock ./
-RUN npm install --global bun@1.2.22 && bun install --frozen-lockfile
+RUN npm install --global bun@1.4.4 && bun install --frozen-lockfile
 COPY . .
 RUN bun run build
 
