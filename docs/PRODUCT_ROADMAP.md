@@ -6,6 +6,8 @@ This repository and its hosted service are the **research platform**. They suppo
 
 The **clinical decision-support product** is a separate product and release program. It needs separate source control, identity and access rules, data stores, audit records, risk controls, release process, user-facing intended-use statement, and validation. Do not copy a QEDNET model or login into a clinical workflow and treat that as validation.
 
+The user-facing direction is one coordinated brand and website plus an Android app focused first on women's health journaling and research. The clinical decision-support service remains a separately secured product surface and data plane; shared visual components do not mean shared accounts, storage, model release, or safety claims. Until clinical gates are met, the website and Android app must remain education/research/self-tracking tools and must not expose clinical decisions.
+
 This plan describes proposed work. A roadmap item is not evidence that the feature exists or is verified.
 
 ## Current baseline
@@ -16,6 +18,7 @@ This plan describes proposed work. A roadmap item is not evidence that the featu
 - Supabase email/password authentication and a single-email allowlist are configured for the preview. The confirmation-resend routing fix is deployed, but successful email delivery and account confirmation remain unverified because Supabase rate-limited confirmation messages.
 - The clinical product is not implemented or validated.
 - A separate Android client is not verified as present. A future client should use the research API only and must not present outputs as clinical advice.
+- No women's-health or menstrual-tracking feature was found in the current application source during the plan update; the women's-health feature set below is proposed work, not an existing capability.
 
 ## Track A — Research platform
 
@@ -136,6 +139,41 @@ This plan describes proposed work. A roadmap item is not evidence that the featu
 
 **Safety boundary:** this is a research/education flow. It is not for emergency monitoring, diagnosis, or care decisions. Android Health Connect background access requires appropriate user permission, and its synchronization behavior is not a real-time guarantee. Wear OS passive updates can be batched at intervals that the app cannot predict; rapid measurement APIs are intended for active experiences, not continuous background capture.
 
+### A9. Women's health and menstrual health product
+
+Make women's health the first focused body-health vertical, while keeping the platform extensible to other biomedical areas. Start with a useful, user-controlled cycle and symptom journal. Do not begin by claiming to detect disease from a period calendar.
+
+#### User-facing website and Android features
+
+- **Cycle journal:** record period start/end, flow as a user-selected scale, spotting, pain, cramps, fatigue, mood, sleep, headache, digestive symptoms, medication, and effect on daily activity. Let users skip fields and correct/delete entries.
+- **Life-stage context:** optionally record age band, years since menarche, hormonal contraception, pregnancy/postpartum, breastfeeding, perimenopause, surgery, and relevant treatment. Do not apply one cycle rule to every life stage; use the right reference content and state when the app lacks a validated interpretation.
+- **Personal timeline:** show logged facts, gaps, symptom burden, and within-person changes. Keep observations separate from medical interpretation.
+- **Period-date estimate:** offer only a probabilistic next-period estimate after an evidence-based minimum amount of usable data has been defined and validated. Show an uncertainty range, what inputs affected it, and “not enough information” when confidence is inadequate. Do not force a default cycle length or show false precision.
+- **Fertility boundary:** do not present calendar predictions as a contraceptive method or guarantee conception timing. A future optional conception-research mode must distinguish observed markers (such as user-entered LH or temperature) from predicted fertile days and must be separately validated and reviewed for regulatory implications.
+- **Care conversation export:** with explicit user action, create a date-stamped symptom/cycle summary for the user to share with a clinician. Make clear it is a user journal, not a diagnosis or medical record verified by a clinician.
+- **Source-linked education:** provide clinician-reviewed plain-language content, reading level and language options, source date, and an escalation path to qualified care. Do not use a chatbot to diagnose, prescribe, or replace clinician review.
+- **Accessibility and inclusion:** support irregular and missing cycles, non-pink/non-stereotyped visual design, diverse ages and bodies, screen readers, low-connectivity use, localization, and user-chosen terms. Do not infer gender identity or sexual activity from cycle data.
+- **Privacy first:** collect the minimum data; keep tracking usable offline; protect local records; make cloud sync opt-in; separate app analytics from reproductive-health data; no ad targeting, sale, or secondary use; provide export, revocation, and deletion flows. Avoid sensitive lock-screen text and notification previews.
+
+#### Research and ML feature path
+
+- Start with descriptive statistics and user-specific baselines. Show logged observations even when no model is available.
+- For next-cycle timing, compare simple per-person and population baselines with classical time-series or probabilistic models. Evaluate future cycles chronologically with participant-level separation; report calibration, prediction intervals, missed/late logging sensitivity, and performance for irregular cycles and life stages.
+- For symptom patterns, study within-person symptom trajectories and co-occurrence as research outcomes. Do not convert a pattern into a PCOS, endometriosis, infertility, or other disease label without an approved and clinically valid reference standard.
+- Research PCOS or endometriosis risk stratification only with consented cohorts, confirmed clinician labels, documented inclusion criteria, and external validation. The output, if ever studied, is a clinician-review prompt—not an automated diagnosis.
+- Do not apply adult cycle thresholds to adolescents. Clinical definitions depend on years since menarche and other context; age-appropriate content and clinical governance are required before any threshold-based alert is implemented.
+- A future model must have a “not enough evidence / not enough data” outcome, calibration and subgroup checks, prospective versioning, and a rollback path. It must not silently learn from an individual’s newly entered data.
+
+#### Quantum and classical research plan
+
+- The QEDNET quantum stack is a research-method option, not a presumed improvement. Begin with classical baselines and data-quality checks; only test quantum models if a frozen cohort and feature representation support a fair comparison.
+- For cycle forecasting and symptom trajectories, compare classical statistical/time-series and tree/kernel baselines before trying QSVM, VQC, or data re-uploading. Keep temporal order, participant grouping, and preprocessing strictly inside training folds.
+- Test QML on compact, prespecified feature sets with the same participants, folds, target, and compute budget as classical controls. Include parameter/capacity-matched classical controls and document simulator versus real hardware, qubits, shots, queue/training/prediction time, failed runs, and resource use.
+- Use QML for exploratory representation learning or model comparison, not for a user-facing clinical recommendation, until independent external validation demonstrates useful performance and regulators/clinical owners approve the intended use.
+- Preserve negative findings. If classical baselines match or exceed QML, report that and do not market quantum advantage.
+
+**Done when:** the website and Android app have a coherent, privacy-reviewed cycle journal; all estimates are uncertainty-aware and validated for the stated use; exports are accurate and user controlled; research labels and model claims trace to approved cohort evidence; and disease-detection claims remain disabled until separately validated.
+
 ## Track B — Separate clinical decision-support product
 
 ### B0. Clinical discovery and intended use
@@ -209,6 +247,18 @@ These are research and product hypotheses, not currently implemented or validate
 
 **Acceptance criteria:** choose latency, availability, data-loss, alert-burden, subgroup, and clinical-outcome thresholds with clinical and safety owners before validation. They are **NOT SET** in this plan because intended use and data/device sources are undecided.
 
+### B6. Women's-health clinical decision-support workstream
+
+- Select one bounded clinical workflow with gynecology/endocrinology partners. Candidate research questions include better characterization of severe cyclic pelvic pain, heavy/irregular bleeding, and clinician-confirmed PCOS phenotypes; these are not approved diagnoses or release claims.
+- Define the reference standard and care action with clinicians. Separate patient-reported symptoms, cycle-derived features, labs, imaging, medication/contraception context, and clinician-confirmed diagnoses; do not treat a tracker log as a gold-standard diagnosis.
+- Ensure the cohort represents age/life stage, cycle regularity, hormonal contraception, pregnancy/postpartum, perimenopause, treatment, comorbidities, geography, and data-access differences relevant to the intended population.
+- Build a clinician-facing longitudinal view of patient-entered cycles, symptom severity, functional impact, missingness, source timestamps, and uncertainty. It should help structure a conversation and preserve provenance, not label the patient with a disease.
+- If a prospective tool is justified, present a reviewable evidence summary and “no output / insufficient evidence” state; require clinician judgement and provide a clear route to standard care.
+- Assess reproductive-data threat scenarios, shared-device safety, discreet notifications, coercive access, account recovery, export/deletion, and jurisdiction-specific privacy requirements with affected users and privacy experts.
+- Validate the full workflow in silent mode before showing outputs to clinicians; then conduct approved usability and prospective impact studies with predefined safety outcomes and independent oversight.
+
+**Gate:** no diagnosis, fertility/contraception assurance, treatment suggestion, or patient-specific risk score ships until the exact intended use, reference standard, representative external and prospective validation, human factors, safety case, privacy/security review, and jurisdictional regulatory path are complete.
+
 ## Cross-track rules
 
 - Research results are hypotheses for follow-up, not clinical evidence by themselves.
@@ -238,3 +288,4 @@ No completion date is stated: delivery depends on infrastructure, data access, c
 - India medical-device software planning reference: [CDSCO Guidance on Medical Device Software under MDR-2017](https://www.cdsco.gov.in/opencms/export/sites/CDSCO_WEB/Pdf-documents/Guidance-document-on-Medical-Device-Software-under-MDR-2017.pdf). Product classification and obligations depend on intended purpose and require qualified regulatory review.
 - United States clinical decision-support planning reference: [FDA Clinical Decision Support Software Guidance](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software). Applicability depends on the product function and intended use; obtain jurisdiction-specific regulatory advice.
 - AI model update/change-control and cybersecurity planning: [FDA Predetermined Change Control Plans](https://www.fda.gov/medical-devices/premarket-submissions-selecting-and-preparing-correct-submission/predetermined-change-control-plans) and [FDA medical-device cybersecurity guidance](https://www.fda.gov/medical-devices/medical-device-cybersecurity).
+- Women's-health research references: [2023 International Evidence-based PCOS Guideline](https://integration.asrm.org/practice-guidance/practice-committee-documents/recommendations-from-the-2023-international-evidence-based-guideline-on-pcos/) (cycle interpretation varies by life stage) and [observational evaluation of period-app fertile-window misclassification](https://pubmed.ncbi.nlm.nih.gov/42145202/) (do not use calendar prediction as contraception assurance).
