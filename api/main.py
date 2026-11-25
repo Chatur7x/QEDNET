@@ -1,5 +1,7 @@
 """FastAPI backend for QED-Net."""
 
+from __future__ import annotations
+
 from contextlib import asynccontextmanager
 import logging
 import os
@@ -10,8 +12,19 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 
-from qednet.deploy.serving import PredictionResult, ServingPipeline  # noqa: F401
-from qednet.models.base import BaseEstimator
+
+class LazyResearchApp:
+    """Import the optional research stack only when a research route is used."""
+
+    def __init__(self) -> None:
+        self._app = None
+
+    async def __call__(self, scope, receive, send) -> None:
+        if self._app is None:
+            from api.research import app as research_app
+
+            self._app = research_app
+        await self._app(scope, receive, send)
 
 # Global serving pipeline
 logger = logging.getLogger(__name__)
@@ -92,6 +105,8 @@ async def lifespan(app: FastAPI):
     # Load model on startup
     try:
         model = joblib.load("artifacts/model.pkl")
+        from qednet.deploy.serving import ServingPipeline
+
         # Create serving pipeline with loaded model
         serving_pipeline = ServingPipeline(
             model=model,
@@ -112,10 +127,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Research platform (training/benchmark/certificate/dashboard API) mounted
-# alongside the serving API; both suites stay green.
-from api.research import app as research_app  # noqa: E402
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -129,7 +140,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.mount("/research", research_app)
+app.mount("/research", LazyResearchApp())
 
 
 @app.get("/health", response_model=HealthResponse)

@@ -11,10 +11,6 @@ Member C: Platform & integration (train, evaluation, explain, deploy, API, dashb
 __version__ = "0.1.0"
 __author__ = "QED-Net Team"
 
-from qednet.models.base import BaseEstimator, BaseTransformer
-from qednet.train.config import ExperimentConfig
-from qednet.train.runner import TrainingRunner, run_experiment
-
 __all__ = [
     "BaseEstimator",
     "BaseTransformer",
@@ -22,3 +18,20 @@ __all__ = [
     "TrainingRunner",
     "run_experiment",
 ]
+
+
+def __getattr__(name: str):
+    """Load the public API lazily so lightweight imports stay lightweight."""
+    if name in {"BaseEstimator", "BaseTransformer"}:
+        from qednet.models.base import BaseEstimator, BaseTransformer
+
+        return {"BaseEstimator": BaseEstimator, "BaseTransformer": BaseTransformer}[name]
+    if name == "ExperimentConfig":
+        from qednet.train.config import ExperimentConfig
+
+        return ExperimentConfig
+    if name in {"TrainingRunner", "run_experiment"}:
+        from qednet.train.runner import TrainingRunner, run_experiment
+
+        return {"TrainingRunner": TrainingRunner, "run_experiment": run_experiment}[name]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
