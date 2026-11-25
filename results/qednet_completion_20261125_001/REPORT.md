@@ -33,8 +33,8 @@ The `bun audit` earlier in this task identified a Prisma 6 transitive advisory. 
 
 ## Not completed / NOT MEASURED
 
-- The newly verified code has not yet been deployed by this report's verification run. Render's current live deployment is the preceding commit. A deploy can be verified only after publishing the tested changes.
-- Local Docker/container build is NOT MEASURED because the Docker daemon is unavailable. Render's Docker build will be checked after the authorized push/deploy step.
+- The application commit was deployed to Render and verified below.
+- Local Docker/container build is NOT MEASURED because the Docker daemon is unavailable. Render successfully built and deployed the pushed application commit; this confirms the hosted build completed, but does not replace a local container test.
 - Supabase email confirmation, password reset, and a signed-in research API session are NOT MEASURED. Public sign-in/sign-up pages render, but no confirmation email was sent and no test account was authenticated.
 - Render free filesystem storage is ephemeral. Durable uploads/experiment artifacts, backups, and restore are NOT MEASURED or configured.
 - Early-detection and clinical utility are NOT MEASURED: bundled data are cross-sectional; there is no authorized longitudinal cohort, defined horizon, prospective study, clinical partner, or regulatory determination.
@@ -44,10 +44,16 @@ The `bun audit` earlier in this task identified a Prisma 6 transitive advisory. 
 
 ## External service state observed
 
-Render CLI is authenticated. The QEDNET service is configured to deploy from `main` on the free plan. Local credentials are not present in this shell. The current checkout is based on the same commit as `origin/main` before this work, but contains uncommitted changes.
+Render CLI is authenticated. The QEDNET service is configured to deploy from `main` on the free plan. Local credentials are not present in this shell. The application code is committed and pushed. The report received a post-deployment evidence correction after that push; user-owned untracked folders `frontend/`, `runs/`, and `web/` remain untouched.
 
 No secret values were written to the evidence files. Previously exposed Supabase credentials should be rotated and set only through the provider dashboards/secret manager.
 
 ## Release boundary
 
 This is a verified local research-platform update, not a fully production-ready clinical product. Do not make clinical, early-detection, quantum-advantage, durability, or authenticated-email-delivery claims from these checks alone.
+
+## Post-deployment verification
+
+The verified application change was pushed to `main` and Render marked commit `b1cc203f93664faf1d578f00e8adf6e07bf45d2e` live. The saved `postdeploy_render_status_*` files contain the Render CLI status command and output.
+
+HTTP checks against the deployed service returned `/live` HTTP 200, `/` HTTP 307 to `/signin`, `/signin` HTTP 200, `/signup` HTTP 200, and `/api/health` HTTP 307 to `/signin`. These checks verify the live health route and authentication gate. They do not verify sign-in credentials, confirmation email delivery, or authenticated research API behavior.
