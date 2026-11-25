@@ -20,6 +20,7 @@ node_modules
 # production
 build/
 **/build/
+frontend/dist/
 
 # misc
 .DS_Store
@@ -79,3 +80,6 @@ experiments/jobs/
 **/.vercel/
 *.sqlite3
 *.tsbuildinfo
+web/data/
+web/experiments/
+web/prisma/prisma/dev.db
