@@ -10,7 +10,7 @@ This review scopes production work to a secure research and educational platform
 |---|---|---|
 | Research core | Python package contains classical and simulator-based quantum models, evaluation, calibration, explainability, uncertainty, certificates, and file-backed experiment artifacts. | Present in source; release verification remains required. |
 | Dashboard/API | Next.js app and FastAPI app are deployed together on Render. Liveness, readiness, models, dataset listing, and experiment listing responded successfully in the deployed environment. | Live research demo. |
-| Authentication | Supabase email/password signup, email confirmation, sign-in, password reset, and sign-out are implemented. Access is restricted to one allowlisted email because the experiment store is shared. Render needs Supabase project settings before production routes unlock. | Configuration and deployment verification required. |
+| Authentication | Supabase email/password signup, confirmation, sign-in, password reset, and sign-out are implemented. Render has the public Supabase settings and one-email allowlist. Supabase's site URL and QEDNET callback URLs are configured. A confirmation attempt is still pending because the hosted default email sender rate-limited a resend; successful delivery and confirmation remain unverified. | Private preview only; configure SMTP and verify the full flow before relying on signup. |
 | Job execution | Dashboard `/api/jobs` launches a local child process. A separate FastAPI training route can use ARQ only when database mode is enabled. These paths are not integrated. | Blocker for reliable queued training. |
 | Persistence | Render is in filesystem-demo mode, with no attached durable database, object store, or persistent disk. Render filesystem writes are not durable across service replacement. | Blocker for durable data and runs. |
 | Dataset availability | Breast cancer loads through scikit-learn. Heart disease, Parkinson's, and Pima adapters require local files that are not in the repository or cloud deployment. | Limited dataset support in deployment. |
@@ -23,7 +23,7 @@ This review scopes production work to a secure research and educational platform
 
 ### Security and privacy
 
-- Configure Supabase Auth, email confirmation, site URL, redirect URL, and the one allowed account. Next.js Proxy verifies the server-side user and allowlisted email before the app and API, including the FastAPI rewrite; only sign-in, signup, confirmation, reset, setup, and `/live` remain public.
+- Configure production SMTP for Supabase Auth and verify confirmation and reset emails end to end. Keep the exact Render site URL and callback URLs (`/auth/confirm?next=%2F` and `/auth/confirm?next=%2Freset-password`) in Supabase's allowlist. Next.js Proxy verifies the server-side user and allowlisted email before the app and API, including the FastAPI rewrite; only sign-in, signup, confirmation, reset, setup, and `/live` remain public.
 - Add tenant and ownership checks before accepting or returning datasets, jobs, runs, reports, certificates, and model artifacts. Existing database tables alone do not enforce user-facing authorization.
 - Add request rate limits, request-size limits at the edge and application, upload quotas, audit events, abuse detection, and safe error responses.
 - Define what data may be uploaded. Reject direct identifiers and document retention, deletion, encryption, backup, and incident-response policies.
@@ -69,7 +69,7 @@ This review scopes production work to a secure research and educational platform
 
 ## Inputs required to finish deployment hardening
 
-- Supabase project URL and anon key, `QEDNET_ALLOWED_EMAIL`, and `NEXT_PUBLIC_SITE_URL` configured in Render; add `/auth/confirm` to Supabase's allowed redirects. Do not set a service-role key in the browser app.
+- Configure a custom SMTP sender in Supabase and complete an end-to-end confirmation and password-reset test. Keep the Supabase URL and publishable key, `QEDNET_ALLOWED_EMAIL`, and `NEXT_PUBLIC_SITE_URL` in Render; keep exact auth callback URLs in Supabase. Never set the service-role key in the browser app or Render web service.
 - Confirmation of whether paid managed database, object storage, and worker resources are permitted. Free Render mode does not meet durable-storage requirements.
 - Confirmation that the target is research use only. A clinical target needs a separate validated product plan and evidence.
 - Approved dataset sources, licenses, consent/governance requirements, and data-retention rules for any non-public uploads.

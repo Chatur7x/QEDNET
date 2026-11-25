@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
@@ -12,9 +12,10 @@ function FormMessage({ children, error = false }: { children: string; error?: bo
   return <p role={error ? "alert" : "status"} className={error ? "text-sm text-red-700" : "text-sm text-emerald-800"}>{children}</p>;
 }
 
-export function SignInForm() {
+export function SignInForm({ initialError }: { initialError?: string }) {
   const router = useRouter();
   const [message, setMessage] = useState("");
+  const pageError = initialError ?? "";
   const [busy, setBusy] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -42,52 +43,95 @@ export function SignInForm() {
       <label className="block space-y-1 text-sm">Email<input className="w-full rounded border px-3 py-2" name="email" type="email" autoComplete="email" required /></label>
       <label className="block space-y-1 text-sm">Password<input className="w-full rounded border px-3 py-2" name="password" type="password" autoComplete="current-password" required /></label>
       <button className="rounded bg-primary px-4 py-2 text-primary-foreground" type="submit" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
+      {pageError && <FormMessage error>{pageError}</FormMessage>}
       {message && <FormMessage error>{message}</FormMessage>}
     </form>
   );
 }
 
 export function SignUpForm() {
+  const formRef = useRef<HTMLFormElement>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendMessage, setResendMessage] = useState("");
+  const [resendError, setResendError] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
     setMessage("");
     const form = new FormData(event.currentTarget);
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: form.get("email") }),
-    });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      setBusy(false);
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.get("email") }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setError(true);
+        setMessage(result.error || "Sign-up failed. Try again.");
+        return;
+      }
+      const supabase = createSupabaseBrowserClient();
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: String(form.get("email") ?? "").trim(),
+        password: String(form.get("password") ?? ""),
+        options: { emailRedirectTo: `${window.location.origin}/auth/confirm?next=%2F` },
+      });
+      setError(Boolean(signUpError));
+      setMessage(signUpError
+        ? /rate limit/i.test(signUpError.message)
+          ? "Supabase temporarily limited confirmation emails. Wait before requesting another email."
+          : "Sign-up could not be completed. Check the password and try again."
+        : "If this email can register, check its inbox for the confirmation link.");
+    } catch {
       setError(true);
-      setMessage(result.error || "Sign-up failed. Try again.");
+      setMessage("Sign-up could not reach the authentication service. Check your connection and try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function resendConfirmation() {
+    const email = String(new FormData(formRef.current ?? undefined).get("email") ?? "").trim();
+    if (!email) {
+      setResendError(true);
+      setResendMessage("Enter your email address first.");
       return;
     }
-    const supabase = createSupabaseBrowserClient();
-    const { error: signUpError } = await supabase.auth.signUp({
-      email: String(form.get("email") ?? "").trim(),
-      password: String(form.get("password") ?? ""),
-      options: { emailRedirectTo: `${window.location.origin}/auth/confirm?next=%2F` },
-    });
-    setBusy(false);
-    setError(Boolean(signUpError));
-    setMessage(signUpError
-      ? "Sign-up could not be completed. Check the password and try again."
-      : "If this email can register, check its inbox for the confirmation link.");
+    setResending(true);
+    setResendMessage("");
+    setResendError(false);
+    try {
+      const response = await fetch("/api/auth/resend-confirmation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const result = await response.json().catch(() => ({}));
+      setResendError(!response.ok);
+      setResendMessage(response.ok
+        ? "If the account is waiting for verification, a fresh confirmation email was requested."
+        : result.error || "A new confirmation email could not be sent. Try again later.");
+    } catch {
+      setResendError(true);
+      setResendMessage("Could not reach the authentication service. Try again later.");
+    } finally {
+      setResending(false);
+    }
   }
 
   return (
-    <form onSubmit={submit} className="space-y-4">
+    <form ref={formRef} onSubmit={submit} className="space-y-4">
       <label className="block space-y-1 text-sm">Email<input className="w-full rounded border px-3 py-2" name="email" type="email" autoComplete="email" required /></label>
       <label className="block space-y-1 text-sm">Password<input className="w-full rounded border px-3 py-2" name="password" type="password" autoComplete="new-password" minLength={12} maxLength={128} required /></label>
       <button className="rounded bg-primary px-4 py-2 text-primary-foreground" type="submit" disabled={busy}>{busy ? "Creating account…" : "Create account"}</button>
       {message && <FormMessage error={error}>{message}</FormMessage>}
+      <button className="rounded border px-4 py-2 text-sm" type="button" disabled={busy || resending} onClick={resendConfirmation}>{resending ? "Requesting email…" : "Resend confirmation email"}</button>
+      {resendMessage && <FormMessage error={resendError}>{resendMessage}</FormMessage>}
     </form>
   );
 }
