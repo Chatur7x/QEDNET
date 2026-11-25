@@ -22,7 +22,6 @@ WORKDIR /app
 COPY backend/ ./backend/
 COPY configs/ ./configs/
 COPY data/ ./data/
-COPY README.md ./README.md
 RUN /opt/qednet-venv/bin/pip install --no-cache-dir --upgrade pip \
     && /opt/qednet-venv/bin/pip install --no-cache-dir './backend[api]'
 
