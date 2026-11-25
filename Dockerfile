@@ -1,5 +1,12 @@
 FROM node:22-bookworm-slim AS web-build
 
+# Render passes service environment variables to Docker builds as build args.
+# Next.js embeds NEXT_PUBLIC_* values during `next build`, so declare the
+# non-secret Supabase app settings here to make the signup client work.
+ARG NEXT_PUBLIC_SITE_URL
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+
 WORKDIR /app
 COPY package.json bun.lock ./
 RUN npm install --global bun@1.4.4 && bun install --frozen-lockfile
