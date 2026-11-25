@@ -170,6 +170,7 @@ This plan describes proposed work. A roadmap item is not evidence that the featu
 
 - Select approved, fit-for-purpose clinical devices or regulated data sources for the intended use. Do not use Health Connect or consumer passive wearable sync for a clinical function where failure could reasonably cause harm; Google Play's Health Connect policy excludes such uses. Confirm the exact policy and regulatory implications for the intended product with Google Play and qualified counsel.
 - Build explicit source validation, patient/device matching, timestamp/freshness checks, signal-quality gates, and missing/stale-data behavior before inference.
+- For EHR workflow integration, evaluate standards-based FHIR APIs and CDS Hooks with the target health system. Treat FHIR Subscription notifications as triggers to reconcile state: the specification allows missed or duplicate notifications, so implement durable event IDs, idempotency, retry, replay/reconciliation, authorization checks, and a visible failure state.
 - Define the complete human workflow: who receives an alert, what context is shown, how a qualified user reviews it, how acknowledgement and escalation work, and what fallback exists when the device, network, service, or model is unavailable.
 - Prevent silent failures and duplicate or alert-fatigue behavior; maintain an auditable event trail and safe downtime procedures.
 - Evaluate latency and reliability end to end under real device, connectivity, and operating conditions. Set acceptance criteria before collecting validation results; do not invent service levels in advance of the use case.
@@ -177,6 +178,36 @@ This plan describes proposed work. A roadmap item is not evidence that the featu
 - Assess app-store policies, consent, disclosures, health-data permissions, privacy, and medical-device regulatory obligations for each target market before distribution.
 
 **Gate:** no real-time clinical alert or patient-care reliance until the device pathway, end-to-end reliability, clinical workflow, independent validation, risk controls, and market-specific regulatory review are approved.
+
+### B4. Advanced and future-facing clinical capabilities
+
+These are research and product hypotheses, not currently implemented or validated capabilities. Build only after intended use, data rights, and risk controls are established. Start each capability in offline or shadow evaluation; do not expose experimental outputs to patient care.
+
+- **Multimodal trajectory modeling:** combine approved longitudinal records, waveforms, labs, medication events, and patient-reported measures with explicit time alignment, provenance, missingness handling, and modality-specific quality gates. Compare against simpler single-modality baselines and test transfer across sites and devices.
+- **Personalized baselines:** investigate within-person change detection and calibrated forecasts. Separate stable population risk from personal deviation; test baseline drift, device changes, and sparse histories. Do not let the model silently update itself from new patient data.
+- **Clinician-reviewed adaptive updates:** permit only versioned, tested model releases with predefined monitoring, change-control boundaries, revalidation, approval, and rollback. Any predetermined change-control plan must be evaluated with regulatory experts for the target jurisdiction; it is not permission for uncontrolled online learning.
+- **Edge/cloud split:** investigate on-device quality checks and low-risk feature extraction to reduce raw-data transfer, while keeping model versions, uncertainty, audit records, security updates, and cloud/offline behavior controlled. Measure battery, latency, data loss, and performance parity on actual devices.
+- **Federated, multi-site learning and evaluation:** start with federated evaluation of frozen models. If training is later explored, test secure aggregation, privacy leakage, site bias, contribution failures, and utility loss. Federated processing alone does not prove privacy or fairness.
+- **Digital physiology models / digital twins:** treat patient-specific simulation and counterfactual trajectories as exploratory research only. Validate simulator assumptions and uncertainty against prospective measurements; never present simulated futures as established patient outcomes.
+- **Quantum-assisted components:** compare quantum kernels, variational circuits, and hybrid pipelines against strong matched classical controls on identical patient/site/time splits. Require hardware provenance and measured end-to-end costs. No quantum method receives clinical status or a superiority claim without independent evidence for the specific intended use.
+- **Human-feedback and learning loop:** collect clinician accept/ignore/override and outcome signals only under explicit governance. Use them for safety monitoring and prespecified studies; do not feed them directly into a live model without a controlled, validated release process.
+- **Auditable evidence view:** show the data source and freshness, relevant validated population, model and preprocessing version, uncertainty, known exclusions, evidence tier, and reason for abstention in the clinician workflow. Do not imply that an explanation proves correctness or causality.
+
+**Gate:** each capability needs its own intended-use fit, risk analysis, benchmark protocol, external validation, failure-mode testing, human-factors evaluation, security review, and jurisdiction-specific regulatory assessment before clinical use.
+
+### B5. Clinical end-to-end acceptance path
+
+1. **Define intended use:** identify condition, population, setting, user, decision point, output, and supported action; document prohibited uses and foreseeable misuse.
+2. **Approve source and governance:** obtain clinical partner, data authority, privacy/security review, and permission for each data source and device. Use synthetic data for early integration.
+3. **Connect source safely:** authenticate and authorize device/EHR access; verify patient/device association; validate schema, units, provenance, freshness, and consent before processing.
+4. **Process with bounded failure:** invoke a locked model version, enforce input/output contracts and time limits, record the event idempotently, and return unavailable/abstain when inputs or dependencies fail.
+5. **Present for human review:** show concise evidence, context, uncertainty, limitations, and source timestamps; require an appropriately qualified user to decide and record review/override. No autonomous diagnosis, treatment, or medication changes.
+6. **Operate alerts safely:** define ownership, acknowledgement, escalation, duplicate suppression, downtime paths, and contact procedures with the clinical partner. An unacknowledged software notification must not be treated as care delivered.
+7. **Audit and monitor:** retain access-controlled records of source data references, model version, output, uncertainty, user action, alert delivery, failures, and relevant performance metrics under an approved retention policy.
+8. **Validate progressively:** test synthetic replay and hardware-in-loop; perform retrospective validation; run silent/shadow evaluation; then conduct approved prospective workflow studies. Move to clinical use only after all clinical, quality, security, and regulatory gates are signed off.
+9. **Maintain and recover:** test backup/restore, incident response, device replacement, revoked access, model rollback, software patching, and safe operation during network or service outages.
+
+**Acceptance criteria:** choose latency, availability, data-loss, alert-burden, subgroup, and clinical-outcome thresholds with clinical and safety owners before validation. They are **NOT SET** in this plan because intended use and data/device sources are undecided.
 
 ## Cross-track rules
 
@@ -203,5 +234,7 @@ No completion date is stated: delivery depends on infrastructure, data access, c
 - Android Health Connect read permissions and background access: [Read raw data](https://developer.android.com/health-and-fitness/health-connect/read-data).
 - Wear OS collection modes and timing behavior: [Health Services](https://developer.android.com/health-and-fitness/health-services) and [device compatibility](https://developer.android.com/health-and-fitness/health-services/compatibility).
 - Google Play requirements for health apps and Health Connect data: [Health apps policy](https://support.google.com/googleplay/android-developer/answer/18265346) and [health apps declaration](https://support.google.com/googleplay/android-developer/answer/14738291).
+- EHR event triggers: [HL7 FHIR R5 Subscriptions](https://hl7.org/fhir/R5/subscriptions.html) (notifications may be lost or duplicated; design for reconciliation) and [HL7 CDS Hooks](https://cds-hooks.hl7.org/) (workflow-triggered decision-support calls; standard is Trial Use).
 - India medical-device software planning reference: [CDSCO Guidance on Medical Device Software under MDR-2017](https://www.cdsco.gov.in/opencms/export/sites/CDSCO_WEB/Pdf-documents/Guidance-document-on-Medical-Device-Software-under-MDR-2017.pdf). Product classification and obligations depend on intended purpose and require qualified regulatory review.
 - United States clinical decision-support planning reference: [FDA Clinical Decision Support Software Guidance](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software). Applicability depends on the product function and intended use; obtain jurisdiction-specific regulatory advice.
+- AI model update/change-control and cybersecurity planning: [FDA Predetermined Change Control Plans](https://www.fda.gov/medical-devices/premarket-submissions-selecting-and-preparing-correct-submission/predetermined-change-control-plans) and [FDA medical-device cybersecurity guidance](https://www.fda.gov/medical-devices/medical-device-cybersecurity).
