@@ -26,6 +26,15 @@ class LazyResearchApp:
             self._app = research_app
         await self._app(scope, receive, send)
 
+
+def __getattr__(name: str):
+    """Preserve legacy serving imports without loading the model stack at boot."""
+    if name in {"PredictionResult", "ServingPipeline"}:
+        from qednet.deploy.serving import PredictionResult, ServingPipeline
+
+        return {"PredictionResult": PredictionResult, "ServingPipeline": ServingPipeline}[name]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
 # Global serving pipeline
 logger = logging.getLogger(__name__)
 serving_pipeline: ServingPipeline | None = None
