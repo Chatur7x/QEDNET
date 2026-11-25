@@ -15,15 +15,15 @@ so capacity is held constant and any gap isolates entanglement.
 from __future__ import annotations
 
 import time
-from typing import Optional
 
 import numpy as np
-from numpy.typing import NDArray
 import pennylane as qml
+from numpy.typing import NDArray
 from pennylane import numpy as pnp
 
 from qednet.encoding import validate_vector
 from qednet.models.base import BaseEstimator
+
 from .base import bce_loss, sigmoid, validate_xy
 
 
@@ -148,8 +148,7 @@ class VQC(BaseEstimator):
                 raise ValueError(f"VQC: unsupported encoding {enc!r}")
             for layer in range(nl):
                 for i in range(nq):
-                    qml.Rot(theta[layer, i, 0], theta[layer, i, 1],
-                            theta[layer, i, 2], wires=i)
+                    qml.Rot(theta[layer, i, 0], theta[layer, i, 1], theta[layer, i, 2], wires=i)
                 if ent:
                     for i in range(nq - 1):
                         qml.CNOT(wires=[i, i + 1])
@@ -164,13 +163,14 @@ class VQC(BaseEstimator):
         """Return circuit outputs for each x in X as a 1D array/tensor."""
         return pnp.array([self._circuit(x, theta) for x in X])
 
-    def fit(self, X: NDArray, y: NDArray) -> "VQC":
+    def fit(self, X: NDArray, y: NDArray) -> VQC:
         Xm, ym = validate_xy(X, y, self.n_qubits, self.encoding)
         if not self._built:
             self._build()
         rng = np.random.RandomState(self.seed)
-        theta = pnp.array(rng.uniform(-np.pi, np.pi, (self.n_layers, self.n_qubits, 3)),
-                          requires_grad=True)
+        theta = pnp.array(
+            rng.uniform(-np.pi, np.pi, (self.n_layers, self.n_qubits, 3)), requires_grad=True
+        )
         t0 = time.time()
 
         def batch_loss(t):
@@ -179,8 +179,11 @@ class VQC(BaseEstimator):
 
         losses, grad_vars = [], []
         if self.optimizer in ("adam", "sgd"):
-            opt = qml.AdamOptimizer(self.lr) if self.optimizer == "adam" \
+            opt = (
+                qml.AdamOptimizer(self.lr)
+                if self.optimizer == "adam"
                 else qml.GradientDescentOptimizer(self.lr)
+            )
             gfn = qml.grad(batch_loss)
             for _ in range(self.max_iter):
                 theta, prev = opt.step_and_cost(batch_loss, theta)
@@ -194,8 +197,9 @@ class VQC(BaseEstimator):
                 lp = batch_loss(theta + ck * delta)
                 lm = batch_loss(theta - ck * delta)
                 ghat = (lp - lm) / (2 * ck) * delta
-                theta = pnp.array(np.asarray(theta) - self.lr / (k + 1) ** 0.6 * ghat,
-                                  requires_grad=True)
+                theta = pnp.array(
+                    np.asarray(theta) - self.lr / (k + 1) ** 0.6 * ghat, requires_grad=True
+                )
                 losses.append(float((lp + lm) / 2))
                 grad_vars.append(float(np.var(np.asarray(ghat).ravel())))
         self.theta_ = np.asarray(theta)
@@ -247,7 +251,7 @@ class VQC(BaseEstimator):
             "diff_method": getattr(self, "diff_method_", self.diff_method_req),
         }
 
-    def set_params(self, **params) -> "VQC":
+    def set_params(self, **params) -> VQC:
         for key, value in params.items():
             if key == "layers":
                 self.n_layers = value
@@ -262,8 +266,11 @@ class VQC(BaseEstimator):
         return self
 
     def metadata(self) -> dict:
-        two_q = (self.n_qubits if self.n_qubits > 1 else 0) * self.n_layers \
-            if self.use_entanglement else 0
+        two_q = (
+            (self.n_qubits if self.n_qubits > 1 else 0) * self.n_layers
+            if self.use_entanglement
+            else 0
+        )
         return {
             "model": "vqc",
             "n_qubits": self.n_qubits,

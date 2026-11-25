@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import numpy as np
-from sklearn.model_selection import cross_val_score, StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.pipeline import Pipeline
-from sklearn.base import clone
 
 
 def detect_leakage(
@@ -24,6 +23,7 @@ def detect_leakage(
 
     # Check for constant/near-constant features
     from scipy.stats import pearsonr
+
     correlations = []
     for i in range(X.shape[1]):
         if np.std(X[:, i]) > 1e-10:
@@ -60,12 +60,13 @@ def check_preprocessing_leakage(
 
     # Correct usage: fit only on train fold
     from sklearn.model_selection import StratifiedKFold
+
     cv_obj = StratifiedKFold(n_splits=cv, shuffle=True, random_state=42)
     diffs = []
 
     for train_idx, test_idx in cv_obj.split(X, y):
         preprocess_correct = preprocess_fn()
-        X_train_trans = preprocess_correct.fit_transform(X[train_idx], y[train_idx])
+        preprocess_correct.fit_transform(X[train_idx], y[train_idx])
         X_test_trans = preprocess_correct.transform(X[test_idx])
 
         # Compare with wrong approach on test set
@@ -77,7 +78,9 @@ def check_preprocessing_leakage(
         "mean_transformation_diff": float(np.mean(diffs)),
         "max_transformation_diff": float(np.max(diffs)),
         "leakage_detected": np.mean(diffs) > 1e-6,
-        "message": "Preprocessing fitted on full dataset leaks information to test set" if np.mean(diffs) > 1e-6 else "OK",
+        "message": "Preprocessing fitted on full dataset leaks information to test set"
+        if np.mean(diffs) > 1e-6
+        else "OK",
     }
 
 
@@ -86,7 +89,7 @@ def audit_pipeline(pipeline: Pipeline, X: np.ndarray, y: np.ndarray) -> dict:
     results = {}
 
     # Check each step
-    for name, step in pipeline.steps:
+    for _, step in pipeline.steps:
         if hasattr(step, "fit") and hasattr(step, "transform"):
             # This is a transformer - check if it's stateless or properly used
             pass

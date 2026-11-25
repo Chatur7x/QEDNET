@@ -1,13 +1,12 @@
 """Mock quantum models for development and testing."""
 
-import numpy as np
 from numpy.typing import NDArray
-from typing import Optional
-from qednet.models.base import BaseEstimator
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier as SklearnMLP
+from sklearn.svm import SVC
+
+from qednet.models.base import BaseEstimator
 
 
 class MockVQC(BaseEstimator):

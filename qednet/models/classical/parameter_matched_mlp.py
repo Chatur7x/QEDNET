@@ -9,8 +9,8 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.utils.validation import check_is_fitted
 
 try:
-    import torch
     import torch.nn as nn
+
     _TORCH = True
 except Exception:
     _TORCH = False
@@ -49,7 +49,6 @@ class ParameterMatchedMLP(BaseEstimator, ClassifierMixin):
         self._fitted = False
 
     def _build_model(self, input_dim: int):
-        import torch
         import torch.nn as nn
 
         layers = []
@@ -108,6 +107,7 @@ class ParameterMatchedMLP(BaseEstimator, ClassifierMixin):
     def predict_proba(self, X):
         check_is_fitted(self, "_model")
         import torch
+
         self._model.eval()
         with torch.no_grad():
             X_tensor = torch.tensor(X, dtype=torch.float32).to(self.device)

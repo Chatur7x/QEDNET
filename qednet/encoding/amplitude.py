@@ -2,6 +2,7 @@
 
 import numpy as np
 from numpy.typing import NDArray
+
 from qednet.encoding.base import BaseEncoder
 
 
@@ -21,7 +22,7 @@ class AmplitudeEncoder(BaseEncoder):
             Normalized amplitudes of shape (n_samples, 2^n_qubits)
         """
         n_samples = X.shape[0]
-        dim = 2 ** self.n_qubits
+        dim = 2**self.n_qubits
 
         # Pad or truncate features
         if X.shape[1] < dim:

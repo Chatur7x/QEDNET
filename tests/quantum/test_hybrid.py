@@ -5,8 +5,8 @@ import pytest
 
 from qednet.models.quantum.hybrid import (
     HybridQNNLayer,
-    make_hybrid_model,
     gradient_propagation_test,
+    make_hybrid_model,
 )
 
 
@@ -73,5 +73,5 @@ def test_deterministic_weights():
     layer2 = HybridQNNLayer(n_qubits=4, n_layers=1, seed=0)
     w2 = [p.detach().clone() for p in layer2.parameters()]
 
-    for a, b in zip(w1, w2):
+    for a, b in zip(w1, w2, strict=True):
         assert torch.allclose(a, b)

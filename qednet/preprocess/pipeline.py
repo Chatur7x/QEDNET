@@ -1,14 +1,15 @@
 """Preprocessing pipeline with leakage prevention."""
 
-from typing import Optional, Literal
+from typing import Literal
+
 import numpy as np
 from numpy.typing import NDArray
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, RobustScaler
-from sklearn.impute import SimpleImputer
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import RobustScaler, StandardScaler
 
 
 class PreprocessingPipeline:
@@ -30,7 +31,7 @@ class PreprocessingPipeline:
         self.compression_type = compression
         self.n_components = n_components
         self.random_state = random_state
-        self._pipeline: Optional[Pipeline] = None
+        self._pipeline: Pipeline | None = None
 
     def _build_pipeline(self) -> Pipeline:
         """Build the sklearn pipeline."""
@@ -48,13 +49,15 @@ class PreprocessingPipeline:
 
         # Compression
         if self.compression_type == "pca":
-            steps.append(("pca", PCA(n_components=self.n_components, random_state=self.random_state)))
+            steps.append(
+                ("pca", PCA(n_components=self.n_components, random_state=self.random_state))
+            )
         elif self.compression_type == "selectkbest":
             steps.append(("selectkbest", SelectKBest(f_classif, k=self.n_components)))
 
         return Pipeline(steps)
 
-    def fit(self, X: NDArray, y: Optional[NDArray] = None) -> "PreprocessingPipeline":
+    def fit(self, X: NDArray, y: NDArray | None = None) -> "PreprocessingPipeline":
         """Fit the pipeline on training data only."""
         self._pipeline = self._build_pipeline()
         self._pipeline.fit(X, y)
@@ -66,18 +69,20 @@ class PreprocessingPipeline:
             raise RuntimeError("Pipeline not fitted. Call fit() first.")
         return self._pipeline.transform(X)
 
-    def fit_transform(self, X: NDArray, y: Optional[NDArray] = None) -> NDArray:
+    def fit_transform(self, X: NDArray, y: NDArray | None = None) -> NDArray:
         """Fit and transform in one step."""
         return self.fit(X, y).transform(X)
 
-    def get_feature_names_out(self, input_features: Optional[list[str]] = None) -> list[str]:
+    def get_feature_names_out(self, input_features: list[str] | None = None) -> list[str]:
         """Get output feature names."""
         if self._pipeline is None:
             raise RuntimeError("Pipeline not fitted.")
         if hasattr(self._pipeline, "get_feature_names_out"):
             names = list(self._pipeline.get_feature_names_out(input_features))
             return [f"component_{i}" for i in range(len(names))]
-        n_features = self._pipeline.named_steps.get("pca", self._pipeline.named_steps.get("selectkbest", None))
+        n_features = self._pipeline.named_steps.get(
+            "pca", self._pipeline.named_steps.get("selectkbest", None)
+        )
         if n_features and hasattr(n_features, "n_components_"):
             return [f"component_{i}" for i in range(n_features.n_components_)]
         return input_features or []
@@ -96,12 +101,13 @@ def create_preprocessing_pipeline(config: dict) -> PreprocessingPipeline:
 
 # --- Leakage-safe assembler (merged, additive) ---
 from dataclasses import dataclass  # noqa: E402
+
 from sklearn.model_selection import train_test_split  # noqa: E402
 
+from .compression import AutoencoderCompressor, SafePCA  # noqa: E402
 from .imputation import SafeImputer  # noqa: E402
 from .scaling import SafeScaler  # noqa: E402
 from .selection import SafeFeatureSelector  # noqa: E402
-from .compression import SafePCA, AutoencoderCompressor  # noqa: E402
 
 
 @dataclass
@@ -126,7 +132,7 @@ class LeakageSafePipeline(BaseEstimator, TransformerMixin):
     All fit steps occur only on training data within CV folds.
     """
 
-    def __init__(self, config: Optional[PreprocessConfig] = None):
+    def __init__(self, config: PreprocessConfig | None = None):
         self.config = config or PreprocessConfig()
         self._pipeline = None
         self._smote = None
@@ -138,31 +144,49 @@ class LeakageSafePipeline(BaseEstimator, TransformerMixin):
             ("scaler", SafeScaler(method=self.config.scale_method)),
         ]
         if self.config.select_method != "none" and self.config.select_k > 0:
-            steps.append(("selector", SafeFeatureSelector(
-                method=self.config.select_method,
-                k=min(self.config.select_k, n_features),
-                variance_threshold=self.config.variance_threshold,
-                random_state=self.config.random_state,
-            )))
+            steps.append(
+                (
+                    "selector",
+                    SafeFeatureSelector(
+                        method=self.config.select_method,
+                        k=min(self.config.select_k, n_features),
+                        variance_threshold=self.config.variance_threshold,
+                        random_state=self.config.random_state,
+                    ),
+                )
+            )
         if self.config.compress_method == "pca":
-            steps.append(("compressor", SafePCA(
-                n_components=min(self.config.compress_dim, n_features),
-                random_state=self.config.random_state,
-            )))
+            steps.append(
+                (
+                    "compressor",
+                    SafePCA(
+                        n_components=min(self.config.compress_dim, n_features),
+                        random_state=self.config.random_state,
+                    ),
+                )
+            )
         elif self.config.compress_method == "autoencoder":
-            steps.append(("compressor", AutoencoderCompressor(
-                input_dim=n_features,
-                latent_dim=min(self.config.compress_dim, n_features),
-                hidden_dims=self.config.ae_hidden_dims,
-                epochs=self.config.ae_epochs,
-                random_state=self.config.random_state,
-            )))
+            steps.append(
+                (
+                    "compressor",
+                    AutoencoderCompressor(
+                        input_dim=n_features,
+                        latent_dim=min(self.config.compress_dim, n_features),
+                        hidden_dims=self.config.ae_hidden_dims,
+                        epochs=self.config.ae_epochs,
+                        random_state=self.config.random_state,
+                    ),
+                )
+            )
         self._pipeline = Pipeline(steps)
 
         if self.config.smote:
             try:
                 from imblearn.over_sampling import SMOTE
-                self._smote = SMOTE(k_neighbors=self.config.smote_k, random_state=self.config.random_state)
+
+                self._smote = SMOTE(
+                    k_neighbors=self.config.smote_k, random_state=self.config.random_state
+                )
             except ImportError:
                 self._smote = None
 
@@ -189,7 +213,7 @@ class LeakageSafePipeline(BaseEstimator, TransformerMixin):
         return self._pipeline.get_feature_names_out(input_features)
 
 
-def make_preprocess_pipeline(config: Optional[PreprocessConfig] = None) -> LeakageSafePipeline:
+def make_preprocess_pipeline(config: PreprocessConfig | None = None) -> LeakageSafePipeline:
     """Factory for preprocessing pipeline."""
     return LeakageSafePipeline(config)
 
@@ -197,7 +221,8 @@ def make_preprocess_pipeline(config: Optional[PreprocessConfig] = None) -> Leaka
 def split_data(X, y, test_size=0.2, random_state=42, stratify=True):
     """Reproducible train/test split."""
     return train_test_split(
-        X, y,
+        X,
+        y,
         test_size=test_size,
         random_state=random_state,
         stratify=y if stratify else None,

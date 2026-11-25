@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import numpy as np
-from sklearn.base import clone
+
 from qednet.evaluation import nested_cv
-from qednet.preprocess import make_preprocess_pipeline, PreprocessConfig
+from qednet.preprocess import PreprocessConfig, make_preprocess_pipeline
 
 
 class BottleneckHonestyMeter:
@@ -30,36 +30,39 @@ class BottleneckHonestyMeter:
         self.inner_folds = inner_folds
         self.random_state = random_state
 
-    def evaluate(self, X: np.ndarray, y: np.ndarray) -> dict:
+    def evaluate(self, X: np.ndarray, y: np.ndarray, groups: np.ndarray | None = None) -> dict:
         """Run bottleneck honesty comparison."""
-        preprocess_fn = lambda: make_preprocess_pipeline(self.preprocess_config)
 
-        # Get compressed features
-        preprocess = make_preprocess_pipeline(self.preprocess_config)
-        X_compressed = preprocess.fit_transform(X, y)
+        def preprocess_fn():
+            return make_preprocess_pipeline(self.preprocess_config)
 
-        # Quantum model on compressed features
+        # Both estimators receive the same fold-local compression. Fitting a
+        # compressor once on the full dataset here would leak validation rows.
         qmodel = self.quantum_model_factory()
         q_result = nested_cv(
-            qmodel, X, y, preprocess_fn,
-            self.outer_folds, self.inner_folds, self.random_state
+            qmodel,
+            X,
+            y,
+            preprocess_fn,
+            self.outer_folds,
+            self.inner_folds,
+            self.random_state,
+            calibrate=groups is None,
+            groups=groups,
         )
 
-        # Classical model on same compressed features
-        class preprocess_for_classical:
-            def __init__(self, compressor):
-                self.compressor = compressor
-            def fit_transform(self, X, y):
-                return self.compressor.transform(X)
-            def transform(self, X):
-                return self.compressor.transform(X)
-
-        classical_preprocess = preprocess_for_classical(preprocess)
+        # Classical comparator uses the same preprocessing and outer folds.
         cmodel = self.classical_model_factory()
         c_result = nested_cv(
-            cmodel, X_compressed, y,
-            lambda: classical_preprocess,
-            self.outer_folds, self.inner_folds, self.random_state
+            cmodel,
+            X,
+            y,
+            preprocess_fn,
+            self.outer_folds,
+            self.inner_folds,
+            self.random_state,
+            calibrate=groups is None,
+            groups=groups,
         )
 
         # Compare
@@ -103,12 +106,15 @@ def bottleneck_honesty_check(
     outer_folds: int = 5,
     inner_folds: int = 3,
     random_state: int = 42,
+    groups: np.ndarray | None = None,
 ) -> dict:
     """Standalone function for bottleneck honesty check."""
     meter = BottleneckHonestyMeter(
         lambda: quantum_model,
         lambda: classical_model,
         preprocess_config,
-        outer_folds, inner_folds, random_state
+        outer_folds,
+        inner_folds,
+        random_state,
     )
-    return meter.evaluate(X, y)
+    return meter.evaluate(X, y, groups=groups)

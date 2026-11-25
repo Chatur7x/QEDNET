@@ -1,15 +1,16 @@
 """Model factory for creating models from configuration."""
 
-from typing import Any, Optional
+from typing import Any
+
 from qednet.models.base import BaseEstimator
-from qednet.models.quantum.vqc import VQC
-from qednet.models.quantum.qsvm import QSVM
-from qednet.models.quantum.reupload import ReuploadClassifier
-from qednet.models.quantum.hybrid_qnn import HybridQNN
-from qednet.models.classical.xgboost_model import XGBoostClassifier
 from qednet.models.classical.lightgbm_model import LightGBMClassifier
 from qednet.models.classical.logistic_regression import LogisticRegressionModel
 from qednet.models.classical.mlp import MLPClassifier
+from qednet.models.classical.xgboost_model import XGBoostClassifier
+from qednet.models.quantum.hybrid_qnn import HybridQNN
+from qednet.models.quantum.qsvm import QSVM
+from qednet.models.quantum.reupload import ReuploadClassifier
+from qednet.models.quantum.vqc import VQC
 
 
 class ModelFactory:
@@ -51,6 +52,7 @@ class ModelFactory:
         if model_type in cls._QUANTUM_MODELS:
             if use_mock:
                 from qednet.models.quantum.mocks import get_mock_model
+
                 return get_mock_model(model_type, **params)
             return cls._QUANTUM_MODELS[model_type](**params)
 

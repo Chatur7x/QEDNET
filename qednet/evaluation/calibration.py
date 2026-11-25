@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 import numpy as np
-from sklearn.calibration import CalibratedClassifierCV
 from sklearn.base import BaseEstimator, ClassifierMixin, clone
+from sklearn.calibration import CalibratedClassifierCV
 from sklearn.utils.validation import check_is_fitted
-from scipy.special import expit
 
 
 class PlattCalibrator(BaseEstimator, ClassifierMixin):
@@ -27,6 +26,7 @@ class PlattCalibrator(BaseEstimator, ClassifierMixin):
         else:
             # Fit logistic regression on decision scores
             from sklearn.linear_model import LogisticRegression
+
             self._calibrator = LogisticRegression(solver="lbfgs", max_iter=1000)
             self._calibrator.fit(X, y)
         self._fitted = True
@@ -58,6 +58,7 @@ class IsotonicCalibrator(BaseEstimator, ClassifierMixin):
             self._calibrator.fit(X, y)
         else:
             from sklearn.isotonic import IsotonicRegression
+
             self._calibrator = IsotonicRegression(out_of_bounds="clip")
             self._calibrator.fit(X, y)
         self._fitted = True

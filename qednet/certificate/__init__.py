@@ -1,8 +1,8 @@
 """Quantum Advantage Certificate components (D8 - quantum side)."""
 
-from .ablation import entanglement_ablation, EntanglementContribution
-from .dequantization import dequantize_kernel, DequantizationResult
-from .costing import quantum_cost, QuantumCost
+from .ablation import EntanglementContribution, entanglement_ablation
+from .costing import QuantumCost, quantum_cost
+from .dequantization import DequantizationResult, dequantize_kernel
 
 __all__ = [
     "entanglement_ablation",

@@ -3,11 +3,19 @@
 from __future__ import annotations
 
 import numpy as np
-from sklearn.base import BaseEstimator, ClassifierMixin
+from numpy.typing import NDArray
+from sklearn.base import BaseEstimator as SkBaseEstimator, ClassifierMixin
 from sklearn.utils.validation import check_is_fitted
 
+from qednet.models.base import BaseEstimator
 
-class XGBoostModel(BaseEstimator, ClassifierMixin):
+try:
+    import xgboost as xgb
+except ImportError:
+    xgb = None
+
+
+class XGBoostModel(SkBaseEstimator, ClassifierMixin):
     """XGBoost with sensible defaults for tabular biomedical data."""
 
     def __init__(
@@ -42,8 +50,8 @@ class XGBoostModel(BaseEstimator, ClassifierMixin):
     def fit(self, X, y):
         try:
             from xgboost import XGBClassifier
-        except ImportError:
-            raise RuntimeError("xgboost not installed")
+        except ImportError as e:
+            raise RuntimeError("xgboost not installed") from e
         self._model = XGBClassifier(
             n_estimators=self.n_estimators,
             max_depth=self.max_depth,
@@ -90,15 +98,6 @@ class XGBoostModel(BaseEstimator, ClassifierMixin):
             "learning_rate": self.learning_rate,
             "n_trees": n_trees,
         }
-import numpy as np
-from numpy.typing import NDArray
-from typing import Optional
-from qednet.models.base import BaseEstimator
-
-try:
-    import xgboost as xgb
-except ImportError:
-    xgb = None
 
 
 class XGBoostClassifier(BaseEstimator):
@@ -127,7 +126,7 @@ class XGBoostClassifier(BaseEstimator):
         self.kwargs = kwargs
         self._model = None
 
-    def fit(self, X: NDArray, y: NDArray) -> "XGBoostClassifier":
+    def fit(self, X: NDArray, y: NDArray) -> XGBoostClassifier:
         self._model = xgb.XGBClassifier(
             n_estimators=self.n_estimators,
             max_depth=self.max_depth,

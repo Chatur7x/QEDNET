@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import numpy as np
 from scipy import stats
 from scipy.stats import norm
-from typing import Callable
 
 
 def bootstrap_ci(
@@ -48,6 +49,7 @@ def delong_roc_test(y_true: np.ndarray, y_prob1: np.ndarray, y_prob2: np.ndarray
     DeLong test for comparing two correlated ROC AUCs.
     Returns p-value and test statistic.
     """
+
     # Implementation based on DeLong et al. 1988
     def _delong_covariance(y_true, y_prob_a, y_prob_b):
         # Compute the covariance matrix of AUCs
@@ -65,12 +67,20 @@ def delong_roc_test(y_true: np.ndarray, y_prob1: np.ndarray, y_prob2: np.ndarray
         v01_b = np.zeros(n0)
 
         for i, p in enumerate(pos_idx):
-            v10_a[i] = np.mean(y_prob_a[p] > y_prob_a[neg_idx]) + 0.5 * np.mean(y_prob_a[p] == y_prob_a[neg_idx])
-            v10_b[i] = np.mean(y_prob_b[p] > y_prob_b[neg_idx]) + 0.5 * np.mean(y_prob_b[p] == y_prob_b[neg_idx])
+            v10_a[i] = np.mean(y_prob_a[p] > y_prob_a[neg_idx]) + 0.5 * np.mean(
+                y_prob_a[p] == y_prob_a[neg_idx]
+            )
+            v10_b[i] = np.mean(y_prob_b[p] > y_prob_b[neg_idx]) + 0.5 * np.mean(
+                y_prob_b[p] == y_prob_b[neg_idx]
+            )
 
         for i, n in enumerate(neg_idx):
-            v01_a[i] = np.mean(y_prob_a[pos_idx] > y_prob_a[n]) + 0.5 * np.mean(y_prob_a[pos_idx] == y_prob_a[n])
-            v01_b[i] = np.mean(y_prob_b[pos_idx] > y_prob_b[n]) + 0.5 * np.mean(y_prob_b[pos_idx] == y_prob_b[n])
+            v01_a[i] = np.mean(y_prob_a[pos_idx] > y_prob_a[n]) + 0.5 * np.mean(
+                y_prob_a[pos_idx] == y_prob_a[n]
+            )
+            v01_b[i] = np.mean(y_prob_b[pos_idx] > y_prob_b[n]) + 0.5 * np.mean(
+                y_prob_b[pos_idx] == y_prob_b[n]
+            )
 
         # Covariances
         cov_10 = np.cov(v10_a, v10_b)[0, 1]
@@ -85,10 +95,12 @@ def delong_roc_test(y_true: np.ndarray, y_prob1: np.ndarray, y_prob2: np.ndarray
     try:
         var_a, var_b, cov = _delong_covariance(y_true, y_prob1, y_prob2)
 
-        auc1 = np.mean(y_prob1[y_true == 1][:, None] > y_prob1[y_true == 0][None, :]) + \
-               0.5 * np.mean(y_prob1[y_true == 1][:, None] == y_prob1[y_true == 0][None, :])
-        auc2 = np.mean(y_prob2[y_true == 1][:, None] > y_prob2[y_true == 0][None, :]) + \
-               0.5 * np.mean(y_prob2[y_true == 1][:, None] == y_prob2[y_true == 0][None, :])
+        auc1 = np.mean(
+            y_prob1[y_true == 1][:, None] > y_prob1[y_true == 0][None, :]
+        ) + 0.5 * np.mean(y_prob1[y_true == 1][:, None] == y_prob1[y_true == 0][None, :])
+        auc2 = np.mean(
+            y_prob2[y_true == 1][:, None] > y_prob2[y_true == 0][None, :]
+        ) + 0.5 * np.mean(y_prob2[y_true == 1][:, None] == y_prob2[y_true == 0][None, :])
 
         diff = auc1 - auc2
         var_diff = var_a + var_b - 2 * cov
@@ -106,8 +118,12 @@ def delong_roc_test(y_true: np.ndarray, y_prob1: np.ndarray, y_prob2: np.ndarray
         }
     except Exception:
         return {
-            "auc1": 0.0, "auc2": 0.0, "diff": 0.0,
-            "z": 0.0, "p_value": 1.0, "significant": False,
+            "auc1": 0.0,
+            "auc2": 0.0,
+            "diff": 0.0,
+            "z": 0.0,
+            "p_value": 1.0,
+            "significant": False,
         }
 
 
@@ -120,7 +136,13 @@ def paired_t_test(metric1: np.ndarray, metric2: np.ndarray) -> dict:
     mean_diff = np.mean(diff)
     std_diff = np.std(diff, ddof=1)
     if std_diff == 0:
-        return {"t": 0.0, "p": 1.0, "mean_diff": float(mean_diff), "ci_lower": float(mean_diff), "ci_upper": float(mean_diff)}
+        return {
+            "t": 0.0,
+            "p": 1.0,
+            "mean_diff": float(mean_diff),
+            "ci_lower": float(mean_diff),
+            "ci_upper": float(mean_diff),
+        }
     t = mean_diff / (std_diff / np.sqrt(n))
     p = 2 * (1 - stats.t.cdf(abs(t), n - 1))
     se = std_diff / np.sqrt(n)
@@ -151,7 +173,13 @@ def corrected_paired_t_test(
     mean_diff = np.mean(diff)
     std_diff = np.std(diff, ddof=1)
     if std_diff == 0:
-        return {"t": 0.0, "p": 1.0, "mean_diff": float(mean_diff), "ci_lower": float(mean_diff), "ci_upper": float(mean_diff)}
+        return {
+            "t": 0.0,
+            "p": 1.0,
+            "mean_diff": float(mean_diff),
+            "ci_lower": float(mean_diff),
+            "ci_upper": float(mean_diff),
+        }
     # Correction factor for CV
     rho = n_test / (n_train + n_test)
     correction = np.sqrt((1 / n) + (rho / (1 - rho)))

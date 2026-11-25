@@ -27,7 +27,10 @@ def data():
 def test_preprocessing_guard_fires_on_full_fit(data):
     """Scaler/PCA fit on full data differs from fold-fit → guard must flag it."""
     X, y = data
-    pre_fn = lambda: make_preprocess_pipeline(PreprocessConfig(select_k=8, compress_dim=4))
+
+    def pre_fn():
+        return make_preprocess_pipeline(PreprocessConfig(select_k=8, compress_dim=4))
+
     rep = check_preprocessing_leakage(pre_fn, X, y, cv=3)
     assert rep["leakage_detected"], "guard failed to detect full-data preprocessing fit"
 

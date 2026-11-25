@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.impute import SimpleImputer, KNNImputer
+from sklearn.impute import KNNImputer, SimpleImputer
 from sklearn.utils.validation import check_is_fitted
 
 

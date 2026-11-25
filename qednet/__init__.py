@@ -1,4 +1,4 @@
-"""QED-Net: A Hybrid Quantum–Classical ML Platform for Early Disease Detection.
+"""QED-Net: A research platform for hybrid quantum-classical ML experiments.
 
 This platform is a research and educational artifact. It is not a medical device
 and must not be used for real patient care.

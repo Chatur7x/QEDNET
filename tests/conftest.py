@@ -1,12 +1,12 @@
 """Test configuration and fixtures."""
 
-import pytest
 import numpy as np
+import pytest
 from numpy.typing import NDArray
 
-from qednet.train.config import ExperimentConfig, DatasetConfig, ModelConfig
+from qednet.data.loader import Dataset
 from qednet.models.base import BaseEstimator, BaseTransformer
-from qednet.data.loader import Dataset, DatasetLoader
+from qednet.train.config import DatasetConfig, ExperimentConfig, ModelConfig
 
 
 @pytest.fixture
@@ -23,9 +23,13 @@ def sample_data() -> tuple[NDArray, NDArray]:
 @pytest.fixture
 def sample_dataset() -> Dataset:
     """Create a sample dataset."""
-    X, y = np.random.randn(100, 10).astype(np.float32), np.random.randint(0, 2, 100).astype(np.int64)
+    X, y = (
+        np.random.randn(100, 10).astype(np.float32),
+        np.random.randint(0, 2, 100).astype(np.int64),
+    )
     return Dataset(
-        X=X, y=y,
+        X=X,
+        y=y,
         feature_names=[f"feat_{i}" for i in range(10)],
         target_names=["class_0", "class_1"],
         name="test",
@@ -44,6 +48,7 @@ def experiment_config() -> ExperimentConfig:
 @pytest.fixture
 def mock_estimator() -> BaseEstimator:
     """Create a mock estimator for testing."""
+
     class MockEstimator(BaseEstimator):
         def __init__(self):
             self.fitted = False
@@ -68,6 +73,7 @@ def mock_estimator() -> BaseEstimator:
 @pytest.fixture
 def mock_transformer() -> BaseTransformer:
     """Create a mock transformer for testing."""
+
     class MockTransformer(BaseTransformer):
         def fit(self, X: NDArray, y: NDArray = None) -> "MockTransformer":
             self.fitted = True

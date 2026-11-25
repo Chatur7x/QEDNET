@@ -1,8 +1,7 @@
 """Tests for model interfaces and factory."""
 
-import pytest
 import numpy as np
-from numpy.typing import NDArray
+import pytest
 
 from qednet.models.base import BaseEstimator, BaseTransformer
 from qednet.models.factory import ModelFactory, create_model

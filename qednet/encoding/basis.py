@@ -2,6 +2,7 @@
 
 import numpy as np
 from numpy.typing import NDArray
+
 from qednet.encoding.base import BaseEncoder
 
 
@@ -26,10 +27,13 @@ class BasisEncoder(BaseEncoder):
         # Use first feature to determine basis state (simplified)
         feature = X[:, 0] if X.shape[1] > 0 else np.zeros(n_samples)
         # Discretize to 2^n_qubits states
-        n_states = 2 ** self.n_qubits
+        n_states = 2**self.n_qubits
         indices = np.clip(
-            ((feature - feature.min()) / (feature.max() - feature.min() + 1e-8) * (n_states - 1)).astype(int),
-            0, n_states - 1
+            (
+                (feature - feature.min()) / (feature.max() - feature.min() + 1e-8) * (n_states - 1)
+            ).astype(int),
+            0,
+            n_states - 1,
         )
         return indices
 

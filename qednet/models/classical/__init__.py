@@ -1,12 +1,12 @@
 """D6 Classical baselines public API."""
 
-from .logistic_regression import LogisticRegressionModel
-from .random_forest import RandomForestModel
-from .xgboost_model import XGBoostModel, XGBoostClassifier
 from .lightgbm_model import LightGBMClassifier
+from .logistic_regression import LogisticRegressionModel
 from .mlp import MLPClassifier
-from .rbf_svm import RBFSVMModel
 from .parameter_matched_mlp import ParameterMatchedMLP
+from .random_forest import RandomForestModel
+from .rbf_svm import RBFSVMModel
+from .xgboost_model import XGBoostClassifier, XGBoostModel
 
 __all__ = [
     "LogisticRegressionModel",

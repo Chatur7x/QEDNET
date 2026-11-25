@@ -1,7 +1,7 @@
 """Data loading utilities."""
 
 from dataclasses import dataclass
-from typing import Optional
+
 import numpy as np
 from numpy.typing import NDArray
 from sklearn.datasets import load_breast_cancer
@@ -49,13 +49,18 @@ class DatasetLoader:
         """Split dataset into train and test sets."""
         stratify_y = dataset.y if stratify else None
         X_train, X_test, y_train, y_test = train_test_split(
-            dataset.X, dataset.y,
+            dataset.X,
+            dataset.y,
             test_size=test_size,
             random_state=random_state,
             stratify=stratify_y,
         )
-        train_ds = Dataset(X_train, y_train, dataset.feature_names, dataset.target_names, f"{dataset.name}_train")
-        test_ds = Dataset(X_test, y_test, dataset.feature_names, dataset.target_names, f"{dataset.name}_test")
+        train_ds = Dataset(
+            X_train, y_train, dataset.feature_names, dataset.target_names, f"{dataset.name}_train"
+        )
+        test_ds = Dataset(
+            X_test, y_test, dataset.feature_names, dataset.target_names, f"{dataset.name}_test"
+        )
         return train_ds, test_ds
 
 

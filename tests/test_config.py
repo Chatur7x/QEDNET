@@ -1,18 +1,17 @@
 """Tests for configuration loading and validation."""
 
-import pytest
 import tempfile
+
 import yaml
-from pathlib import Path
 
 from qednet.train.config import (
-    ExperimentConfig,
+    DEFAULT_CONFIG_YAML,
+    CertificateConfig,
     DatasetConfig,
+    EvaluationConfig,
+    ExperimentConfig,
     ModelConfig,
     TrainingConfig,
-    EvaluationConfig,
-    CertificateConfig,
-    DEFAULT_CONFIG_YAML,
 )
 
 
@@ -55,6 +54,13 @@ class TestModelConfig:
 
 
 class TestExperimentConfig:
+    def test_mlflow_params_are_flat_and_string_valued(self):
+        params = ExperimentConfig().to_mlflow_params()
+        assert params["dataset.name"] == "breast_cancer"
+        assert params["model.n_qubits"] == "8"
+        assert params["evaluation.metrics"].startswith("[")
+        assert all(isinstance(key, str) and isinstance(value, str) for key, value in params.items())
+
     def test_default_config(self):
         config = ExperimentConfig()
         assert config.experiment_name == "qednet_experiment"
@@ -73,7 +79,9 @@ class TestExperimentConfig:
         assert config.dataset.name == "breast_cancer"
         assert config.dataset.target_dim == 4
         assert config.model.type == "xgboost"
-        assert config.model.n_estimators == 50  # This won't work as ModelConfig doesn't have n_estimators
+        assert (
+            config.model.n_estimators == 50
+        )  # This won't work as ModelConfig doesn't have n_estimators
 
     def test_compute_hash(self):
         config = ExperimentConfig()

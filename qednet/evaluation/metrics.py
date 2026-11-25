@@ -1,19 +1,18 @@
 """Evaluation metrics for binary classification."""
 
+from typing import Any
+
 import numpy as np
 from numpy.typing import NDArray
-from typing import Optional
-from scipy import stats
-from sklearn.metrics import (
-    roc_auc_score,
-    average_precision_score,
-    matthews_corrcoef,
-    brier_score_loss,
-    confusion_matrix,
-    roc_curve,
-    f1_score,
-)
 from sklearn.calibration import calibration_curve
+from sklearn.metrics import (
+    average_precision_score,
+    brier_score_loss,
+    f1_score,
+    matthews_corrcoef,
+    roc_auc_score,
+    roc_curve,
+)
 
 
 def auroc(y_true: NDArray, y_proba: NDArray) -> float:
@@ -126,7 +125,6 @@ def delong_test(
     if len(diffs) < 10:
         return {"p_value": np.nan, "auroc_diff": auroc1 - auroc2}
 
-    diff_mean = np.mean(diffs)
     diff_std = np.std(diffs)
     if diff_std > 0:
         z = abs(auroc1 - auroc2) / diff_std
@@ -140,7 +138,7 @@ def delong_test(
 def decision_curve_analysis(
     y_true: NDArray,
     y_proba: NDArray,
-    thresholds: Optional[NDArray] = None,
+    thresholds: NDArray | None = None,
 ) -> dict[str, NDArray]:
     """Decision curve analysis for clinical utility."""
     if thresholds is None:
@@ -202,7 +200,7 @@ def compute_all_metrics(
                         y_true, y_proba, metric_funcs[name], n_bootstrap=bootstrap_ci
                     )
                     results[f"{name}_ci"] = ci
-            except Exception as e:
+            except Exception:
                 results[name] = np.nan
                 if bootstrap_ci > 0:
                     results[f"{name}_ci"] = (np.nan, np.nan)

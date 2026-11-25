@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.utils.validation import check_is_fitted
 
 

@@ -1,9 +1,9 @@
 """Quantum estimators package (Member A, D5)."""
 
-from .vqc import VQC
+from .hybrid import HybridQNNLayer, make_hybrid_model
+from .hybrid_qnn import HybridQNN
 from .qsvm import QSVM
 from .reupload import ReuploadClassifier
-from .hybrid_qnn import HybridQNN
-from .hybrid import HybridQNNLayer, make_hybrid_model
+from .vqc import VQC
 
 __all__ = ["VQC", "QSVM", "ReuploadClassifier", "HybridQNN", "HybridQNNLayer", "make_hybrid_model"]

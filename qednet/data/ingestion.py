@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 import hashlib
-import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -25,6 +23,7 @@ class DatasetBundle:
     target_name: str
     metadata: dict
     config_hash: str
+    groups: np.ndarray | None = None
 
 
 class DatasetRegistry:
@@ -37,6 +36,7 @@ class DatasetRegistry:
         def decorator(func):
             cls._loaders[name] = func
             return func
+
         return decorator
 
     @classmethod
@@ -57,20 +57,43 @@ def _hash_config(**kwargs) -> str:
     return hashlib.sha256(cfg_str.encode()).hexdigest()[:16]
 
 
-def _validate_and_split(df: pd.DataFrame, schema: pa.DataFrameSchema, target_col: str,
-                         test_size: float = 0.2, random_state: int = 42,
-                         stratify: bool = True) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def _validate_and_split(
+    df: pd.DataFrame,
+    schema: pa.DataFrameSchema,
+    target_col: str,
+    test_size: float = 0.2,
+    random_state: int = 42,
+    stratify: bool = True,
+    groups: np.ndarray | None = None,
+    excluded_features: tuple[str, ...] = (),
+) -> tuple[
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    list[str],
+    np.ndarray | None,
+]:
     """Validate dataframe against schema and split."""
     sch = schema.remove_columns([target_col]) if target_col in schema.columns else schema
     sch.validate(df.drop(columns=[target_col]))
     y = df[target_col].values
     X = df.drop(columns=[target_col]).values
-    feature_names = [c for c in df.columns if c != target_col]
+    feature_names = [c for c in df.columns if c != target_col and c not in excluded_features]
     stratify_arr = y if stratify else None
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=random_state, stratify=stratify_arr
+    X = df[feature_names].values
+    split_arrays = [X, y]
+    if groups is not None:
+        split_arrays.append(np.asarray(groups))
+    split = train_test_split(
+        *split_arrays,
+        test_size=test_size,
+        random_state=random_state,
+        stratify=stratify_arr,
     )
-    return X_train, X_test, y_train, y_test, feature_names
+    X_train, X_test, y_train, y_test = split[:4]
+    groups_ordered = np.hstack([split[4], split[5]]) if groups is not None else None
+    return X_train, X_test, y_train, y_test, feature_names, groups_ordered
 
 
 def _load_breast_cancer_local(**kwargs) -> DatasetBundle:
@@ -93,7 +116,7 @@ def _load_breast_cancer_local(**kwargs) -> DatasetBundle:
 
     df = df.rename(columns={c: _sklearn_to_schema(c) for c in df.columns if c != "diagnosis"})
     schema = DATASET_SCHEMAS["breast_cancer"]
-    X_train, X_test, y_train, y_test, feature_names = _validate_and_split(
+    X_train, X_test, y_train, y_test, feature_names, _ = _validate_and_split(
         df, schema, "diagnosis", **kwargs
     )
     return DatasetBundle(
@@ -119,8 +142,22 @@ def _load_heart_disease_local(**kwargs) -> DatasetBundle:
         raise FileNotFoundError(
             "Heart disease data missing. Run: python scripts/download_datasets.py"
         )
-    cols = ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach",
-            "exang", "oldpeak", "slope", "ca", "thal", "num"]
+    cols = [
+        "age",
+        "sex",
+        "cp",
+        "trestbps",
+        "chol",
+        "fbs",
+        "restecg",
+        "thalach",
+        "exang",
+        "oldpeak",
+        "slope",
+        "ca",
+        "thal",
+        "num",
+    ]
     df = pd.read_csv(path, header=None, names=cols, na_values="?")
     df = df.dropna().reset_index(drop=True)  # 6 rows with missing ca/thal
     df["target"] = (df["num"] > 0).astype(int)
@@ -128,7 +165,7 @@ def _load_heart_disease_local(**kwargs) -> DatasetBundle:
     for c in ["ca", "thal"]:
         df[c] = df[c].astype(int)
     schema = DATASET_SCHEMAS["heart_disease"]
-    X_train, X_test, y_train, y_test, feature_names = _validate_and_split(
+    X_train, X_test, y_train, y_test, feature_names, _ = _validate_and_split(
         df, schema, "target", **kwargs
     )
     return DatasetBundle(
@@ -154,9 +191,14 @@ def _load_parkinsons_local(**kwargs) -> DatasetBundle:
         raise FileNotFoundError(
             "Parkinson's data missing. Run: python scripts/download_datasets.py"
         )
+    if "name" not in df.columns:
+        raise ValueError("Parkinson's dataset is missing the subject identifier column 'name'")
+    groups = df["name"].astype(str).str.extract(r"(S\d+)", expand=False)
+    if groups.isna().any():
+        raise ValueError("Could not extract subject IDs from every Parkinson's row")
     schema = DATASET_SCHEMAS["parkinsons"]
-    X_train, X_test, y_train, y_test, feature_names = _validate_and_split(
-        df, schema, "status", **kwargs
+    X_train, X_test, y_train, y_test, feature_names, groups_ordered = _validate_and_split(
+        df, schema, "status", groups=groups.to_numpy(), excluded_features=("name",), **kwargs
     )
     return DatasetBundle(
         X=np.vstack([X_train, X_test]),
@@ -165,6 +207,7 @@ def _load_parkinsons_local(**kwargs) -> DatasetBundle:
         target_name="status",
         metadata=DATASET_METADATA["parkinsons"],
         config_hash=_hash_config(**kwargs),
+        groups=groups_ordered,
     )
 
 
@@ -177,17 +220,24 @@ def _load_diabetes_local(**kwargs) -> DatasetBundle:
         if Path(path).exists():
             break
     else:
-        raise FileNotFoundError(
-            "Diabetes data missing. Run: python scripts/download_datasets.py"
-        )
-    cols = ["Pregnancies", "Glucose", "BloodPressure", "SkinThickness", "Insulin",
-            "BMI", "DiabetesPedigreeFunction", "Age", "Outcome"]
+        raise FileNotFoundError("Diabetes data missing. Run: python scripts/download_datasets.py")
+    cols = [
+        "Pregnancies",
+        "Glucose",
+        "BloodPressure",
+        "SkinThickness",
+        "Insulin",
+        "BMI",
+        "DiabetesPedigreeFunction",
+        "Age",
+        "Outcome",
+    ]
     df = pd.read_csv(path, header=None, names=cols)
     # documented Pima quirk: 0 = missing in these physiological columns
     for c in ["Glucose", "BloodPressure", "SkinThickness", "Insulin", "BMI"]:
         df[c] = df[c].replace(0, np.nan)
     schema = DATASET_SCHEMAS["diabetes"]
-    X_train, X_test, y_train, y_test, feature_names = _validate_and_split(
+    X_train, X_test, y_train, y_test, feature_names, _ = _validate_and_split(
         df, schema, "Outcome", **kwargs
     )
     return DatasetBundle(
@@ -214,7 +264,9 @@ def deidentify(df: pd.DataFrame, id_columns: list[str]) -> pd.DataFrame:
     for col in id_columns:
         if col in out.columns:
             if out[col].dtype == object:
-                out[col] = out[col].apply(lambda x: hashlib.sha256(str(x).encode()).hexdigest()[:12])
+                out[col] = out[col].apply(
+                    lambda x: hashlib.sha256(str(x).encode()).hexdigest()[:12]
+                )
             else:
                 out = out.drop(columns=[col])
     return out

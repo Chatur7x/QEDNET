@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Base encoder interface and shared validation utilities (D4 + Member C)."""
+
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
@@ -43,9 +43,7 @@ def validate_vector(x, n_qubits: int, encoding: str) -> np.ndarray:
             )
     elif encoding == "amplitude":
         if arr.size > 2**n_qubits:
-            raise ValueError(
-                f"amplitude: n_features={arr.size} > 2**n_qubits={2 ** n_qubits}"
-            )
+            raise ValueError(f"amplitude: n_features={arr.size} > 2**n_qubits={2**n_qubits}")
     else:
         raise ValueError(f"unknown encoding: {encoding}")
     return arr
@@ -55,7 +53,7 @@ def pad_to_pow2(x: np.ndarray, n_qubits: int) -> np.ndarray:
     """Zero-pad a vector to 2**n_qubits and L2-normalize for amplitude encoding."""
     dim = 2**n_qubits
     v = np.zeros(dim)
-    v[:x.size] = x
+    v[: x.size] = x
     norm = np.linalg.norm(v)
     if norm == 0:
         raise ValueError("amplitude: zero vector cannot be normalized")

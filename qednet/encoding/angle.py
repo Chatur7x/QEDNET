@@ -2,6 +2,7 @@
 
 import numpy as np
 from numpy.typing import NDArray
+
 from qednet.encoding.base import BaseEncoder
 
 
@@ -31,7 +32,7 @@ class AngleEncoder(BaseEncoder):
             padding = np.zeros((n_samples, self.n_qubits - angles.shape[1]))
             angles = np.hstack([angles, padding])
         elif angles.shape[1] > self.n_qubits:
-            angles = angles[:, :self.n_qubits]
+            angles = angles[:, : self.n_qubits]
 
         return angles
 

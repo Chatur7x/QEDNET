@@ -2,9 +2,11 @@
 
 import numpy as np
 from numpy.typing import NDArray
-from typing import Optional
+from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.utils.validation import check_is_fitted
+
 from qednet.models.base import BaseTransformer
 
 
@@ -16,7 +18,7 @@ class PCACompressor(BaseTransformer):
         self.random_state = random_state
         self._pca = PCA(n_components=n_components, random_state=random_state)
 
-    def fit(self, X: NDArray, y: Optional[NDArray] = None) -> "PCACompressor":
+    def fit(self, X: NDArray, y: NDArray | None = None) -> "PCACompressor":
         self._pca.fit(X)
         return self
 
@@ -48,14 +50,9 @@ class FeatureSelector(BaseTransformer):
 
 
 # --- Leakage-safe wrappers (merged, imports guarded) ---
-from sklearn.base import BaseEstimator as _SkBase, TransformerMixin as _SkMixin  # noqa: E402
-from sklearn.decomposition import PCA as _SkPCA  # noqa: E402
-from sklearn.utils.validation import check_is_fitted as _check_fitted  # noqa: E402
-
-BaseEstimator, TransformerMixin, PCA, check_is_fitted = _SkBase, _SkMixin, _SkPCA, _check_fitted
 try:
-    import torch
     import torch.nn as nn
+
     _TORCH = True
 except Exception:
     _TORCH = False
@@ -71,7 +68,9 @@ class SafePCA(BaseEstimator, TransformerMixin):
         self._pca = None
 
     def fit(self, X, y=None):
-        self._pca = PCA(n_components=self.n_components, random_state=self.random_state, whiten=self.whiten)
+        self._pca = PCA(
+            n_components=self.n_components, random_state=self.random_state, whiten=self.whiten
+        )
         self._pca.fit(X)
         self.n_features_in_ = X.shape[1]
         return self
@@ -84,7 +83,7 @@ class SafePCA(BaseEstimator, TransformerMixin):
         return self.fit(X).transform(X)
 
     def get_feature_names_out(self, input_features=None):
-        return np.array([f"PC{i+1}" for i in range(self.n_components)])
+        return np.array([f"PC{i + 1}" for i in range(self.n_components)])
 
     @property
     def explained_variance_ratio_(self):
@@ -178,6 +177,7 @@ class AutoencoderCompressor(BaseEstimator, TransformerMixin):
         if not self._fitted:
             raise RuntimeError("Autoencoder not fitted")
         import torch
+
         self._model.eval()
         with torch.no_grad():
             X_tensor = torch.tensor(X, dtype=torch.float32).to(self.device)
@@ -188,4 +188,4 @@ class AutoencoderCompressor(BaseEstimator, TransformerMixin):
         return self.fit(X).transform(X)
 
     def get_feature_names_out(self, input_features=None):
-        return np.array([f"AE_{i+1}" for i in range(self.latent_dim)])
+        return np.array([f"AE_{i + 1}" for i in range(self.latent_dim)])

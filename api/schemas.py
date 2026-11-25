@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field
 from enum import Enum
+from typing import Any
+
+from pydantic import BaseModel
 
 
 class DatasetName(str, Enum):
@@ -23,8 +24,6 @@ class ModelType(str, Enum):
     vqc = "vqc"
     qsvm = "qsvm"
     reupload = "reupload"
-    hybrid_qnn = "hybrid_qnn"
-    quantum_cascade = "quantum_cascade"
 
 
 class PreprocessConfig(BaseModel):
@@ -35,7 +34,7 @@ class PreprocessConfig(BaseModel):
     variance_threshold: float = 0.0
     compress_method: str = "pca"
     compress_dim: int = 8
-    ae_hidden_dims: List[int] = [64, 32]
+    ae_hidden_dims: list[int] = [64, 32]
     ae_epochs: int = 50
     smote: bool = False
     smote_k: int = 5
@@ -51,7 +50,7 @@ class ModelConfig(BaseModel):
     optimizer: str = "adam"
     learning_rate: float = 0.01
     max_iter: int = 50
-    shots: Optional[int] = None
+    shots: int | None = None
     diff_method: str = "backprop"
     device: str = "default.qubit"
     use_entanglement: bool = True
@@ -60,26 +59,26 @@ class ModelConfig(BaseModel):
     max_depth: int = 4
     C: float = 1.0
     n_params_target: int = 100
-    hidden_dims: List[int] = [32, 16]
+    hidden_dims: list[int] = [32, 16]
     epochs: int = 100
 
 
 class TrainingConfig(BaseModel):
     outer_folds: int = 5
     inner_folds: int = 3
-    seeds: List[int] = [42]
+    seeds: list[int] = [42]
     shots: int = 1024
 
 
 class EvaluationConfig(BaseModel):
-    metrics: List[str] = ["auroc", "auprc", "sens_at_spec95", "mcc", "brier", "ece"]
+    metrics: list[str] = ["auroc", "auprc", "sens_at_spec95", "mcc", "brier", "ece"]
     bootstrap_ci: int = 2000
     delong_test: bool = True
     decision_curve: bool = True
 
 
 class CertificateConfig(BaseModel):
-    dequantization_attack: List[str] = ["rff", "nystrom"]
+    dequantization_attack: list[str] = ["rff", "nystrom"]
     entanglement_ablation: str = "parameter_matched"
     bottleneck_honesty_meter: bool = True
 
@@ -97,14 +96,14 @@ class ExperimentConfig(BaseModel):
 
 
 class PredictionRequest(BaseModel):
-    features: List[float]
-    model_id: Optional[str] = None
+    features: list[float]
+    model_id: str | None = None
 
 
 class PredictionResponse(BaseModel):
     prediction: int
     probability: float
-    uncertainty: Optional[Dict[str, float]] = None
+    uncertainty: dict[str, float] | None = None
     model_id: str
 
 
@@ -115,13 +114,13 @@ class ExperimentRequest(BaseModel):
 class ExperimentResponse(BaseModel):
     run_id: str
     status: str
-    metrics: Optional[Dict[str, Any]] = None
-    circuit_info: Optional[Dict[str, Any]] = None
-    certificate: Optional[Dict[str, Any]] = None
+    metrics: dict[str, Any] | None = None
+    circuit_info: dict[str, Any] | None = None
+    certificate: dict[str, Any] | None = None
 
 
 class HealthResponse(BaseModel):
     status: str
     version: str
-    available_datasets: List[str]
-    available_models: List[str]
+    available_datasets: list[str]
+    available_models: list[str]

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import numpy as np
-import pennylane as qml
-from qednet.diagnostics.entanglement import measure_entanglement, meyer_wallach
+
+from qednet.diagnostics.entanglement import measure_entanglement
 
 
 def entanglement_explainer(
@@ -20,21 +20,23 @@ def entanglement_explainer(
     results = []
     for x in X:
         ent = measure_entanglement(circuit_fn, params, x, n_qubits=n_qubits)
-        results.append({
-            "entanglement_entropies": ent["entanglement_entropies"],
-            "meyer_wallach": ent["meyer_wallach"],
-        })
+        results.append(
+            {
+                "entanglement_entropies": ent["entanglement_entropies"],
+                "meyer_wallach": ent["meyer_wallach"],
+            }
+        )
 
     avg_mw = np.mean([r["meyer_wallach"] for r in results])
-    avg_entropy = np.mean([
-        np.mean(list(r["entanglement_entropies"].values())) for r in results
-    ])
+    avg_entropy = np.mean([np.mean(list(r["entanglement_entropies"].values())) for r in results])
 
     return {
         "per_sample": results,
         "avg_meyer_wallach": float(avg_mw),
         "avg_entanglement_entropy": float(avg_entropy),
-        "interpretation": "High entanglement suggests quantum correlations are used" if avg_mw > 0.5 else "Low entanglement",
+        "interpretation": "High entanglement suggests quantum correlations are used"
+        if avg_mw > 0.5
+        else "Low entanglement",
     }
 
 

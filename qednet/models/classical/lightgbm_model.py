@@ -1,8 +1,7 @@
 """LightGBM classifier wrapper."""
 
-import numpy as np
 from numpy.typing import NDArray
-from typing import Optional
+
 from qednet.models.base import BaseEstimator
 
 try:

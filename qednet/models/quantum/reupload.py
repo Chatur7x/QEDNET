@@ -11,15 +11,15 @@ Configurable layers, parameter count, deterministic seed.
 from __future__ import annotations
 
 import time
-from typing import Optional
 
 import numpy as np
-from numpy.typing import NDArray
 import pennylane as qml
+from numpy.typing import NDArray
 from pennylane import numpy as pnp
 
 from qednet.encoding import validate_vector
 from qednet.models.base import BaseEstimator
+
 from .base import bce_loss, sigmoid, validate_xy
 
 
@@ -142,17 +142,17 @@ class ReuploadClassifier(BaseEstimator):
     def _forward(self, X, theta, phi):
         return pnp.array([self._circuit(x, theta, phi) for x in X])
 
-    def fit(self, X: NDArray, y: NDArray) -> "ReuploadClassifier":
+    def fit(self, X: NDArray, y: NDArray) -> ReuploadClassifier:
         Xm, ym = validate_xy(X, y, self.n_qubits, "reupload")
         if not self._built:
             self._build()
         rng = np.random.RandomState(self.seed)
-        n_theta = self.n_layers * self.n_qubits * 3
-        n_phi = self.n_layers * self.n_qubits
-        theta = pnp.array(rng.uniform(-np.pi, np.pi, (self.n_layers, self.n_qubits, 3)),
-                          requires_grad=True)
-        phi = pnp.array(rng.uniform(-np.pi, np.pi, (self.n_layers, self.n_qubits)),
-                        requires_grad=True)
+        theta = pnp.array(
+            rng.uniform(-np.pi, np.pi, (self.n_layers, self.n_qubits, 3)), requires_grad=True
+        )
+        phi = pnp.array(
+            rng.uniform(-np.pi, np.pi, (self.n_layers, self.n_qubits)), requires_grad=True
+        )
         t0 = time.time()
 
         def batch_loss(t, p):
@@ -161,8 +161,11 @@ class ReuploadClassifier(BaseEstimator):
 
         losses, grad_vars = [], []
         if self.optimizer in ("adam", "sgd"):
-            opt = qml.AdamOptimizer(self.lr) if self.optimizer == "adam" \
+            opt = (
+                qml.AdamOptimizer(self.lr)
+                if self.optimizer == "adam"
                 else qml.GradientDescentOptimizer(self.lr)
+            )
             gfn = qml.grad(batch_loss, argnums=[0, 1])
             for _ in range(self.max_iter):
                 (theta, phi), prev = opt.step_and_cost(batch_loss, theta, phi)
@@ -179,12 +182,20 @@ class ReuploadClassifier(BaseEstimator):
                 lm = batch_loss(theta - ck * d_t, phi - ck * d_p)
                 g_t = (lp - lm) / (2 * ck) * d_t
                 g_p = (lp - lm) / (2 * ck) * d_p
-                theta = pnp.array(pnp.asarray(theta) - self.lr / (k + 1) ** 0.6 * g_t,
-                                  requires_grad=True)
-                phi = pnp.array(pnp.asarray(phi) - self.lr / (k + 1) ** 0.6 * g_p,
-                                requires_grad=True)
+                theta = pnp.array(
+                    pnp.asarray(theta) - self.lr / (k + 1) ** 0.6 * g_t, requires_grad=True
+                )
+                phi = pnp.array(
+                    pnp.asarray(phi) - self.lr / (k + 1) ** 0.6 * g_p, requires_grad=True
+                )
                 losses.append(float((lp + lm) / 2))
-                grad_vars.append(float(pnp.var(pnp.concatenate([pnp.asarray(g_t).ravel(), pnp.asarray(g_p).ravel()]))))
+                grad_vars.append(
+                    float(
+                        pnp.var(
+                            pnp.concatenate([pnp.asarray(g_t).ravel(), pnp.asarray(g_p).ravel()])
+                        )
+                    )
+                )
         self.theta_ = pnp.asarray(theta)
         self.phi_ = pnp.asarray(phi)
         self.train_loss_ = losses
@@ -234,7 +245,7 @@ class ReuploadClassifier(BaseEstimator):
             "diff_method": getattr(self, "diff_method_", self.diff_method_req),
         }
 
-    def set_params(self, **params) -> "ReuploadClassifier":
+    def set_params(self, **params) -> ReuploadClassifier:
         for key, value in params.items():
             if key == "layers":
                 self.n_layers = value

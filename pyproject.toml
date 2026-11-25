@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "qednet"
 version = "0.1.0"
-description = "A Hybrid Quantum–Classical Machine Learning Platform for Early Disease Detection"
+description = "Research platform for hybrid quantum-classical biomedical classification"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
@@ -91,8 +91,10 @@ markers = [
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM", "T20"]
-ignore = ["E501", "B008"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "B"]
+ignore = ["E501", "B008", "N803", "N806"]
 fixable = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM", "T20"]
 
 [tool.ruff.format]

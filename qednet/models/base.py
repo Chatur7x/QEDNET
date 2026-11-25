@@ -1,7 +1,8 @@
 """Base interfaces for estimators and transformers."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
+
 import numpy as np
 from numpy.typing import NDArray
 
@@ -52,9 +53,7 @@ class BaseEstimator(ABC):
         except (TypeError, ValueError):
             return {}
         return {
-            p: getattr(self, p)
-            for p in sig.parameters
-            if p not in ("kwargs",) and hasattr(self, p)
+            p: getattr(self, p) for p in sig.parameters if p not in ("kwargs",) and hasattr(self, p)
         }
 
     def set_params(self, **params: Any) -> "BaseEstimator":
@@ -73,7 +72,7 @@ class BaseTransformer(ABC):
     """
 
     @abstractmethod
-    def fit(self, X: NDArray, y: Optional[NDArray] = None) -> "BaseTransformer":
+    def fit(self, X: NDArray, y: NDArray | None = None) -> "BaseTransformer":
         """Fit the transformer to data.
 
         Args:
@@ -97,7 +96,7 @@ class BaseTransformer(ABC):
         """
         ...
 
-    def fit_transform(self, X: NDArray, y: Optional[NDArray] = None) -> NDArray:
+    def fit_transform(self, X: NDArray, y: NDArray | None = None) -> NDArray:
         """Fit and transform in one step."""
         return self.fit(X, y).transform(X)
 

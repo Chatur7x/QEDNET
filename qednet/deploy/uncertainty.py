@@ -1,6 +1,7 @@
 """Shot-noise uncertainty quantification (N5)."""
 
 from dataclasses import dataclass
+
 import numpy as np
 from numpy.typing import NDArray
 
@@ -8,6 +9,7 @@ from numpy.typing import NDArray
 @dataclass
 class UncertaintyResult:
     """Uncertainty quantification result."""
+
     probability: float
     shots: int
     variance: float
@@ -42,10 +44,13 @@ class UncertaintyQuantifier:
 
     def _get_z_score(self, confidence: float) -> float:
         from scipy.stats import norm
+
         alpha = (1 - confidence) / 2
         return norm.ppf(1 - alpha)
 
-    def quantify(self, probability: float, ensemble_probs: NDArray | None = None) -> UncertaintyResult:
+    def quantify(
+        self, probability: float, ensemble_probs: NDArray | None = None
+    ) -> UncertaintyResult:
         """Quantify uncertainty for a probability estimate.
 
         Args:
@@ -80,7 +85,11 @@ class UncertaintyQuantifier:
 
         return result
 
-    def quantify_batch(self, probabilities: NDArray, ensemble_probs: NDArray | None = None) -> list[UncertaintyResult]:
+    def quantify_batch(
+        self, probabilities: NDArray, ensemble_probs: NDArray | None = None
+    ) -> list[UncertaintyResult]:
         """Quantify uncertainty for batch of probabilities."""
-        return [self.quantify(p, ensemble_probs[i] if ensemble_probs is not None else None)
-                for i, p in enumerate(probabilities)]
+        return [
+            self.quantify(p, ensemble_probs[i] if ensemble_probs is not None else None)
+            for i, p in enumerate(probabilities)
+        ]

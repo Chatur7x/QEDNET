@@ -8,26 +8,28 @@ O(n^2) cost preserved and exposed per spec.
 from __future__ import annotations
 
 import time
-from typing import Optional
 
 import numpy as np
-from numpy.typing import NDArray
 import pennylane as qml
-from sklearn.svm import SVC
+from numpy.typing import NDArray
 from scipy.special import expit
+from sklearn.svm import SVC
 
 from qednet.encoding import validate_vector, zz_feature_map
 from qednet.models.base import BaseEstimator
+
 from .base import validate_xy
 
 
 def _overlap_statevector(dev, encoding_fn, x, y, n_qubits):
     """Compute |<phi(x)|phi(y)>|^2 using statevector overlap (exact, sim only)."""
+
     @qml.qnode(dev)
     def circ(a, b):
         encoding_fn(a, wires=range(n_qubits))
         qml.adjoint(encoding_fn)(b, wires=range(n_qubits))
         return qml.probs(wires=range(n_qubits))
+
     # overlap = |<0| U(x)^dagger U(y) |0>|^2 = prob of all zeros
     probs = circ(x, y)
     return float(probs[0])
@@ -36,7 +38,6 @@ def _overlap_statevector(dev, encoding_fn, x, y, n_qubits):
 def _overlap_swap_test(dev, encoding_fn, x, y, n_qubits):
     """Compute |<phi(x)|phi(y)>|^2 via swap test (hardware compatible)."""
     # ancilla + 2 x n_qubits registers
-    total_wires = 1 + 2 * n_qubits
     anc = 0
     reg1 = list(range(1, 1 + n_qubits))
     reg2 = list(range(1 + n_qubits, 1 + 2 * n_qubits))
@@ -52,6 +53,7 @@ def _overlap_swap_test(dev, encoding_fn, x, y, n_qubits):
             qml.CSWAP(wires=[anc, reg1[i], reg2[i]])
         qml.Hadamard(wires=anc)
         return qml.probs(wires=anc)
+
     # P(ancilla=0) = (1 + |<x|y>|^2) / 2
     probs = circ(x, y)
     return float(2 * probs[0] - 1)
@@ -113,6 +115,7 @@ class QSVM(BaseEstimator):
             return lambda x, wires: zz_feature_map(x, wires=wires)
         elif self.encoding == "angle":
             from qednet.encoding import angle_encoding
+
             return angle_encoding
         else:
             raise ValueError(f"QSVM: unsupported encoding {self.encoding!r}")
@@ -147,7 +150,6 @@ class QSVM(BaseEstimator):
         Y = X if Y is None else np.asarray(Y)
         n, m = X.shape[0], Y.shape[0]
         K = np.zeros((n, m), dtype=float)
-        t0 = time.time()
         for i in range(n):
             for j in range(m):
                 # exploit symmetry when Y is X
@@ -157,7 +159,7 @@ class QSVM(BaseEstimator):
                     K[i, j] = self._kernel_element(X[i], Y[j])
         return K
 
-    def fit(self, X: NDArray, y: NDArray) -> "QSVM":
+    def fit(self, X: NDArray, y: NDArray) -> QSVM:
         Xm, ym = validate_xy(X, y, self.n_qubits, self.encoding)
         t0 = time.time()
         self._X_train = Xm
@@ -212,7 +214,7 @@ class QSVM(BaseEstimator):
             "device": self.device_name,
         }
 
-    def set_params(self, **params) -> "QSVM":
+    def set_params(self, **params) -> QSVM:
         for key, value in params.items():
             if hasattr(self, key):
                 setattr(self, key, value)

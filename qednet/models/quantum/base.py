@@ -32,7 +32,7 @@ class SklearnCompatMixin:
     def get_params(self, deep: bool = True) -> dict:
         return dict(self._init_params)
 
-    def set_params(self, **params) -> "SklearnCompatMixin":
+    def set_params(self, **params) -> SklearnCompatMixin:
         self._init_params.update(params)
         self.__init__(**self._init_params)
         return self

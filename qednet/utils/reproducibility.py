@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import os
 import random
+
 import numpy as np
 
 
@@ -16,6 +17,7 @@ def set_global_seed(seed: int):
 
     try:
         import torch
+
         torch.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
         torch.backends.cudnn.deterministic = True
@@ -25,6 +27,7 @@ def set_global_seed(seed: int):
 
     try:
         import pennylane as qml
+
         qml.numpy.random.seed(seed)
     except ImportError:
         pass
@@ -33,14 +36,15 @@ def set_global_seed(seed: int):
 def hash_config(config: dict) -> str:
     """Deterministic hash of configuration."""
     import yaml
+
     yaml_str = yaml.dump(config, sort_keys=True, default_flow_style=False)
     return hashlib.sha256(yaml_str.encode()).hexdigest()[:16]
 
 
 def get_environment_info() -> dict:
     """Capture environment for reproducibility."""
-    import sys
     import platform
+    import sys
 
     info = {
         "python_version": sys.version,

@@ -31,8 +31,9 @@ def find_counterfactual(
         return dist + lambda_reg * loss
 
     # Gradient-free optimization
-    result = minimize(objective, x0, method="Nelder-Mead",
-                      options={"maxiter": max_iter, "xatol": 1e-6})
+    result = minimize(
+        objective, x0, method="Nelder-Mead", options={"maxiter": max_iter, "xatol": 1e-6}
+    )
 
     x_cf = result.x
     prob_cf = model.predict_proba(x_cf.reshape(1, -1))[0, target_class]

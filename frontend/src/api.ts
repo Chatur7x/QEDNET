@@ -1,4 +1,8 @@
-const BASE = "http://localhost:8000/research";
+const API_ORIGIN = (import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000").replace(
+  /\/+$/,
+  "",
+);
+const BASE = `${API_ORIGIN}/research`;
 
 async function req(path: string, opts?: RequestInit) {
   const r = await fetch(BASE + path, {

@@ -20,7 +20,9 @@ class DequantizationResult:
     n_components_nystrom: int
 
 
-def _rff_approx(K: np.ndarray, n_components: int, gamma: float | None, random_state: int) -> tuple[np.ndarray, float]:
+def _rff_approx(
+    K: np.ndarray, n_components: int, gamma: float | None, random_state: int
+) -> tuple[np.ndarray, float]:
     rng = np.random.RandomState(random_state)
     n = K.shape[0]
     if gamma is None:
@@ -42,7 +44,9 @@ def _rff_approx(K: np.ndarray, n_components: int, gamma: float | None, random_st
     return K_rff, float(np.linalg.norm(K - K_rff, "fro"))
 
 
-def _nystrom_approx(K: np.ndarray, n_components: int, random_state: int) -> tuple[np.ndarray, float]:
+def _nystrom_approx(
+    K: np.ndarray, n_components: int, random_state: int
+) -> tuple[np.ndarray, float]:
     rng = np.random.RandomState(random_state)
     n = K.shape[0]
     n_components = min(n_components, n)

@@ -1,10 +1,9 @@
 """IBM hardware executor tests (dry-run mode, no credentials needed)."""
 
 import numpy as np
-import pytest
-
-from qednet.hardware import IBMCredentials, create_executor, IBMExecutor, HardwareResult
 from qiskit import QuantumCircuit
+
+from qednet.hardware import HardwareResult, IBMCredentials, create_executor
 
 
 def test_credentials_from_env(monkeypatch):

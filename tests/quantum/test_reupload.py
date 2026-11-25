@@ -32,6 +32,7 @@ def test_train_predict_shapes_ranges():
 def test_invalid_dims():
     X, y = _toy(d=3)
     import pytest
+
     with pytest.raises(ValueError):
         ReuploadClassifier(n_qubits=2).fit(X, y)  # 3 feats > 2 qubits
 

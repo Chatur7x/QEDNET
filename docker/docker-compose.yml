@@ -1,78 +1,20 @@
-version: '3.8'
-
 services:
-  # API service
   api:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
-    command: python -m api.main
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    environment:
-      - MLFLOW_TRACKING_URI=http://mlflow:5000
-      - REDIS_URL=redis://redis:6379/0
     volumes:
-      - ../artifacts:/app/artifacts
-      - ../mlruns:/app/mlruns
-    depends_on:
-      - mlflow
-      - redis
-    restart: unless-stopped
+      - ../runs:/app/runs
+      - ../data:/app/data
+    environment:
+      DISABLE_PANDERA_IMPORT_WARNING: "True"
 
-  # Dashboard service
   dashboard:
     build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    command: streamlit run dashboard/app.py --server.port=8501 --server.address=0.0.0.0
+      context: ../frontend
     ports:
-      - "8501:8501"
-    environment:
-      - MLFLOW_TRACKING_URI=http://mlflow:5000
-    volumes:
-      - ../artifacts:/app/artifacts
-      - ../mlruns:/app/mlruns
+      - "5173:80"
     depends_on:
-      - mlflow
-    restart: unless-stopped
-
-  # MLflow tracking server
-  mlflow:
-    image: python:3.11-slim
-    command: >
-      bash -c "pip install mlflow==2.8.0 && mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db --default-artifact-root /mlruns"
-    ports:
-      - "5000:5000"
-    volumes:
-      - ../mlruns:/mlruns
-    restart: unless-stopped
-
-  # Redis for Celery
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    restart: unless-stopped
-
-  # Celery worker (for async training)
-  worker:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    command: celery -A qednet.train.celery_app worker --loglevel=info
-    environment:
-      - MLFLOW_TRACKING_URI=http://mlflow:5000
-      - REDIS_URL=redis://redis:6379/0
-    volumes:
-      - ../artifacts:/app/artifacts
-      - ../mlruns:/app/mlruns
-    depends_on:
-      - mlflow
-      - redis
-    restart: unless-stopped
-
-volumes:
-  redis_data:
+      - api

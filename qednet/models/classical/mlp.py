@@ -1,9 +1,8 @@
 """MLP classifier wrapper."""
 
-import numpy as np
 from numpy.typing import NDArray
-from typing import Optional
 from sklearn.neural_network import MLPClassifier as SklearnMLP
+
 from qednet.models.base import BaseEstimator
 
 

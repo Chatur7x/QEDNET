@@ -1,25 +1,25 @@
 """Serving pipeline combining model, cascade, conformal, and uncertainty."""
 
 from dataclasses import dataclass
-from typing import Optional
-import numpy as np
+
 from numpy.typing import NDArray
 
-from qednet.models.base import BaseEstimator
 from qednet.deploy.cascade import QuantumSecondOpinionCascade
 from qednet.deploy.conformal import ConformalPredictor, ConformalResult
 from qednet.deploy.uncertainty import UncertaintyQuantifier, UncertaintyResult
+from qednet.models.base import BaseEstimator
 
 
 @dataclass
 class PredictionResult:
     """Complete prediction result from serving pipeline."""
+
     prediction: int
     probability: float
     calibrated_probability: float
     routing: str
-    uncertainty: UncertaintyResult
-    conformal: ConformalResult
+    uncertainty: UncertaintyResult | None
+    conformal: ConformalResult | None
     model_name: str
     config_hash: str
     abstained: bool = False
@@ -31,9 +31,9 @@ class ServingPipeline:
     def __init__(
         self,
         model: BaseEstimator,
-        cascade: Optional[QuantumSecondOpinionCascade] = None,
-        conformal: Optional[ConformalPredictor] = None,
-        uncertainty: Optional[UncertaintyQuantifier] = None,
+        cascade: QuantumSecondOpinionCascade | None = None,
+        conformal: ConformalPredictor | None = None,
+        uncertainty: UncertaintyQuantifier | None = None,
         model_name: str = "unknown",
         config_hash: str = "",
     ):
@@ -44,12 +44,18 @@ class ServingPipeline:
         self.model_name = model_name
         self.config_hash = config_hash
 
-    def predict(self, X: NDArray) -> list[PredictionResult]:
+    def predict(
+        self,
+        X: NDArray,
+        *,
+        return_uncertainty: bool = True,
+        return_conformal: bool = True,
+    ) -> list[PredictionResult]:
         """Run prediction through full serving pipeline."""
         results = []
 
         for i in range(X.shape[0]):
-            x = X[i:i+1]
+            x = X[i : i + 1]
 
             # 1. Get base prediction
             proba = self.model.predict_proba(x)[0]
@@ -68,30 +74,42 @@ class ServingPipeline:
 
             # 3. Quantify uncertainty
             uncertainty_result = None
-            if self.uncertainty:
+            if self.uncertainty and return_uncertainty:
                 uncertainty_result = self.uncertainty.quantify(calibrated_prob)
 
             # 4. Conformal prediction
             conformal_result = None
             abstained = False
-            if self.conformal:
+            if self.conformal and return_conformal:
                 conformal_result = self.conformal.predict(x)[0]
                 abstained = conformal_result.abstained
 
-            results.append(PredictionResult(
-                prediction=pred,
-                probability=prob_class_1,
-                calibrated_probability=calibrated_prob,
-                routing=routing,
-                uncertainty=uncertainty_result,
-                conformal=conformal_result,
-                model_name=self.model_name,
-                config_hash=self.config_hash,
-                abstained=abstained,
-            ))
+            results.append(
+                PredictionResult(
+                    prediction=pred,
+                    probability=prob_class_1,
+                    calibrated_probability=calibrated_prob,
+                    routing=routing,
+                    uncertainty=uncertainty_result,
+                    conformal=conformal_result,
+                    model_name=self.model_name,
+                    config_hash=self.config_hash,
+                    abstained=abstained,
+                )
+            )
 
         return results
 
-    def predict_single(self, x: NDArray) -> PredictionResult:
+    def predict_single(
+        self,
+        x: NDArray,
+        *,
+        return_uncertainty: bool = True,
+        return_conformal: bool = True,
+    ) -> PredictionResult:
         """Predict single sample."""
-        return self.predict(x.reshape(1, -1))[0]
+        return self.predict(
+            x.reshape(1, -1),
+            return_uncertainty=return_uncertainty,
+            return_conformal=return_conformal,
+        )[0]

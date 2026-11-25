@@ -6,17 +6,14 @@ Provides both PennyLane TorchLayer (Member A) and sklearn-compatible wrapper (Me
 
 from __future__ import annotations
 
-from typing import Optional
-
-import numpy as np
 from numpy.typing import NDArray
 
 from qednet.models.base import BaseEstimator
 
-
 # Try to import Member A's PyTorch layer
 try:
-    from .hybrid import HybridQNNLayer, make_hybrid_model, gradient_propagation_test
+    from .hybrid import HybridQNNLayer, gradient_propagation_test, make_hybrid_model
+
     _TORCH_AVAILABLE = True
 except ImportError:
     _TORCH_AVAILABLE = False
@@ -69,9 +66,10 @@ class HybridQNN(BaseEstimator):
         # Store aliases for get_params
         self._layers = layers
 
-    def fit(self, X: NDArray, y: NDArray) -> "HybridQNN":
+    def fit(self, X: NDArray, y: NDArray) -> HybridQNN:
         """Train the hybrid QNN using a mock (classical surrogate) when PyTorch/PennyLane not available."""
         from qednet.models.quantum.mocks import MockHybridQNN
+
         mock = MockHybridQNN(
             n_qubits=self.n_qubits,
             layers=self.n_layers,
@@ -105,7 +103,7 @@ class HybridQNN(BaseEstimator):
             "random_state": self.random_state,
         }
 
-    def set_params(self, **params) -> "HybridQNN":
+    def set_params(self, **params) -> HybridQNN:
         for key, value in params.items():
             if key == "layers":
                 self.n_layers = value

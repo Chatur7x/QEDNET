@@ -1,11 +1,9 @@
 """Tests for preprocessing pipeline and training runner."""
 
 import pytest
-import numpy as np
-from numpy.typing import NDArray
 
+from qednet.data.loader import Dataset, DatasetLoader, load_dataset
 from qednet.preprocess.pipeline import PreprocessingPipeline, create_preprocessing_pipeline
-from qednet.data.loader import DatasetLoader, load_dataset, Dataset
 
 
 class TestPreprocessingPipeline:

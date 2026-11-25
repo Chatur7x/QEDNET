@@ -25,10 +25,9 @@ def gradient_variance(circuit_fn, params, *args, **kwargs) -> dict:
     }
 
 
-def barren_plateau_diagnostic(circuit_fn, params, *args,
-                               n_samples: int = 10,
-                               threshold: float = 1e-3,
-                               **kwargs) -> dict:
+def barren_plateau_diagnostic(
+    circuit_fn, params, *args, n_samples: int = 10, threshold: float = 1e-3, **kwargs
+) -> dict:
     params = pnp.asarray(params)
     shape = params.shape
     variances = []

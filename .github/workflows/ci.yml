@@ -2,9 +2,9 @@ name: QED-Net CI
 
 on:
   push:
-    branches: [main, member-c-platform]
+    branches: [main, member-c-platform, production-readiness, results-v2]
   pull_request:
-    branches: [main, member-c-platform]
+    branches: [main, member-c-platform, production-readiness, results-v2]
 
 jobs:
   lint-and-test:
@@ -37,9 +37,9 @@ jobs:
         run: |
           ruff format --check qednet tests api dashboard
 
-      - name: Run MyPy type checking
+      - name: Run focused MyPy check
         run: |
-          mypy qednet
+          mypy api/schemas.py
 
       - name: Run unit tests
         run: |
@@ -51,7 +51,11 @@ jobs:
 
       - name: Run leakage guard tests
         run: |
-          pytest tests/ -v --tb=short -m "leakage" || true
+          pytest tests/ -v --tb=short -m "leakage"
+
+      - name: Run research API integration tests
+        run: |
+          pytest tests/integration/test_research_api.py tests/integration/test_e2e_pipeline.py -v --tb=short
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4

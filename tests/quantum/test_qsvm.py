@@ -47,6 +47,7 @@ def test_fit_predict_shapes():
 def test_invalid_dims():
     X, y = _toy(d=3)
     import pytest
+
     with pytest.raises(ValueError):
         QSVM(n_qubits=2).fit(X, y)
 

@@ -1,11 +1,12 @@
 """Configuration schema for experiments."""
 
-from dataclasses import dataclass, field, asdict
-from typing import Optional, Literal
-import yaml
 import hashlib
 import json
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
+from typing import Literal
+
+import yaml
 
 
 @dataclass
@@ -19,7 +20,9 @@ class DatasetConfig:
 
 @dataclass
 class ModelConfig:
-    type: Literal["vqc", "qsvm", "reupload", "hybrid_qnn", "xgboost", "lightgbm", "logistic", "mlp"] = "vqc"
+    type: Literal[
+        "vqc", "qsvm", "reupload", "hybrid_qnn", "xgboost", "lightgbm", "logistic", "mlp"
+    ] = "vqc"
     n_qubits: int = 8
     layers: int = 3
     ansatz: str = "strongly_entangling"
@@ -48,9 +51,9 @@ class TrainingConfig:
 
 @dataclass
 class EvaluationConfig:
-    metrics: list[str] = field(default_factory=lambda: [
-        "auroc", "auprc", "sens_at_spec95", "mcc", "brier", "ece"
-    ])
+    metrics: list[str] = field(
+        default_factory=lambda: ["auroc", "auprc", "sens_at_spec95", "mcc", "brier", "ece"]
+    )
     bootstrap_ci: int = 2000
     delong_test: bool = True
     decision_curve: bool = True
@@ -76,6 +79,22 @@ class ExperimentConfig:
     def to_dict(self) -> dict:
         return asdict(self)
 
+    def to_mlflow_params(self) -> dict[str, str]:
+        """Return stable, flat string parameters suitable for MLflow logging."""
+        params: dict[str, str] = {}
+        for section, values in self.to_dict().items():
+            if isinstance(values, dict):
+                for key, value in values.items():
+                    rendered = (
+                        json.dumps(value, sort_keys=True)
+                        if isinstance(value, (dict, list))
+                        else str(value)
+                    )
+                    params[f"{section}.{key}"] = rendered
+            else:
+                params[section] = str(values)
+        return params
+
     def compute_hash(self) -> str:
         """Compute deterministic hash of configuration for reproducibility."""
         config_str = json.dumps(self.to_dict(), sort_keys=True)
@@ -84,7 +103,7 @@ class ExperimentConfig:
     @classmethod
     def from_yaml(cls, path: str | Path) -> "ExperimentConfig":
         """Load configuration from YAML file."""
-        with open(path, "r") as f:
+        with open(path) as f:
             data = yaml.safe_load(f)
         return cls.from_dict(data)
 

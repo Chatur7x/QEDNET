@@ -3,9 +3,8 @@
 import time
 import warnings
 from pathlib import Path
-from typing import Any, Optional
-import numpy as np
-from numpy.typing import NDArray
+from typing import Any
+
 try:
     import mlflow
     import mlflow.sklearn
@@ -14,11 +13,11 @@ except ImportError:  # ponytail: tracking optional; runs still return results
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.pipeline import Pipeline
 
-from qednet.train.config import ExperimentConfig
-from qednet.data.loader import load_dataset, Dataset
-from qednet.preprocess.pipeline import create_preprocessing_pipeline
-from qednet.models.factory import create_model
+from qednet.data.loader import Dataset, load_dataset
 from qednet.evaluation.metrics import compute_all_metrics
+from qednet.models.factory import create_model
+from qednet.preprocess.pipeline import create_preprocessing_pipeline
+from qednet.train.config import ExperimentConfig
 
 
 class TrainingRunner:
@@ -28,7 +27,7 @@ class TrainingRunner:
         self,
         config: ExperimentConfig,
         use_mock: bool = False,
-        mlflow_uri: Optional[str] = None,
+        mlflow_uri: str | None = None,
         artifact_dir: str = "artifacts",
     ):
         self.config = config
@@ -65,10 +64,12 @@ class TrainingRunner:
         model = create_model(self.config.model, use_mock=self.use_mock)
 
         # 4. Build full pipeline
-        full_pipeline = Pipeline([
-            ("preprocessor", preprocessor),
-            ("model", model),
-        ])
+        full_pipeline = Pipeline(
+            [
+                ("preprocessor", preprocessor),
+                ("model", model),
+            ]
+        )
 
         # 5. Cross-validation
         print(f"Running {self.config.training.outer_folds}-fold CV...")
@@ -79,13 +80,18 @@ class TrainingRunner:
         )
 
         cv_predictions = cross_val_predict(
-            full_pipeline, train_ds.X, train_ds.y,
-            cv=cv, method="predict_proba", n_jobs=self.config.training.n_jobs
+            full_pipeline,
+            train_ds.X,
+            train_ds.y,
+            cv=cv,
+            method="predict_proba",
+            n_jobs=self.config.training.n_jobs,
         )
 
         # 6. Compute CV metrics
         cv_metrics = compute_all_metrics(
-            train_ds.y, cv_predictions,
+            train_ds.y,
+            cv_predictions,
             metrics=self.config.evaluation.metrics,
             bootstrap_ci=self.config.evaluation.bootstrap_ci,
         )
@@ -97,14 +103,14 @@ class TrainingRunner:
         # 8. Test evaluation
         test_proba = full_pipeline.predict_proba(test_ds.X)
         test_metrics = compute_all_metrics(
-            test_ds.y, test_proba,
+            test_ds.y,
+            test_proba,
             metrics=self.config.evaluation.metrics,
         )
 
         # 9. Log to MLflow
         mlflow_run_id = self._log_mlflow(
-            full_pipeline, train_ds, test_ds, cv_metrics, test_metrics,
-            time.time() - start_time
+            full_pipeline, train_ds, test_ds, cv_metrics, test_metrics, time.time() - start_time
         )
 
         # 10. Save artifacts
@@ -129,10 +135,10 @@ class TrainingRunner:
         cv_metrics: dict,
         test_metrics: dict,
         training_time: float,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Log experiment to MLflow."""
         if mlflow is None:
-            warnings.warn("mlflow not installed; skipping tracking")
+            warnings.warn("mlflow not installed; skipping tracking", stacklevel=2)
             return None
         try:
             with mlflow.start_run(run_name=self.config.experiment_name) as run:
@@ -160,7 +166,7 @@ class TrainingRunner:
 
                 return run.info.run_id
         except Exception as e:
-            warnings.warn(f"MLflow logging failed: {e}")
+            warnings.warn(f"MLflow logging failed: {e}", stacklevel=2)
             return None
 
     def _save_artifacts(
@@ -172,8 +178,9 @@ class TrainingRunner:
         test_metrics: dict,
     ) -> None:
         """Save model and metadata artifacts."""
-        import joblib
         import json
+
+        import joblib
 
         run_dir = self.artifact_dir / f"{self.config.experiment_name}_{self.config.compute_hash()}"
         run_dir.mkdir(parents=True, exist_ok=True)

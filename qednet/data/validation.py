@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-import pandera as pa
-from pandera import Column, Check, DataFrameSchema
-
+from pandera import Check, Column, DataFrameSchema
 
 # Wisconsin Breast Cancer (UCI)
 BREAST_CANCER_SCHEMA = DataFrameSchema(
@@ -59,7 +57,9 @@ HEART_DISEASE_SCHEMA = DataFrameSchema(
         "oldpeak": Column(float, Check.greater_than_or_equal_to(0)),
         "slope": Column(int, Check.isin([1, 2, 3])),  # Cleveland coding is 1-based
         "ca": Column(int, Check.isin([0, 1, 2, 3, 4])),
-        "thal": Column(int, Check.isin([3, 6, 7])),  # Cleveland coding: 3 normal, 6 fixed, 7 reversible
+        "thal": Column(
+            int, Check.isin([3, 6, 7])
+        ),  # Cleveland coding: 3 normal, 6 fixed, 7 reversible
         "target": Column(int, Check.isin([0, 1])),
     },
     strict=True,

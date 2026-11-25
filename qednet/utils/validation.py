@@ -3,14 +3,13 @@
 from __future__ import annotations
 
 import numpy as np
-from typing import Sequence
 
 
 def validate_binary_labels(y: np.ndarray) -> np.ndarray:
     """Validate and convert to binary 0/1 labels."""
     y = np.asarray(y).ravel()
     unique = np.unique(y)
-    if not set(unique).issubset({0, 1, -1, 1}):
+    if not set(unique).issubset({0, 1, -1}):
         raise ValueError(f"Labels must be binary, got {unique}")
     # Convert -1/1 to 0/1
     if -1 in unique:
@@ -55,9 +54,11 @@ def check_class_balance(y: np.ndarray, min_class_ratio: float = 0.01) -> dict:
     min_ratio = ratios.min()
 
     return {
-        "class_counts": dict(zip(unique.tolist(), counts.tolist())),
-        "class_ratios": dict(zip(unique.tolist(), ratios.tolist())),
+        "class_counts": dict(zip(unique.tolist(), counts.tolist(), strict=True)),
+        "class_ratios": dict(zip(unique.tolist(), ratios.tolist(), strict=True)),
         "min_class_ratio": float(min_ratio),
         "is_imbalanced": min_ratio < min_class_ratio,
-        "recommendation": "Consider class_weight='balanced' or SMOTE" if min_ratio < min_class_ratio else "OK",
+        "recommendation": "Consider class_weight='balanced' or SMOTE"
+        if min_ratio < min_class_ratio
+        else "OK",
     }

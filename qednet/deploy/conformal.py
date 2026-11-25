@@ -1,7 +1,8 @@
 """Conformal Prediction (F6)."""
 
 from dataclasses import dataclass
-from typing import List
+from math import ceil
+
 import numpy as np
 from numpy.typing import NDArray
 
@@ -11,7 +12,8 @@ from qednet.models.base import BaseEstimator
 @dataclass
 class ConformalResult:
     """Result from conformal prediction."""
-    prediction_set: List[int]
+
+    prediction_set: list[int]
     abstained: bool
     alpha: float
     calibration_coverage: float
@@ -36,6 +38,7 @@ class ConformalPredictor:
         model: BaseEstimator,
         alpha: float = 0.10,
         score_type: str = "max_proba",
+        random_state: int = 42,
     ):
         """Initialize conformal predictor.
 
@@ -46,10 +49,14 @@ class ConformalPredictor:
         """
         if not 0 < alpha < 1:
             raise ValueError("alpha must be in (0, 1)")
+        if score_type not in {"max_proba", "margin", "aps"}:
+            raise ValueError(f"Unknown score_type: {score_type}")
 
         self.model = model
         self.alpha = alpha
         self.score_type = score_type
+        self.random_state = random_state
+        self._rng = np.random.default_rng(random_state)
         self.calibration_scores: NDArray | None = None
         self.threshold: float | None = None
         self.calibration_coverage: float | None = None
@@ -57,27 +64,45 @@ class ConformalPredictor:
 
     def _compute_scores(self, y_true: NDArray, y_proba: NDArray) -> NDArray:
         """Compute nonconformity scores."""
-        proba_1 = y_proba[:, 1] if y_proba.ndim > 1 else y_proba
+        y_true = np.asarray(y_true)
+        y_proba = self._validate_probabilities(y_proba)
+        if y_true.ndim != 1 or len(y_true) != len(y_proba):
+            raise ValueError("y_true must be one binary label per probability row")
+        if not np.isin(y_true, (0, 1)).all():
+            raise ValueError("ConformalPredictor supports binary labels 0 and 1")
+        y_true = y_true.astype(int)
 
         if self.score_type == "max_proba":
             true_class_proba = y_proba[np.arange(len(y_true)), y_true]
             return 1 - true_class_proba
         elif self.score_type == "margin":
-            margin = np.abs(proba_1 - (1 - proba_1))
-            return 1 - margin
+            true_class_proba = y_proba[np.arange(len(y_true)), y_true]
+            other_class_proba = y_proba[np.arange(len(y_true)), 1 - y_true]
+            return 1 - (true_class_proba - other_class_proba)
         elif self.score_type == "aps":
-            # Adaptive Prediction Sets (Romano et al., 2020)
-            sorted_indices = np.argsort(y_proba, axis=1)[:, ::-1]
-            ranks = np.argsort(sorted_indices, axis=1)
-            true_ranks = ranks[np.arange(len(y_true)), y_true]
-            scores = np.zeros(len(y_true))
-            for i in range(len(y_true)):
-                higher = sorted_indices[i, :true_ranks[i]]
-                scores[i] = y_proba[i, higher].sum() if len(higher) > 0 else 0
-            scores += np.random.rand(len(y_true)) * y_proba[np.arange(len(y_true)), y_true]
+            scores = np.empty(len(y_true), dtype=float)
+            for i, label in enumerate(y_true):
+                order = np.argsort(-y_proba[i], kind="stable")
+                rank = int(np.flatnonzero(order == label)[0])
+                mass_before = y_proba[i, order[:rank]].sum()
+                scores[i] = mass_before + self._rng.random() * y_proba[i, label]
             return scores
-        else:
-            raise ValueError(f"Unknown score_type: {self.score_type}")
+
+    @staticmethod
+    def _validate_probabilities(y_proba: NDArray) -> NDArray:
+        probabilities = np.asarray(y_proba, dtype=float)
+        if (
+            probabilities.ndim != 2
+            or probabilities.shape[1] != 2
+            or not np.isfinite(probabilities).all()
+            or np.any(probabilities < 0)
+            or np.any(probabilities > 1)
+            or not np.allclose(probabilities.sum(axis=1), 1.0)
+        ):
+            raise ValueError(
+                "predict_proba must return finite binary probability rows summing to one"
+            )
+        return probabilities
 
     def calibrate(
         self,
@@ -98,22 +123,23 @@ class ConformalPredictor:
         if len(X_cal) == 0:
             raise ValueError("Calibration set cannot be empty")
 
-        y_proba = self.model.predict_proba(X_cal)
+        self._rng = np.random.default_rng(self.random_state)
+        y_cal = np.asarray(y_cal)
+        y_proba = self._validate_probabilities(self.model.predict_proba(X_cal))
         self.calibration_scores = self._compute_scores(y_cal, y_proba)
 
         n_cal = len(self.calibration_scores)
-        quantile_level = np.ceil((n_cal + 1) * (1 - self.alpha)) / n_cal
-        quantile_level = min(quantile_level, 1.0)
-        self.threshold = float(np.quantile(self.calibration_scores, quantile_level))
+        k = ceil((n_cal + 1) * (1 - self.alpha))
+        if k > n_cal:
+            self.threshold = 2.0 if self.score_type == "margin" else 1.0
+        else:
+            self.threshold = float(np.partition(self.calibration_scores, k - 1)[k - 1])
         self._is_calibrated = True
-
-        pred_sets = self._get_prediction_sets(y_proba)
-        coverage = np.mean([y_cal[i] in pred_sets[i] for i in range(len(y_cal))])
-        self.calibration_coverage = float(coverage)
+        self.calibration_coverage = float(np.mean(self.calibration_scores <= self.threshold))
 
         return self
 
-    def _get_prediction_sets(self, y_proba: NDArray) -> List[List[int]]:
+    def _get_prediction_sets(self, y_proba: NDArray) -> list[list[int]]:
         """Get prediction sets for given probabilities."""
         if not self._is_calibrated:
             raise RuntimeError("Must call calibrate() before predict()")
@@ -128,18 +154,16 @@ class ConformalPredictor:
                 score_0 = 1 - proba[0]
                 score_1 = 1 - proba[1]
             elif self.score_type == "margin":
-                margin = abs(proba[0] - proba[1])
-                score_0 = 1 - margin
-                score_1 = score_0
-            else:  # aps
-                sorted_idx = np.argsort(proba)[::-1]
-                rank_0 = np.where(sorted_idx == 0)[0][0]
-                higher_0 = sorted_idx[:rank_0]
-                score_0 = proba[higher_0].sum() if len(higher_0) > 0 else 0
-
-                rank_1 = np.where(sorted_idx == 1)[0][0]
-                higher_1 = sorted_idx[:rank_1]
-                score_1 = proba[higher_1].sum() if len(higher_1) > 0 else 0
+                score_0 = 1 - (proba[0] - proba[1])
+                score_1 = 1 - (proba[1] - proba[0])
+            else:  # randomized adaptive prediction sets
+                scores = []
+                order = np.argsort(-proba, kind="stable")
+                for candidate in (0, 1):
+                    rank = int(np.flatnonzero(order == candidate)[0])
+                    mass_before = proba[order[:rank]].sum()
+                    scores.append(mass_before + self._rng.random() * proba[candidate])
+                score_0, score_1 = scores
 
             scores = [score_0, score_1]
             pred_set = [c for c, s in enumerate(scores) if s <= self.threshold]
@@ -147,24 +171,26 @@ class ConformalPredictor:
 
         return pred_sets
 
-    def predict(self, X: NDArray) -> List[ConformalResult]:
+    def predict(self, X: NDArray) -> list[ConformalResult]:
         """Generate conformal prediction sets."""
         if not self._is_calibrated:
             raise RuntimeError("Must call calibrate() before predict()")
 
-        y_proba = self.model.predict_proba(X)
+        y_proba = self._validate_probabilities(self.model.predict_proba(X))
         pred_sets = self._get_prediction_sets(y_proba)
 
         results = []
         for pred_set in pred_sets:
             abstained = len(pred_set) == 2
-            results.append(ConformalResult(
-                prediction_set=pred_set,
-                abstained=abstained,
-                alpha=self.alpha,
-                calibration_coverage=self.calibration_coverage or 0.0,
-                threshold=self.threshold,
-            ))
+            results.append(
+                ConformalResult(
+                    prediction_set=pred_set,
+                    abstained=abstained,
+                    alpha=self.alpha,
+                    calibration_coverage=self.calibration_coverage or 0.0,
+                    threshold=self.threshold,
+                )
+            )
 
         return results
 
@@ -174,7 +200,9 @@ class ConformalPredictor:
             "target_coverage": 1 - self.alpha,
             "empirical_coverage": self.calibration_coverage or 0.0,
             "alpha": self.alpha,
-            "n_calibration": len(self.calibration_scores) if self.calibration_scores is not None else 0,
+            "n_calibration": len(self.calibration_scores)
+            if self.calibration_scores is not None
+            else 0,
             "threshold": self.threshold or 0.0,
             "score_type": self.score_type,
         }

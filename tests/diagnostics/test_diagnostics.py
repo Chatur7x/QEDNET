@@ -4,12 +4,12 @@ import numpy as np
 import pennylane as qml
 
 from qednet.diagnostics import (
-    circuit_stats,
-    gradient_variance,
     barren_plateau_diagnostic,
+    circuit_stats,
     entanglement_entropy,
-    meyer_wallach,
+    gradient_variance,
     measure_entanglement,
+    meyer_wallach,
 )
 
 
@@ -71,7 +71,7 @@ def test_entanglement_measures():
     assert abs(meyer_wallach(sv0, 2)) < 1e-10
 
     # Bell state (|00> + |11>)/sqrt(2) -> entropy 1
-    sv1 = np.array([1/np.sqrt(2), 0.0, 0.0, 1/np.sqrt(2)], dtype=complex)
+    sv1 = np.array([1 / np.sqrt(2), 0.0, 0.0, 1 / np.sqrt(2)], dtype=complex)
     ent = entanglement_entropy(sv1, [0], 2)
     assert abs(ent - 1.0) < 1e-6
     mw = meyer_wallach(sv1, 2)

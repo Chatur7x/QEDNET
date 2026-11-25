@@ -3,9 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
-
-import numpy as np
 
 
 @dataclass
@@ -18,8 +15,8 @@ class QuantumCost:
     n_params: int
     shots: int
     runtime_s: float
-    qpu_seconds: Optional[float] = None
-    cost_usd: Optional[float] = None
+    qpu_seconds: float | None = None
+    cost_usd: float | None = None
 
 
 def quantum_cost(

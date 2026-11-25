@@ -8,11 +8,11 @@ from __future__ import annotations
 
 import numpy as np
 import pennylane as qml
-from pennylane import numpy as pnp
 
 try:
     import torch
     import torch.nn as nn
+
     _TORCH_AVAILABLE = True
 except Exception:
     _TORCH_AVAILABLE = False
@@ -27,8 +27,13 @@ except Exception:
         TorchLayer = None
 
 
-def _make_vqc_torqlayer(n_qubits: int, n_layers: int, encoding: str = "angle",
-                        device: str = "default.qubit", diff_method: str = "backprop"):
+def _make_vqc_torqlayer(
+    n_qubits: int,
+    n_layers: int,
+    encoding: str = "angle",
+    device: str = "default.qubit",
+    diff_method: str = "backprop",
+):
     """Create a PennyLane TorchLayer wrapping a VQC-like circuit."""
     if not _TORCH_AVAILABLE:
         raise RuntimeError("PyTorch not available; install torch to use HybridQNNLayer")
@@ -57,8 +62,7 @@ def _make_vqc_torqlayer(n_qubits: int, n_layers: int, encoding: str = "angle",
             qml.RX(inputs[:, i], wires=i)
         for layer in range(n_layers):
             for i in range(n_qubits):
-                qml.Rot(weights[layer, i, 0], weights[layer, i, 1],
-                        weights[layer, i, 2], wires=i)
+                qml.Rot(weights[layer, i, 0], weights[layer, i, 1], weights[layer, i, 2], wires=i)
             for i in range(n_qubits - 1):
                 qml.CNOT(wires=[i, i + 1])
             if n_qubits > 2:
@@ -92,6 +96,7 @@ class HybridQNNLayer(nn.Module if _TORCH_AVAILABLE else object):
     Forward: (batch, n_qubits) -> (batch, 1) expectation value.
     Compatible with nn.Sequential: Dense -> HybridQNNLayer -> Dense -> Sigmoid.
     """
+
     def __init__(
         self,
         n_qubits: int = 8,
@@ -140,10 +145,16 @@ class HybridQNNLayer(nn.Module if _TORCH_AVAILABLE else object):
         }
 
 
-def make_hybrid_model(input_dim: int = 64, n_qubits: int = 8, n_layers: int = 2,
-                      hidden_dim: int = 32, encoding: str = "angle",
-                      device: str = "default.qubit", diff_method: str = "backprop",
-                      seed: int = 0):
+def make_hybrid_model(
+    input_dim: int = 64,
+    n_qubits: int = 8,
+    n_layers: int = 2,
+    hidden_dim: int = 32,
+    encoding: str = "angle",
+    device: str = "default.qubit",
+    diff_method: str = "backprop",
+    seed: int = 0,
+):
     """Build a complete hybrid model: Linear -> HybridQNNLayer -> Linear -> Sigmoid.
 
     Member C owns the training pipeline; this is a convenience factory.
@@ -164,8 +175,9 @@ def make_hybrid_model(input_dim: int = 64, n_qubits: int = 8, n_layers: int = 2,
     )
 
 
-def gradient_propagation_test(n_qubits: int = 4, n_layers: int = 1,
-                              device: str = "default.qubit") -> bool:
+def gradient_propagation_test(
+    n_qubits: int = 4, n_layers: int = 1, device: str = "default.qubit"
+) -> bool:
     """Test that gradients flow through the quantum layer."""
     if not _TORCH_AVAILABLE:
         return False

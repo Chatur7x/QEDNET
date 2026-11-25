@@ -27,7 +27,6 @@ def quantum_input_sensitivity(
 
     # Compute gradients w.r.t. inputs
     x_tensor = pnp.array(x, requires_grad=True)
-    output = circuit(x_tensor)
     grad_fn = qml.grad(lambda x: circuit(x))
     grads = grad_fn(x_tensor)
 

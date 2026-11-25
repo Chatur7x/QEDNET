@@ -1,9 +1,9 @@
 """Scaler implementations."""
 
-import numpy as np
 from numpy.typing import NDArray
-from sklearn.preprocessing import StandardScaler as SklearnStandardScaler
 from sklearn.preprocessing import RobustScaler as SklearnRobustScaler
+from sklearn.preprocessing import StandardScaler as SklearnStandardScaler
+
 from qednet.models.base import BaseTransformer
 
 
@@ -13,7 +13,7 @@ class StandardScaler(BaseTransformer):
     def __init__(self):
         self._scaler = SklearnStandardScaler()
 
-    def fit(self, X: NDArray, y: Optional[NDArray] = None) -> "StandardScaler":
+    def fit(self, X: NDArray, y: NDArray | None = None) -> "StandardScaler":
         self._scaler.fit(X)
         return self
 
@@ -27,7 +27,7 @@ class RobustScaler(BaseTransformer):
     def __init__(self):
         self._scaler = SklearnRobustScaler()
 
-    def fit(self, X: NDArray, y: Optional[NDArray] = None) -> "RobustScaler":
+    def fit(self, X: NDArray, y: NDArray | None = None) -> "RobustScaler":
         self._scaler.fit(X)
         return self
 

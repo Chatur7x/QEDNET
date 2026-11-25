@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from typing import Literal
-import numpy as np
+
 from numpy.typing import NDArray
 
 from qednet.models.base import BaseEstimator
@@ -11,6 +11,7 @@ from qednet.models.base import BaseEstimator
 @dataclass
 class CascadeResult:
     """Result from cascade prediction."""
+
     prediction: int
     probability: float
     calibrated_probability: float
@@ -91,16 +92,18 @@ class QuantumSecondOpinionCascade:
                 final_pred = int(classical_p >= 0.5)
                 model_name = self.classical_name
 
-            results.append(CascadeResult(
-                prediction=final_pred,
-                probability=calibrated_p,
-                calibrated_probability=calibrated_p,
-                routing=routing,
-                reason=reason,
-                classical_proba=classical_p,
-                quantum_proba=quantum_p if is_ambiguous else None,
-                model_name=model_name,
-                config_hash=self.config_hash,
-            ))
+            results.append(
+                CascadeResult(
+                    prediction=final_pred,
+                    probability=calibrated_p,
+                    calibrated_probability=calibrated_p,
+                    routing=routing,
+                    reason=reason,
+                    classical_proba=classical_p,
+                    quantum_proba=quantum_p if is_ambiguous else None,
+                    model_name=model_name,
+                    config_hash=self.config_hash,
+                )
+            )
 
         return results

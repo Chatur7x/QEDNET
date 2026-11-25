@@ -1,11 +1,10 @@
 """SHAP-based explainability."""
 
-from typing import Optional
-import numpy as np
 from numpy.typing import NDArray
 
 try:
     import shap
+
     SHAP_AVAILABLE = True
 except ImportError:
     SHAP_AVAILABLE = False

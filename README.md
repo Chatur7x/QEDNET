@@ -2,9 +2,9 @@
 
 > ⚠️ **RESEARCH ONLY**: This platform is a research and educational artifact. It is not a medical device and must not be used for real patient care.
 
-QED-Net is a hybrid quantum-classical machine learning platform for biomedical classification research. It provides a complete pipeline from data ingestion through model training, evaluation, uncertainty quantification, conformal prediction, and deployment.
+QED-Net is an **experimental research codebase** for biomedical classification studies. It contains quantum and classical estimators, preprocessing and evaluation modules, a FastAPI research API, and a Vite dashboard. These components are not all wired into one validated production workflow; this repository is not production-ready and must not be used for clinical decisions.
 
-## Architecture
+## Conceptual research workflow
 
 ```
 Raw Data → Validation → Preprocessing → Compression → Encoding
@@ -22,19 +22,15 @@ Raw Data → Validation → Preprocessing → Compression → Encoding
                                               Final Result
 ```
 
-## Key Features
+## What is implemented
 
-- **Config-driven training** (D7): YAML-based experiment configuration with full reproducibility
-- **Model factory** (D7): Support for VQC, QSVM, Reupload, Hybrid QNN, XGBoost, LightGBM, Logistic, MLP
-- **MLflow integration** (D7): Experiment tracking with parameters, metrics, and artifacts
-- **FastAPI backend** (D11): RESTful API with `/health`, `/models`, `/predict`, `/batch-predict`
-- **Streamlit dashboard** (D12): Interactive research interface
-- **Quantum Second-Opinion Cascade** (F1): Classical screener routes ambiguous cases to quantum model
-- **Conformal prediction** (F6): Finite-sample coverage guarantees with abstention
-- **Shot-noise uncertainty** (N5): Proper separation of sampling vs model uncertainty
-- **Docker deployment** (D15): Multi-service deployment with docker-compose
-- **Test suite** (D16): Unit, integration, and leakage guard tests
-- **CI/CD** (D17): GitHub Actions with linting, type checking, and testing
+- The `/research` API exposes the supported classical models, QSVM, VQC, and data-reupload classifier, plus dataset, experiment, prediction, explanation, benchmark, and certificate routes.
+- The Vite dashboard calls the `/research` API. It is the active dashboard.
+- The Python package contains additional experimental components for preprocessing, evaluation, explainability, calibration, uncertainty, conformal prediction, and certificates. Presence in the package does not mean every component is wired into the API or independently validated.
+- The legacy Streamlit page is informational only. It does not train models or return predictions or measured results.
+- `qednet.models.factory` and the API have different model surfaces. In particular, the API intentionally does not expose the hybrid mock as a quantum model.
+
+The test suite exercises library and API behavior, but passing tests do not establish clinical validity, security certification, or production readiness.
 
 ## Quick Start
 
@@ -52,53 +48,19 @@ pip install -e .
 
 ### Configuration
 
-Create an experiment configuration (or use the default):
-
-```yaml
-# configs/my_experiment.yaml
-dataset:
-  name: breast_cancer
-  compression: pca
-  target_dim: 8
-
-model:
-  type: vqc
-  n_qubits: 8
-  layers: 3
-  ansatz: strongly_entangling
-  encoding: angle
-  optimizer: adam
-  learning_rate: 0.01
-
-training:
-  outer_folds: 5
-  inner_folds: 3
-  seeds: 10
-  shots: 1024
-
-evaluation:
-  metrics:
-    - auroc
-    - auprc
-    - sens_at_spec95
-    - mcc
-    - brier
-    - ece
-  bootstrap_ci: 2000
-  delong_test: true
-  decision_curve: true
-```
+Runnable example configurations are in `configs/experiments/`. The API
+research runner and the older `qednet.train` configuration classes use
+different schemas. Use the format expected by the command you run;
+`configs/experiments/smoke_tiny.yaml` is the compact example below.
 
 ### Training
 
 ```bash
-# Run training from config
-python -m qednet.train.runner --config configs/my_experiment.yaml
-
-# Or programmatically
-from qednet.train.runner import run_experiment
-result = run_experiment("configs/my_experiment.yaml", use_mock=True)
+# Run a real benchmark using the repository script and an existing config
+python scripts/reproduce.py --config configs/experiments/smoke_tiny.yaml --compare logistic_regression --seeds 42 --folds 2
 ```
+
+The experiment script needs the dataset files for the selected dataset. Run `python scripts/download_datasets.py` to fetch the public files supported by that script. The default breast-cancer loader uses scikit-learn's bundled dataset.
 
 ### API Server
 
@@ -110,30 +72,29 @@ python -m api.main
 uvicorn api.main:app --host 0.0.0.0 --port 8000
 ```
 
-API endpoints:
-- `GET /health` - Health check
-- `GET /models` - List loaded models
-- `POST /predict` - Single prediction
-- `POST /batch-predict` - Batch prediction
+Research API endpoints use the `/research` prefix, for example `/research/health`, `/research/models`, `/research/train`, `/research/predict`, `/research/explain`, `/research/benchmark/{id}`, and `/research/certificate/{id}`. The root `/health`, `/models`, and `/predict` routes are a separate legacy serving interface; `/live` checks process liveness and `/ready` checks whether a model is available for serving. The legacy `/experiments/{id}` route returns `501` because experiment lookup is not implemented in that interface.
 
 ### Dashboard
 
 ```bash
-# Start Streamlit dashboard
-streamlit run dashboard/app.py
+# Run the connected frontend; the Streamlit page is informational only.
+cd frontend
+npm install
+npm run dev
 ```
 
 ### Docker
 
 ```bash
-# Build and run with docker-compose
-docker-compose -f docker/docker-compose.yml up --build
+# Build and run the local demo stack
+docker compose up --build
 
 # Services:
 # - API: http://localhost:8000
-# - Dashboard: http://localhost:8501
-# - MLflow: http://localhost:5000
+# - Dashboard: http://localhost:5173
 ```
+
+This Compose setup is a local research demo. It does not provide authentication, tenant isolation, clinical controls, or a production job queue.
 
 ## Project Structure
 
@@ -335,3 +296,6 @@ If you use QED-Net in your research, please cite:
 ## Disclaimer
 
 **This platform is a research and educational artifact. It is not a medical device and must not be used for real patient care.** All predictions are "research predictions" or "benchmark results" and carry no clinical validity.
+The root API accepts `QEDNET_CORS_ORIGINS` as a comma-separated list of allowed browser origins. The default permits only the local Vite development origins. CORS is a browser policy, not authentication; do not expose this demo API to the public internet or send patient data to it.
+
+For a non-local frontend build, set `VITE_API_BASE_URL` to the API origin before building the Vite dashboard. Never put API secrets in Vite variables; they are embedded in browser JavaScript.

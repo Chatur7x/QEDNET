@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.feature_selection import SelectKBest, mutual_info_classif, f_classif, VarianceThreshold
+from sklearn.feature_selection import SelectKBest, VarianceThreshold, f_classif, mutual_info_classif
 from sklearn.utils.validation import check_is_fitted
 
 
@@ -49,7 +49,9 @@ class SafeFeatureSelector(BaseEstimator, TransformerMixin):
         self.n_features_in_ = X.shape[1]
         self.selected_features_ = self._var_filter.get_support(indices=True)
         if self.method != "variance":
-            self.selected_features_ = self.selected_features_[self._selector.get_support(indices=True)]
+            self.selected_features_ = self.selected_features_[
+                self._selector.get_support(indices=True)
+            ]
         return self
 
     def transform(self, X):

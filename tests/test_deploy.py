@@ -1,18 +1,19 @@
 """Tests for cascade, conformal prediction, and uncertainty."""
 
-import pytest
 import numpy as np
+import pytest
 from numpy.typing import NDArray
 
-from qednet.models.base import BaseEstimator
-from qednet.deploy.cascade import QuantumSecondOpinionCascade, CascadeResult
+from qednet.deploy.cascade import QuantumSecondOpinionCascade
 from qednet.deploy.conformal import ConformalPredictor, ConformalResult
+from qednet.deploy.serving import PredictionResult, ServingPipeline
 from qednet.deploy.uncertainty import UncertaintyQuantifier, UncertaintyResult
-from qednet.deploy.serving import ServingPipeline, PredictionResult
+from qednet.models.base import BaseEstimator
 
 
 class MockModel(BaseEstimator):
     """Mock model for testing."""
+
     def __init__(self, prob_class_1=0.5):
         self.prob_class_1 = prob_class_1
         self.fitted = False
@@ -184,6 +185,35 @@ class TestConformalPredictor:
         assert report["target_coverage"] == 0.90
         assert 0 <= report["empirical_coverage"] <= 1
 
+    def test_uses_finite_sample_order_statistic_not_interpolated_quantile(self):
+        model = MockModel(prob_class_1=0.7)
+        predictor = ConformalPredictor(model, alpha=0.5)
+        predictor.calibrate(np.zeros((5, 5)), np.array([1, 1, 1, 0, 0]))
+        assert predictor.threshold == pytest.approx(0.3)
+
+    def test_small_calibration_set_uses_all_labels_fallback(self):
+        predictor = ConformalPredictor(MockModel(prob_class_1=0.7), alpha=0.1)
+        predictor.calibrate(np.zeros((3, 5)), np.array([0, 1, 0]))
+        assert predictor.threshold == 1.0
+        assert predictor.predict(np.zeros((1, 5)))[0].prediction_set == [0, 1]
+
+    def test_margin_score_is_candidate_specific(self):
+        predictor = ConformalPredictor(MockModel(prob_class_1=0.7), alpha=0.1, score_type="margin")
+        predictor.calibrate(np.zeros((20, 5)), np.ones(20, dtype=int))
+        assert predictor.predict(np.zeros((1, 5)))[0].prediction_set == [1]
+
+    def test_randomized_aps_is_reproducible_with_fixed_seed(self):
+        model = MockModel(prob_class_1=0.7)
+        X_cal = np.zeros((20, 5))
+        y_cal = np.tile([0, 1], 10)
+        first = ConformalPredictor(model, alpha=0.2, score_type="aps", random_state=73)
+        second = ConformalPredictor(model, alpha=0.2, score_type="aps", random_state=73)
+        first.calibrate(X_cal, y_cal)
+        second.calibrate(X_cal, y_cal)
+        assert np.array_equal(first.calibration_scores, second.calibration_scores)
+        assert first.threshold == second.threshold
+        assert first.predict(X_cal[:3]) == second.predict(X_cal[:3])
+
 
 class TestUncertaintyQuantifier:
     def test_shot_noise_variance(self):
@@ -264,6 +294,7 @@ class TestServingPipeline:
         quantum.fit(np.zeros((10, 5)), np.zeros(10))
 
         from qednet.deploy.cascade import QuantumSecondOpinionCascade
+
         cascade = QuantumSecondOpinionCascade(classical, quantum)
 
         pipeline = ServingPipeline(model=classical, cascade=cascade, model_name="cascade_test")
@@ -272,3 +303,26 @@ class TestServingPipeline:
 
         for r in results:
             assert r.routing in ["classical", "quantum_second_opinion"]
+
+    def test_serving_can_omit_optional_uncertainty_and_conformal_outputs(self):
+        from unittest.mock import MagicMock
+
+        model = MockModel(prob_class_1=0.7)
+        uncertainty = MagicMock()
+        conformal = MagicMock()
+        pipeline = ServingPipeline(
+            model=model,
+            uncertainty=uncertainty,
+            conformal=conformal,
+        )
+
+        result = pipeline.predict(
+            np.zeros((1, 5)),
+            return_uncertainty=False,
+            return_conformal=False,
+        )[0]
+
+        assert result.uncertainty is None
+        assert result.conformal is None
+        assert uncertainty.quantify.call_count == 0
+        assert conformal.predict.call_count == 0

@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import numpy as np
-from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.base import clone
+from sklearn.model_selection import StratifiedGroupKFold, StratifiedKFold
 
+from qednet.evaluation.calibration import calibrate_model, evaluate_calibration
 from qednet.evaluation.metrics import compute_flat_metrics as compute_all_metrics
 from qednet.evaluation.statistics import bootstrap_ci, delong_roc_test, paired_t_test
-from qednet.evaluation.calibration import evaluate_calibration, calibrate_model
 
 
 def nested_cv(
@@ -22,20 +22,36 @@ def nested_cv(
     calibrate: bool = True,
     calibration_method: str = "platt",
     n_bootstrap: int = 2000,
+    groups: np.ndarray | None = None,
 ) -> dict:
     """
-    Nested cross-validation with preprocessing inside each fold.
+    Stratified outer cross-validation with fold-local preprocessing.
+    This function does not perform hyperparameter search. When calibration is
+    enabled, ``inner_folds`` controls calibration folds on the training portion.
     Returns aggregated metrics and per-fold results.
     """
-    outer_cv = StratifiedKFold(n_splits=outer_folds, shuffle=True, random_state=random_state)
-    inner_cv = StratifiedKFold(n_splits=inner_folds, shuffle=True, random_state=random_state + 1)
+    if groups is not None:
+        groups = np.asarray(groups)
+        if len(groups) != len(y):
+            raise ValueError("groups must have the same number of rows as X and y")
+        if calibrate:
+            raise ValueError(
+                "Grouped CV with calibration is unsupported: calibration must also be group-aware"
+            )
+        outer_cv = StratifiedGroupKFold(
+            n_splits=outer_folds, shuffle=True, random_state=random_state
+        )
+        splits = outer_cv.split(X, y, groups)
+    else:
+        outer_cv = StratifiedKFold(n_splits=outer_folds, shuffle=True, random_state=random_state)
+        splits = outer_cv.split(X, y)
 
     fold_results = []
     all_y_true = []
     all_y_prob = []
     all_y_pred = []
 
-    for fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(X, y)):
+    for fold_idx, (train_idx, test_idx) in enumerate(splits):
         X_train, X_test = X[train_idx], X[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
 
@@ -44,13 +60,15 @@ def nested_cv(
         X_train_trans = preprocess.fit_transform(X_train, y_train)
         X_test_trans = preprocess.transform(X_test)
 
-        # Inner CV for hyperparameter tuning if needed (simplified)
+        # Fit only on the outer training fold; preprocessing has not seen test data.
         model_fold = clone(model)
         model_fold.fit(X_train_trans, y_train)
 
         # Calibrate on inner fold training data
         if calibrate:
-            model_fold = calibrate_model(model_fold, X_train_trans, y_train, method=calibration_method, cv=inner_folds)
+            model_fold = calibrate_model(
+                model_fold, X_train_trans, y_train, method=calibration_method, cv=inner_folds
+            )
 
         y_prob = model_fold.predict_proba(X_test_trans)[:, 1]
         y_pred = (y_prob >= 0.5).astype(int)
@@ -58,13 +76,15 @@ def nested_cv(
         metrics = compute_all_metrics(y_test, y_prob, y_pred)
         cal = evaluate_calibration(y_test, y_prob)
 
-        fold_results.append({
-            "fold": fold_idx,
-            "metrics": metrics,
-            "calibration": cal,
-            "n_train": len(X_train),
-            "n_test": len(X_test),
-        })
+        fold_results.append(
+            {
+                "fold": fold_idx,
+                "metrics": metrics,
+                "calibration": cal,
+                "n_train": len(X_train),
+                "n_test": len(X_test),
+            }
+        )
 
         all_y_true.extend(y_test)
         all_y_prob.extend(y_prob)
@@ -76,10 +96,11 @@ def nested_cv(
 
     # Aggregate metrics with bootstrap CIs
     agg_metrics = {}
-    for metric_name in fold_results[0]["metrics"].keys():
+    for metric_name in fold_results[0]["metrics"]:
         point, lower, upper = bootstrap_ci(
-            all_y_true, all_y_prob,
-            lambda yt, yp: compute_all_metrics(yt, yp)[metric_name],
+            all_y_true,
+            all_y_prob,
+            lambda yt, yp, name=metric_name: compute_all_metrics(yt, yp)[name],
             n_bootstrap=n_bootstrap,
         )
         agg_metrics[metric_name] = {
@@ -113,10 +134,31 @@ def compare_models(
     outer_folds: int = 5,
     inner_folds: int = 3,
     random_state: int = 42,
+    groups: np.ndarray | None = None,
 ) -> dict:
     """Compare two models using nested CV and statistical tests."""
-    result1 = nested_cv(model1, X, y, preprocess_fn, outer_folds, inner_folds, random_state)
-    result2 = nested_cv(model2, X, y, preprocess_fn, outer_folds, inner_folds, random_state)
+    result1 = nested_cv(
+        model1,
+        X,
+        y,
+        preprocess_fn,
+        outer_folds,
+        inner_folds,
+        random_state,
+        calibrate=groups is None,
+        groups=groups,
+    )
+    result2 = nested_cv(
+        model2,
+        X,
+        y,
+        preprocess_fn,
+        outer_folds,
+        inner_folds,
+        random_state,
+        calibrate=groups is None,
+        groups=groups,
+    )
 
     y_true = result1["all_predictions"]["y_true"]
     prob1 = result1["all_predictions"]["y_prob"]
@@ -147,17 +189,28 @@ def run_multiple_seeds(
     seeds: list[int],
     outer_folds: int = 5,
     inner_folds: int = 3,
+    groups: np.ndarray | None = None,
 ) -> dict:
     """Run nested CV across multiple random seeds."""
     all_results = []
     for seed in seeds:
         model = model_factory(seed)
-        result = nested_cv(model, X, y, preprocess_fn, outer_folds, inner_folds, seed)
+        result = nested_cv(
+            model,
+            X,
+            y,
+            preprocess_fn,
+            outer_folds,
+            inner_folds,
+            seed,
+            calibrate=groups is None,
+            groups=groups,
+        )
         all_results.append(result)
 
     # Aggregate across seeds
     agg = {}
-    for metric in all_results[0]["aggregated_metrics"].keys():
+    for metric in all_results[0]["aggregated_metrics"]:
         means = [r["aggregated_metrics"][metric]["mean"] for r in all_results]
         agg[metric] = {
             "mean": float(np.mean(means)),

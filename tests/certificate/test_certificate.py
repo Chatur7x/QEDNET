@@ -1,16 +1,16 @@
 """Advantage Certificate quantum-side tests."""
 
 import numpy as np
-from sklearn.metrics import accuracy_score
 import pennylane as qml
+from sklearn.metrics import accuracy_score
 
 from qednet.certificate import (
-    entanglement_ablation,
-    dequantize_kernel,
-    quantum_cost,
-    EntanglementContribution,
     DequantizationResult,
+    EntanglementContribution,
     QuantumCost,
+    dequantize_kernel,
+    entanglement_ablation,
+    quantum_cost,
 )
 from qednet.models.quantum import VQC
 
@@ -33,10 +33,7 @@ def test_entanglement_ablation():
             qml.CNOT(wires=[0, 1])
         return qml.expval(qml.Z(0))
 
-    result = entanglement_ablation(
-        circuit_fn, params, X, y, accuracy_score,
-        n_qubits=2, n_layers=1
-    )
+    result = entanglement_ablation(circuit_fn, params, X, y, accuracy_score, n_qubits=2, n_layers=1)
     assert isinstance(result, EntanglementContribution)
     assert result.parameter_count == 6
     assert result.n_qubits == 2

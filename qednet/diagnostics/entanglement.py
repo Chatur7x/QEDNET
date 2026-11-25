@@ -6,7 +6,9 @@ import numpy as np
 import pennylane as qml
 
 
-def _reduced_density_matrix(statevector: np.ndarray, subsystem: list[int], n_qubits: int) -> np.ndarray:
+def _reduced_density_matrix(
+    statevector: np.ndarray, subsystem: list[int], n_qubits: int
+) -> np.ndarray:
     state = np.asarray(statevector).reshape([2] * n_qubits)
     all_qubits = set(range(n_qubits))
     trace_out = sorted(all_qubits - set(subsystem))
@@ -44,7 +46,9 @@ def measure_entanglement(circuit_fn, *args, n_qubits: int, **kwargs) -> dict:
     sv = np.asarray(sv)
 
     return {
-        "entanglement_entropies": {f"qubit_{i}": entanglement_entropy(sv, [i], n_qubits) for i in range(n_qubits)},
+        "entanglement_entropies": {
+            f"qubit_{i}": entanglement_entropy(sv, [i], n_qubits) for i in range(n_qubits)
+        },
         "meyer_wallach": meyer_wallach(sv, n_qubits),
         "n_qubits": n_qubits,
     }

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import numpy as np
-from typing import Callable
 
 
 def bootstrap_statistic(
@@ -27,7 +28,12 @@ def bootstrap_statistic(
             continue
 
     if len(bootstraps) < 10:
-        return {"point": point, "ci_lower": point, "ci_upper": point, "n_bootstraps": len(bootstraps)}
+        return {
+            "point": point,
+            "ci_lower": point,
+            "ci_upper": point,
+            "n_bootstraps": len(bootstraps),
+        }
 
     alpha = (1 - confidence) / 2
     lower = float(np.percentile(bootstraps, 100 * alpha))

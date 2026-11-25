@@ -5,7 +5,12 @@ Member C: Class-based encoder API (AngleEncoder, AmplitudeEncoder, BasisEncoder)
 """
 
 # Member A's functional API (D4)
-from .base import pad_to_pow2, validate_vector
+from .amplitude import AmplitudeEncoder
+from .angle import AngleEncoder
+
+# Member C's class-based API (for preprocessing/encoding pipeline)
+from .base import BaseEncoder, pad_to_pow2, validate_vector
+from .basis import BasisEncoder
 from .encodings import (
     ENCODINGS,
     amplitude_encoding,
@@ -16,12 +21,6 @@ from .encodings import (
     statevector,
     zz_feature_map,
 )
-
-# Member C's class-based API (for preprocessing/encoding pipeline)
-from .base import BaseEncoder
-from .angle import AngleEncoder
-from .amplitude import AmplitudeEncoder
-from .basis import BasisEncoder
 
 __all__ = [
     # Member A D4 functional API
