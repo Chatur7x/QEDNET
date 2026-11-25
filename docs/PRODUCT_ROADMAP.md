@@ -96,9 +96,45 @@ This plan describes proposed work. A roadmap item is not evidence that the featu
 - Keep the public information website separate from the authenticated research workspace.
 - Publish methods, dataset provenance, model cards, simulator/hardware status, limitations, and links to reproducibility bundles.
 - Build an Android client only after the API contract, authentication lifecycle, privacy behavior, offline/error states, and supported research workflows are stable.
+- Use separate application IDs, signing, release channels, API authorization, local storage, and privacy disclosures for the research and future clinical apps. Share code only after a security and data-boundary review.
+- For Google Play distribution, prepare the required health-app declaration, privacy policy, prominent data-use disclosure, and least-privilege permission justification before submission.
 - Use the Android client for research/education workflows only. Do not display patient-specific diagnosis or treatment language.
 
 **Done when:** website content is evidence-linked and the Android client passes API, security, accessibility, and device tests against the supported research service.
+
+### A8. Real-time Android and body-sensor research pipeline
+
+#### Sensor and source strategy
+
+- Treat Android Health Connect as a user-permissioned health-data import and synchronization layer, not as a guaranteed low-latency sensor stream.
+- For an active, user-visible Wear OS measurement or workout, evaluate Health Services `MeasureClient` or `ExerciseClient` against the supported device and use case.
+- For passive monitoring, treat Health Services updates as batched and irregular. Do not promise a fixed update interval or use passive/background Android collection as a dependable emergency-alert channel.
+- Add one hardware family at a time, starting with synthetic replay and documented device metadata. Do not infer device equivalence from matching field names.
+- Collect only data types needed for an explicitly described research feature; ask for granular permissions at the point of need and keep the app useful when permission is declined.
+
+#### End-to-end data path
+
+1. **Consent and permissions:** explain purpose, source, fields, retention, sharing, and deletion; record permission state and allow revocation.
+2. **Capture:** store value, unit, event time, receive time, source app/device, hardware/firmware metadata when available, sampling context, and session identity.
+3. **Quality gate:** validate units and ranges, timestamps, duplicates, signal quality, wear time, calibration metadata, missingness, and device changes. Mark invalid or stale windows unavailable.
+4. **On-device queue:** minimize and pseudonymize records, protect local state, avoid health details in logs/notifications, and queue safely during offline periods.
+5. **Sync:** use authenticated, encrypted, idempotent uploads with retry/backoff, ordering/watermarks, deduplication, and deletion/revocation handling. Never label queued or delayed data as live.
+6. **Server ingestion:** enforce identity/ownership, schema and payload limits, consent scope, device/session policy, audit events, and abuse/resource limits before accepting data.
+7. **Processing:** use a durable queue and versioned pipeline to validate windows, extract features, run research models, record model/preprocessing versions, and preserve failure states.
+8. **Research feedback:** display timestamp and freshness, signal quality, missing inputs, model/version, uncertainty, and an explicit research-only status. No diagnosis, treatment, emergency response, or automated clinical action.
+9. **Operations:** monitor delivery lag, dropped/duplicate records, queue backlog, processing failures, device disconnects, battery/network behavior, and deletion propagation without exposing sensitive values in telemetry.
+
+#### Real-time claim and completion tests
+
+- Define a latency objective only after the sensor, use case, data route, and safety class are selected. The objective is **NOT SET** in this plan.
+- Measure capture-to-display latency distributions, missing/dropped/duplicate data, stale-value behavior, reconnection, permission revocation, offline replay, clock skew, battery use, and server/queue outages on named devices.
+- Test with synthetic playback first, then approved de-identified recordings, then a consented usability study if governance permits.
+- Test the actual Android OS versions and hardware on which the feature will be supported; emulators alone do not establish wearable sensor behavior.
+- On every failure, show unavailable/stale status and preserve user control. Never silently reuse old readings as current.
+
+**Done when:** an end-to-end validation report proves the stated behavior and measured latency on the documented device/configuration matrix; any unsupported device or background mode is clearly unavailable.
+
+**Safety boundary:** this is a research/education flow. It is not for emergency monitoring, diagnosis, or care decisions. Android Health Connect background access requires appropriate user permission, and its synchronization behavior is not a real-time guarantee. Wear OS passive updates can be batched at intervals that the app cannot predict; rapid measurement APIs are intended for active experiences, not continuous background capture.
 
 ## Track B — Separate clinical decision-support product
 
@@ -130,6 +166,18 @@ This plan describes proposed work. A roadmap item is not evidence that the featu
 
 **Gate:** do not launch for patient care until required quality, security, clinical, and regulatory gates are satisfied.
 
+### B3. Clinical mobile and real-time workflow
+
+- Select approved, fit-for-purpose clinical devices or regulated data sources for the intended use. Do not use Health Connect or consumer passive wearable sync for a clinical function where failure could reasonably cause harm; Google Play's Health Connect policy excludes such uses. Confirm the exact policy and regulatory implications for the intended product with Google Play and qualified counsel.
+- Build explicit source validation, patient/device matching, timestamp/freshness checks, signal-quality gates, and missing/stale-data behavior before inference.
+- Define the complete human workflow: who receives an alert, what context is shown, how a qualified user reviews it, how acknowledgement and escalation work, and what fallback exists when the device, network, service, or model is unavailable.
+- Prevent silent failures and duplicate or alert-fatigue behavior; maintain an auditable event trail and safe downtime procedures.
+- Evaluate latency and reliability end to end under real device, connectivity, and operating conditions. Set acceptance criteria before collecting validation results; do not invent service levels in advance of the use case.
+- Conduct prospective and human-factors validation for the actual mobile workflow. Validate alert timing, comprehension, workload, false alarms, missed events, and downstream clinical impact.
+- Assess app-store policies, consent, disclosures, health-data permissions, privacy, and medical-device regulatory obligations for each target market before distribution.
+
+**Gate:** no real-time clinical alert or patient-care reliance until the device pathway, end-to-end reliability, clinical workflow, independent validation, risk controls, and market-specific regulatory review are approved.
+
 ## Cross-track rules
 
 - Research results are hypotheses for follow-up, not clinical evidence by themselves.
@@ -149,3 +197,11 @@ This plan describes proposed work. A roadmap item is not evidence that the featu
 7. Start the clinical track with intended-use, clinical governance, and regulatory discovery. Implement clinical software only after those gates are staffed and approved.
 
 No completion date is stated: delivery depends on infrastructure, data access, clinical partners, and review inputs not currently available in this repository.
+
+## Official platform and regulatory references
+
+- Android Health Connect read permissions and background access: [Read raw data](https://developer.android.com/health-and-fitness/health-connect/read-data).
+- Wear OS collection modes and timing behavior: [Health Services](https://developer.android.com/health-and-fitness/health-services) and [device compatibility](https://developer.android.com/health-and-fitness/health-services/compatibility).
+- Google Play requirements for health apps and Health Connect data: [Health apps policy](https://support.google.com/googleplay/android-developer/answer/18265346) and [health apps declaration](https://support.google.com/googleplay/android-developer/answer/14738291).
+- India medical-device software planning reference: [CDSCO Guidance on Medical Device Software under MDR-2017](https://www.cdsco.gov.in/opencms/export/sites/CDSCO_WEB/Pdf-documents/Guidance-document-on-Medical-Device-Software-under-MDR-2017.pdf). Product classification and obligations depend on intended purpose and require qualified regulatory review.
+- United States clinical decision-support planning reference: [FDA Clinical Decision Support Software Guidance](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software). Applicability depends on the product function and intended use; obtain jurisdiction-specific regulatory advice.
