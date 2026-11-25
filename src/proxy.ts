@@ -1,14 +1,17 @@
-import { getToken } from "next-auth/jwt";
 import { NextResponse, type NextRequest } from "next/server";
-import { hasProductionAuthConfig } from "@/lib/auth-policy";
+import { createServerClient } from "@supabase/ssr";
+import { hasProductionAuthConfig, isAllowedEmail } from "@/lib/auth-policy";
 
-const publicPaths = new Set(["/live", "/signin", "/setup-required"]);
+const publicPaths = new Set([
+  "/signin", "/signup", "/access-denied",
+  "/auth/confirm", "/forgot-password",
+]);
 
 export async function proxy(request: NextRequest) {
   if (process.env.NODE_ENV !== "production") return NextResponse.next();
 
   const path = request.nextUrl.pathname;
-  if (publicPaths.has(path) || path === "/api/auth" || path.startsWith("/api/auth/")) {
+  if (path === "/live" || path === "/setup-required") {
     return NextResponse.next();
   }
 
@@ -16,15 +19,36 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/setup-required", request.url));
   }
 
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-  if (token?.qednetAuthorized === true) {
-    if (path === "/signin") return NextResponse.redirect(new URL("/", request.url));
-    return NextResponse.next();
+  if (publicPaths.has(path) || path === "/api/auth/signup") return NextResponse.next();
+
+  let response = NextResponse.next({ request });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+        },
+      },
+    },
+  );
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    const signInUrl = new URL("/signin", request.url);
+    signInUrl.searchParams.set("callbackUrl", `${path}${request.nextUrl.search}`);
+    return NextResponse.redirect(signInUrl);
   }
 
-  const signInUrl = new URL("/signin", request.url);
-  signInUrl.searchParams.set("callbackUrl", `${path}${request.nextUrl.search}`);
-  return NextResponse.redirect(signInUrl);
+  if (!user.email_confirmed_at || !isAllowedEmail(user.email)) {
+    return NextResponse.redirect(new URL("/access-denied", request.url));
+  }
+
+  return response;
 }
 
 export const config = {

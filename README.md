@@ -8,7 +8,7 @@
 
 ## Overview
 
-QED-Net 2.0 is a research codebase for comparing quantum and classical machine-learning approaches on biomedical benchmark data. It contains a Python research core, a FastAPI service, and a Next.js dashboard. Production routes require organization OIDC sign-in and an allowed group claim; the current Render deployment is not configured with those secrets and remains a research demo. Persistent storage, multi-user data isolation, and clinical validation are not configured.
+QED-Net 2.0 is a research codebase for comparing quantum and classical machine-learning approaches on biomedical benchmark data. It contains a Python research core, a FastAPI service, and a Next.js dashboard. Production routes require Supabase email/password authentication and a single allowlisted email; the current Render deployment still needs its Supabase project settings. Persistent experiment storage, multi-user data isolation, and clinical validation are not configured.
 
 The system combines:
 
@@ -149,9 +149,9 @@ is unavailable. The Render deployment uses filesystem-demo mode and does not use
 Compose PostgreSQL, Redis, or MinIO services. Render's free service filesystem is
 ephemeral, so uploaded data and run artifacts are not durable there.
 
-### Organization sign-in
+### Email/password accounts
 
-Production builds lock the dashboard and API unless all of these environment variables are configured: `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `OIDC_ISSUER`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, and `OIDC_ALLOWED_GROUP`. The callback URL registered with the identity provider is `{NEXTAUTH_URL}/api/auth/callback/organization`. The group claim defaults to `groups`; set `OIDC_GROUP_CLAIM` if the provider uses another claim. Configure secrets in the hosting provider's secret store. Local development (`bun run dev`) bypasses the production gate and must not be exposed publicly.
+Production builds lock the dashboard and API unless these settings are configured: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `QEDNET_ALLOWED_EMAIL`. Create a Supabase project, add the site URL and `https://qednet.onrender.com/auth/confirm` to its authentication redirect URLs, and enable email confirmation. The allowlist permits one email only because experiment files are currently shared; do not add more users until per-user storage isolation exists. The anon key is designed to be public; never place a Supabase service-role key in the browser or this app. Local development (`bun run dev`) bypasses the production gate and must not be exposed publicly. Supabase's default confirmation email service is best-effort and rate-limited, so this remains a preview setup.
 
 ## Using the platform
 

@@ -33,6 +33,7 @@ import { ExplainabilityView } from "./views/explainability";
 import { BenchmarkView } from "./views/benchmark";
 import { AdvantageView } from "./views/advantage";
 import { ReportsView } from "./views/reports";
+import { SignOutButton } from "@/components/auth/forms";
 
 export type ViewId =
   | "overview"
@@ -186,6 +187,7 @@ function DashboardInner() {
             <div className="hidden items-center gap-2 sm:flex">
               <ResearchBadge />
             </div>
+            <SignOutButton />
           </div>
           {/* mobile nav */}
           <div className="flex gap-1 overflow-x-auto border-t border-stone-100 px-3 py-2 md:hidden qed-scroll">

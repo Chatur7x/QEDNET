@@ -1,26 +1,17 @@
-import type { Profile } from "next-auth";
-
 export function hasProductionAuthConfig(env: Record<string, string | undefined> = process.env) {
-  if (!env.NEXTAUTH_SECRET || !env.OIDC_CLIENT_ID || !env.OIDC_CLIENT_SECRET || !env.OIDC_ALLOWED_GROUP) {
-    return false;
-  }
+  if (!env.NEXT_PUBLIC_SUPABASE_ANON_KEY || !env.QEDNET_ALLOWED_EMAIL) return false;
   try {
-    return new URL(env.NEXTAUTH_URL ?? "").protocol === "https:"
-      && new URL(env.OIDC_ISSUER ?? "").protocol === "https:";
+    return new URL(env.NEXT_PUBLIC_SITE_URL ?? "").protocol === "https:"
+      && new URL(env.NEXT_PUBLIC_SUPABASE_URL ?? "").protocol === "https:";
   } catch {
     return false;
   }
 }
 
-export function isAllowedOrganizationProfile(
-  profile?: Profile | null,
+export function isAllowedEmail(
+  email?: string | null,
   env: Record<string, string | undefined> = process.env,
 ) {
-  const allowedGroup = env.OIDC_ALLOWED_GROUP;
-  const groupClaim = env.OIDC_GROUP_CLAIM || "groups";
-  if (!allowedGroup || !profile) return false;
-  const value = (profile as Profile & Record<string, unknown>)[groupClaim];
-  return Array.isArray(value)
-    ? value.includes(allowedGroup)
-    : value === allowedGroup;
+  return Boolean(email && env.QEDNET_ALLOWED_EMAIL
+    && email.trim().toLowerCase() === env.QEDNET_ALLOWED_EMAIL.trim().toLowerCase());
 }

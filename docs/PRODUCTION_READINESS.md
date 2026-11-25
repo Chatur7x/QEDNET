@@ -10,7 +10,7 @@ This review scopes production work to a secure research and educational platform
 |---|---|---|
 | Research core | Python package contains classical and simulator-based quantum models, evaluation, calibration, explainability, uncertainty, certificates, and file-backed experiment artifacts. | Present in source; release verification remains required. |
 | Dashboard/API | Next.js app and FastAPI app are deployed together on Render. Liveness, readiness, models, dataset listing, and experiment listing responded successfully in the deployed environment. | Live research demo. |
-| Authentication | Organization OIDC login and an allowed-group check are implemented in the app. The current Render deployment has no OIDC secrets configured, so production routes fail closed to a setup-required page. | Configuration and deployment verification required. |
+| Authentication | Supabase email/password signup, email confirmation, sign-in, password reset, and sign-out are implemented. Access is restricted to one allowlisted email because the experiment store is shared. Render needs Supabase project settings before production routes unlock. | Configuration and deployment verification required. |
 | Job execution | Dashboard `/api/jobs` launches a local child process. A separate FastAPI training route can use ARQ only when database mode is enabled. These paths are not integrated. | Blocker for reliable queued training. |
 | Persistence | Render is in filesystem-demo mode, with no attached durable database, object store, or persistent disk. Render filesystem writes are not durable across service replacement. | Blocker for durable data and runs. |
 | Dataset availability | Breast cancer loads through scikit-learn. Heart disease, Parkinson's, and Pima adapters require local files that are not in the repository or cloud deployment. | Limited dataset support in deployment. |
@@ -23,7 +23,7 @@ This review scopes production work to a secure research and educational platform
 
 ### Security and privacy
 
-- Configure the organization OIDC provider, verify secure sessions and group claims with the real identity provider, and define operator/admin roles. Next.js Proxy gates the app and API, including the FastAPI rewrite; only `/live`, the sign-in/setup pages, and the OIDC protocol endpoints remain public.
+- Configure Supabase Auth, email confirmation, site URL, redirect URL, and the one allowed account. Next.js Proxy verifies the server-side user and allowlisted email before the app and API, including the FastAPI rewrite; only sign-in, signup, confirmation, reset, setup, and `/live` remain public.
 - Add tenant and ownership checks before accepting or returning datasets, jobs, runs, reports, certificates, and model artifacts. Existing database tables alone do not enforce user-facing authorization.
 - Add request rate limits, request-size limits at the edge and application, upload quotas, audit events, abuse detection, and safe error responses.
 - Define what data may be uploaded. Reject direct identifiers and document retention, deletion, encryption, backup, and incident-response policies.
@@ -50,7 +50,7 @@ This review scopes production work to a secure research and educational platform
 
 ### Gate: private research preview
 
-- Configure OIDC secrets and the registered callback URL; exercise both authorized and unauthorized accounts against the actual organization provider.
+- Configure Supabase and the allowed email, then exercise signup confirmation, sign-in, password reset, sign-out, and blocked-email behavior against the hosted project.
 - Keep only de-identified research datasets; add upload quotas and operational logs.
 - Connect dashboard training to the queue, or disable remote training until the queue is configured.
 - Configure durable storage and verify backup restoration, or clearly limit the app to disposable demo data.
@@ -69,7 +69,7 @@ This review scopes production work to a secure research and educational platform
 
 ## Inputs required to finish deployment hardening
 
-- OIDC issuer URL, client ID, callback domain, group claim name, allowed organization group, and client secret provisioned in Render's secret settings. The callback path is `/api/auth/callback/organization`.
+- Supabase project URL and anon key, `QEDNET_ALLOWED_EMAIL`, and `NEXT_PUBLIC_SITE_URL` configured in Render; add `/auth/confirm` to Supabase's allowed redirects. Do not set a service-role key in the browser app.
 - Confirmation of whether paid managed database, object storage, and worker resources are permitted. Free Render mode does not meet durable-storage requirements.
 - Confirmation that the target is research use only. A clinical target needs a separate validated product plan and evidence.
 - Approved dataset sources, licenses, consent/governance requirements, and data-retention rules for any non-public uploads.
@@ -81,11 +81,11 @@ Checks performed on this checkout:
 | Command | Result | Scope and caveats |
 |---|---|---|
 | `$env:PYTHONPATH='backend'; python -m pytest backend/tests -q` | Passed | Backend test suite; warnings from upstream sklearn/SHAP dependencies appeared. |
-| `bun test tests/auth.test.ts` | Passed | Covers missing production auth configuration, exact group allowlisting, anonymous redirects, and authorized session handling. |
+| `bun test tests/auth.test.ts` | Passed | Covers HTTPS auth configuration requirements, exact single-email allowlisting, and the production setup lockout. |
 | `bun run lint` | Passed with warnings | ESLint is scoped by the package script to `src` and `next.config.ts`; existing unused-code warnings remain. |
 | `bun run build` | Passed | TypeScript and Next.js production build passed; Turbopack emitted dynamic filesystem tracing warnings for the CLI/filesystem bridge. |
-| Built standalone server smoke check with OIDC variables unset | `/live` returned 200; `/` and `/api/jobs` redirected to `/setup-required`; `/setup-required` returned 200 | Confirms fail-closed behavior on the built app. No real organization provider login was possible without IdP configuration. |
+| Built standalone server smoke check with auth settings unset | `/live` returned 200; `/`, `/signin`, `/signup`, and `/api/auth/signup` redirected to `/setup-required`; `/setup-required` returned 200 | Confirms fail-closed behavior on the built app. Hosted signup and email confirmation were not tested without a Supabase project. |
 | `docker compose config --quiet` | Passed | Validates Compose configuration only; containers and worker lifecycle were not run because Docker was unavailable. |
-| Live Render HTTP checks | Previously returned success for `/live`, `/v2-api/health`, `/v2-api/ready`, `/v2-api/models`, `/v2-api/datasets`, and `/v2-api/experiments` | This describes the older deployed demo revision, before the OIDC gate. It does not verify auth, persistence, or training for the current source. |
+| Live Render HTTP checks | Previously returned success for `/live`, `/v2-api/health`, `/v2-api/ready`, `/v2-api/models`, `/v2-api/datasets`, and `/v2-api/experiments` | This describes an older deployed demo revision, before the sign-in gate. It does not verify auth, persistence, or training for the current source. |
 
-No end-to-end login against the real organization IdP, tenant isolation, durable storage/recovery, worker restart, production upload policy, security scan, or clinical workflow was measured. Re-run and retain command outputs from a clean checkout after release changes. A successful build or health check does not certify every feature, production security, durable persistence, or clinical readiness.
+No hosted signup/confirmation/reset flow, tenant isolation, durable storage/recovery, worker restart, production upload policy, security scan, or clinical workflow was measured. Supabase Free is a preview tier: projects can pause after inactivity and do not include automatic backups. Re-run and retain command outputs from a clean checkout after release changes. A successful build or health check does not certify every feature, production security, durable persistence, or clinical readiness.
