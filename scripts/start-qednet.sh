@@ -13,6 +13,9 @@ mkdir -p "${QEDNET_WORKSPACE_ROOT}/experiments/jobs" \
   "${QEDNET_WORKSPACE_ROOT}/data/uploads"
 
 cd "${QEDNET_WORKSPACE_ROOT}/backend"
+if [[ "${QEDNET_RUN_MIGRATIONS:-false}" == "true" ]]; then
+  python -m alembic -c alembic.ini upgrade head
+fi
 python -m uvicorn api.main:app --host 127.0.0.1 --port 8000 &
 api_pid=$!
 

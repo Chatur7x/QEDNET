@@ -133,15 +133,21 @@ bun install && bun run dev     # http://localhost:3000
 
 Every dashboard number comes from `experiments/runs/*/result.json` — real experiment output.
 
-## Full deployment (docker-compose)
+## Integrated deployment (docker-compose)
 
 ```bash
 docker compose up --build
 ```
 
-Starts FastAPI (:8000), Celery worker, Redis, PostgreSQL, and MinIO. See `docker-compose.yml`.
+Starts the Next.js dashboard and FastAPI API in the app container, plus an ARQ worker,
+Redis, PostgreSQL, and MinIO. The app waits for its database/object-store dependencies
+and runs the Alembic migrations before serving requests. Local compose credentials are
+development defaults; replace them before exposing this stack outside a trusted machine.
 
-> The Docker profile is provided for deployment completeness and **has not been executed in the development sandbox** — verify on a Docker-equipped machine before relying on it (per the project's no-unverified-claims rule).
+The Compose stack has not been run in this environment because the local Docker daemon
+is unavailable. The Render deployment uses filesystem-demo mode and does not use the
+Compose PostgreSQL, Redis, or MinIO services. Render's free service filesystem is
+ephemeral, so uploaded data and run artifacts are not durable there.
 
 ## Using the platform
 
