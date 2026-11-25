@@ -1,0 +1,1 @@
+render deploys list srv-dc39ncgm7kps73dks070 --output json | select newest deploy status and commit metadata

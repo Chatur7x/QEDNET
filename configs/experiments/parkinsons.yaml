@@ -7,7 +7,8 @@ notes: >
 
 dataset:
   name: parkinsons
-  target: target
+  target: status
+  group_column: __subject_id__
 
 compression:
   method: pca

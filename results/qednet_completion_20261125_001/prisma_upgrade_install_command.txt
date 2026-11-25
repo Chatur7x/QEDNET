@@ -1,0 +1,1 @@
+bun add @prisma/client@7.10.1 @prisma/adapter-better-sqlite3@7.10.1; bun add --dev prisma@7.10.1

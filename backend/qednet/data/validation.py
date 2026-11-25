@@ -44,7 +44,8 @@ class ValidationReport:
 
 
 def validate_frame(df: pd.DataFrame, target: str,
-                   dataset_name: str = "dataset") -> ValidationReport:
+                   dataset_name: str = "dataset",
+                   group_column: Optional[str] = None) -> ValidationReport:
     """Full validation of a dataframe for binary classification research."""
     rep = ValidationReport(dataset=dataset_name, passed=True)
 
@@ -55,6 +56,19 @@ def validate_frame(df: pd.DataFrame, target: str,
         rep.passed = False
         return rep
     rep.checks["target_present"] = True
+
+    if group_column is not None:
+        group_present = group_column in df.columns
+        rep.checks["group_column_present"] = group_present
+        if not group_present:
+            rep.errors.append(f"Group column '{group_column}' missing")
+            rep.passed = False
+            return rep
+        group_complete = not df[group_column].isna().any()
+        rep.checks["group_column_complete"] = group_complete
+        if not group_complete:
+            rep.errors.append(f"Group column '{group_column}' has missing values")
+            rep.passed = False
 
     # 2. non-empty ---------------------------------------------------------
     rep.checks["non_empty"] = df.shape[0] > 0 and df.shape[1] >= 2
@@ -75,8 +89,11 @@ def validate_frame(df: pd.DataFrame, target: str,
 
     # 4. datatype inspection ----------------------------------------------
     bad_dtypes = []
+    excluded_columns = {target}
+    if group_column is not None:
+        excluded_columns.add(group_column)
     for c in df.columns:
-        if c == target:
+        if c in excluded_columns:
             continue
         if not pd.api.types.is_numeric_dtype(df[c]):
             bad_dtypes.append(f"{c}({df[c].dtype})")
@@ -105,7 +122,7 @@ def validate_frame(df: pd.DataFrame, target: str,
         rep.warnings.append(f"{dup} duplicate rows detected (will be dropped)")
 
     # 7. invalid values -------------------------------------------------------
-    feature_cols = [c for c in df.columns if c != target]
+    feature_cols = [c for c in df.columns if c not in excluded_columns]
     X = df[feature_cols]
     nonfinite = int(np.sum(~np.isfinite(X.to_numpy(dtype=float, na_value=np.nan))
                            ) if not bad_dtypes else 0)
@@ -126,6 +143,7 @@ def validate_frame(df: pd.DataFrame, target: str,
 
     # 9. identifier-like columns (privacy flag) ----------------------------------
     id_cols = [c for c in df.columns
+               if c != group_column
                if any(h in str(c).lower() for h in
                       ("name", "email", "phone", "patient_id", "ssn", "mrn"))]
     if id_cols:
@@ -133,6 +151,7 @@ def validate_frame(df: pd.DataFrame, target: str,
             f"Direct-identifier-like columns present: {id_cols} — "
             "must be removed before research use (privacy)")
     rep.stats["identifier_like_columns"] = id_cols
+    rep.stats["group_column"] = group_column
 
     logger.info("Validation of '%s': passed=%s (%d errors, %d warnings)",
                 dataset_name, rep.passed, len(rep.errors), len(rep.warnings))

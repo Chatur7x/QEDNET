@@ -1,0 +1,1 @@
+$env:QEDNET_PRISMA_DATABASE_URL=<temporary isolated sqlite>; bun run prisma db push --verbose

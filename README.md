@@ -10,7 +10,7 @@
 
 QED-Net 2.0 is a research codebase for comparing quantum and classical machine-learning approaches on biomedical benchmark data. It contains a Python research core, a FastAPI service, and a Next.js dashboard. The Render preview has Supabase email/password authentication and a single-email allowlist configured, but successful confirmation delivery remains unverified after the default sender rate-limited requests. Persistent experiment storage, multi-user data isolation, and clinical validation are not configured.
 
-See the [product update plan](docs/PRODUCT_ROADMAP.md) for the separate research and clinical tracks, proposed feature sequence, and completion gates. The clinical track is a future, separate product and is not implemented here.
+See the [early-detection product specification](docs/EARLY_DETECTION_PRODUCT_SPEC.md) and [product roadmap](docs/PRODUCT_ROADMAP.md) for the research scope, evidence gates, and unresolved problems. “Early detection” is a research objective, not a demonstrated capability of the current cross-sectional benchmarks.
 
 The system combines:
 
@@ -85,11 +85,11 @@ QED-Net 2.0 repository
 └── docs/                  # model cards, methodology
 ```
 
-### Quantum execution backends (dual)
+### Quantum execution backends
 
-- **`numpy` (default)** — a batched statevector simulator written for this project: exact quantum-circuit simulation vectorised over whole mini-batches, differentiable end-to-end with `autograd` (reverse-mode through the statevector, the same mathematics as PennyLane's `backprop`). This makes the full nested-CV protocol computationally feasible.
-- **`pennylane` (reference)** — the same circuits executed on PennyLane `default.qubit` / `lightning.qubit`.
-- **Equivalence is enforced by tests**: `backend/tests/quantum/test_statevector.py` asserts the batched simulator reproduces PennyLane to machine precision (≤1e-12) on identical circuits, including angle and ZZ feature-map states, and that QSVM states match across backends.
+- **`numpy` (default)** — the VQC, data re-uploading, and HybridQNN implementations use this project's batched statevector simulator and automatic differentiation.
+- **`pennylane`** — QSVM has a PennyLane simulator path. VQC, data re-uploading, and HybridQNN currently reject this backend because their PennyLane execution path is not implemented; they no longer report a requested-but-unused backend as if it ran.
+- **Simulator tests are not hardware tests.** The statevector tests compare selected simulator calculations; no real quantum hardware execution is established by this repository review.
 - Exact statevector simulation is equivalent to infinite shots; resource reports record this honestly (`shots: null`).
 
 ## Technology stack
@@ -133,6 +133,25 @@ PYTHONPATH=backend python -m qednet.cli run-experiment \
 bun install && bun run dev     # http://localhost:3000
 ```
 
+For production-build smoke checks on Windows, build the app, start the standalone
+server in one PowerShell window, then run the scoped app tests in another:
+
+```powershell
+bun run build
+$env:PORT = "3100"
+node .next/standalone/server.js
+```
+
+```powershell
+$env:QEDNET_BASE_URL = "http://localhost:3100"
+bun run test
+```
+
+The app tests verify liveness and that protected routes remain behind the auth
+gate. They do not verify authenticated research API behavior without configured
+Supabase test credentials. Root test discovery explicitly excludes the separate
+`preserved/` project.
+
 Experiment metrics shown in the dashboard are read from saved run artifacts. Dataset metadata and service health are obtained from their respective backend endpoints. The cloud demo currently has no saved experiments, so it does not show model performance results.
 
 ## Integrated deployment (docker-compose)
@@ -150,6 +169,12 @@ The Compose stack has not been run in this environment because the local Docker 
 is unavailable. The Render deployment uses filesystem-demo mode and does not use the
 Compose PostgreSQL, Redis, or MinIO services. Render's free service filesystem is
 ephemeral, so uploaded data and run artifacts are not durable there.
+
+The optional Prisma helper uses a separate SQLite setting, `QEDNET_PRISMA_DATABASE_URL`
+(for example, a `file:` URL). It is not the Python research backend's `DATABASE_URL`
+and is not the deployed experiment store. The app build generates the Prisma client
+but does not migrate or modify a database. Use a disposable database when validating
+schema changes; do not point smoke tests at an existing database file.
 
 ### Email/password accounts
 
@@ -171,7 +196,7 @@ Each run produces, under `experiments/runs/<exp_id>/`:
 - `certificate.json` + `certificate_report.md` — the Quantum Advantage Certificate
 - `explainability.json` — SHAP global/local, permutation, sensitivity, counterfactuals, quantum diagnostics
 - `report.md` — the research report rendered in the dashboard
-- `pipeline.pkl`, `models.pkl`, `conformal.pkl` — deployment artifacts for prediction
+- `pipeline.pkl`, `models.pkl`, `conformal.pkl` — research inference artifacts; the current experiment does not claim measured conformal coverage
 - `config.yaml`, `progress.json`, plus the reproducibility record inside `result.json`
 
 ### Reproduce an experiment
@@ -208,7 +233,7 @@ CSV upload with schema discovery, profiling and validation is available in the *
 - **Multi-seed**: 3 seeds in the demo protocol (42, 7, 2026); 10 seeds with `--full` — mean ± std and bootstrap CIs are always reported, never a single lucky seed
 - **Metrics**: AUROC, AUPRC, Sensitivity, Specificity, Sensitivity@95%Specificity, F1, MCC, Brier, ECE — plus training/inference time, parameter count, qubit count, circuit depth, circuit count, shots, estimated quantum resource cost
 - **Statistics**: DeLong paired tests, 2000-resample bootstrap CIs, Nadeau–Bengio corrected resampled t-test, decision curve analysis
-- **Calibration**: Platt scaling and isotonic regression, fitted on training-fold predictions only
+- **Calibration**: Platt scaling and isotonic regression, fit from cross-fitted predictions within each outer training fold
 - **Leakage safety**: every learned transformer is wrapped by a runtime guard — any `fit` outside a training fold raises `LeakageError` (TEST FAILURE / EXPERIMENT INVALID). Deliberate-leakage tests prove the guard works.
 
 ## Scientific integrity rules (enforced)

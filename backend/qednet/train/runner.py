@@ -38,8 +38,7 @@ from ..models.registry import CLASSICAL_MODELS, QUANTUM_MODELS, build_model
 from ..models.training import quantum_input_transform
 from ..preprocess.pipeline import PreprocessPipeline
 from ..tracking.store import (ExperimentStore, reproducibility_snapshot)
-from ..uncertainty.abstention import (AbstentionRule, ConformalClassifier,
-                                      coverage_stats)
+from ..uncertainty.abstention import AbstentionRule, ConformalClassifier
 
 logger = logging.getLogger("qednet.runner")
 
@@ -61,15 +60,22 @@ def run_experiment(cfg: ExperimentConfig, store: ExperimentStore,
     # ---- F1: ingestion -----------------------------------------------------
     df = load_dataset(cfg.dataset.name, registry)
     target = registry.get(cfg.dataset.name)["target"]
+    if (cfg.dataset.group_column is None
+            and cfg.dataset.name == "parkinsons"
+            and "__subject_id__" in df.columns):
+        cfg.dataset.group_column = "__subject_id__"
     fingerprint = fingerprint_frame(df)
 
     # ---- F2: validation ------------------------------------------------------
-    validation = validate_frame(df, target, cfg.dataset.name)
+    validation = validate_frame(
+        df, target, cfg.dataset.name,
+        group_column=cfg.dataset.group_column)
     if not validation.passed:
         raise ValueError(f"Validation failed: {validation.errors}")
     df = df.drop_duplicates()
     y = to_binary_target(df, target).to_numpy()
-    feature_cols = [c for c in df.columns if c != target]
+    feature_cols = [c for c in df.columns
+                    if c not in {target, cfg.dataset.group_column}]
     X = df[feature_cols].to_numpy(dtype=np.float64)
     logger.info("[F1/F2] %s: %d samples x %d features (fingerprint %s)",
                 cfg.dataset.name, X.shape[0], X.shape[1], fingerprint)
@@ -117,28 +123,32 @@ def run_experiment(cfg: ExperimentConfig, store: ExperimentStore,
         logger.info("refit %s on full data (params=%s)",
                     model_key, m.n_parameters())
 
-    # conformal calibration from out-of-fold predictions of the primary
-    # quantum model (honest coverage on held-out data)
+    # Do not derive an inductive conformal guarantee from pooled CV
+    # predictions. The final inference model is refit on all rows, and there
+    # is no independent calibration/evaluation cohort in this protocol.
     q_primary = next((k for k in QUANTUM_MODELS if k in result["models"]),
                      None)
     conformal = ConformalClassifier(alpha=0.1)
-    if q_primary:
-        pooled = result["models"][q_primary]["pooled_predictions"]
-        y_pooled = np.array(pooled["y"])
-        # split pooled OOF predictions: first 60% calibration, rest eval
-        n_cal = int(0.6 * len(y_pooled))
-        q_hat = conformal.calibrate(y_pooled[:n_cal],
-                                    _as_proba2(np.array(pooled["p"])[:n_cal]))
-        sets = conformal.predict_set(
-            _as_proba2(np.array(pooled["p"])[n_cal:]))
-        cov = coverage_stats(sets, y_pooled[n_cal:])
-        result["conformal"] = {
-            "model": q_primary, "alpha": 0.1, "q_hat": round(q_hat, 6),
-            **cov,
-            "note": "inductive conformal (LAC) on pooled out-of-fold "
-                    "predictions; calibration split 60/40",
-        }
-        store.save_result(exp_id, result)
+    result["conformal"] = {
+        "status": "NOT MEASURED",
+        "reason": (
+            "No independent calibration and evaluation cohort is held out "
+            "from the final refit model; pooled cross-validation predictions "
+            "do not establish the reported inductive coverage guarantee."),
+        "target_coverage": None,
+        "empirical_coverage": None,
+    }
+    store.save_result(exp_id, result)
+
+    groups = (df[cfg.dataset.group_column].to_numpy()
+              if cfg.dataset.group_column else None)
+    result["auxiliary_split"] = {
+        "method": "StratifiedGroupKFold first fold" if groups is not None
+        else "stratified row split",
+        "seed": cfg.training.seeds[0],
+        "group_column": cfg.dataset.group_column,
+        "note": "used only for certificate auxiliary analyses; not the primary benchmark",
+    }
 
     # ---- F9 components ------------------------------------------------------
     # entanglement ablation on a stratified 70/30 split (parameter-matched)
@@ -146,10 +156,9 @@ def run_experiment(cfg: ExperimentConfig, store: ExperimentStore,
     abl_target = next((k for k in ("vqc", "reupload", "hybrid_qnn")
                        if k in result["models"]), None)
     if cfg.certificate.entanglement_ablation and abl_target:
-        from sklearn.model_selection import train_test_split
-        X_tr, X_te, y_tr, y_te = train_test_split(
-            X, y, test_size=0.3, stratify=y,
-            random_state=cfg.training.seeds[0])
+        tr_idx, te_idx = _analysis_split_indices(
+            y, cfg.training.seeds[0], groups)
+        X_tr, X_te, y_tr, y_te = X[tr_idx], X[te_idx], y[tr_idx], y[te_idx]
         abl_pipe = PreprocessPipeline(
             compression_method=cfg.compression.method,
             target_dim=cfg.compression.target_dim)
@@ -164,11 +173,10 @@ def run_experiment(cfg: ExperimentConfig, store: ExperimentStore,
     dequant = None
     if (cfg.certificate.dequantization_rff or cfg.certificate.dequantization_nystrom) \
             and "qsvm" in result["models"]:
-        from sklearn.model_selection import train_test_split
         from ..models.quantum.qsvm import QSVM
-        X_tr, X_te, y_tr, y_te = train_test_split(
-            X, y, test_size=0.3, stratify=y,
-            random_state=cfg.training.seeds[0])
+        tr_idx, te_idx = _analysis_split_indices(
+            y, cfg.training.seeds[0], groups)
+        X_tr, X_te, y_tr, y_te = X[tr_idx], X[te_idx], y[tr_idx], y[te_idx]
         dq_pipe = PreprocessPipeline(
             compression_method=cfg.compression.method,
             target_dim=cfg.compression.target_dim)
@@ -207,10 +215,9 @@ def run_experiment(cfg: ExperimentConfig, store: ExperimentStore,
     honesty = None
     honesty_target = abl_target or q_primary
     if cfg.certificate.bottleneck_honesty_meter and honesty_target:
-        from sklearn.model_selection import train_test_split
-        X_tr, X_te, y_tr, y_te = train_test_split(
-            X, y, test_size=0.3, stratify=y,
-            random_state=cfg.training.seeds[0])
+        tr_idx, te_idx = _analysis_split_indices(
+            y, cfg.training.seeds[0], groups)
+        X_tr, X_te, y_tr, y_te = X[tr_idx], X[te_idx], y[tr_idx], y[te_idx]
         hm_pipe = PreprocessPipeline(
             compression_method=cfg.compression.method,
             target_dim=cfg.compression.target_dim)
@@ -297,8 +304,23 @@ def run_experiment(cfg: ExperimentConfig, store: ExperimentStore,
     return result
 
 
-def _as_proba2(p1: np.ndarray) -> np.ndarray:
-    return np.column_stack([1 - p1, p1])
+def _analysis_split_indices(y: np.ndarray, seed: int,
+                            groups: Optional[np.ndarray] = None):
+    """Return one stratified auxiliary split, grouping repeated subjects."""
+    from sklearn.model_selection import StratifiedGroupKFold, train_test_split
+    from ..evaluation.engine import _require_group_class_support
+
+    indices = np.arange(len(y))
+    if groups is None:
+        return train_test_split(
+            indices, test_size=0.3, stratify=y, random_state=seed)
+    _require_group_class_support(y, groups, 3, "auxiliary analysis")
+    splitter = StratifiedGroupKFold(n_splits=3, shuffle=True,
+                                    random_state=seed)
+    train_idx, test_idx = next(splitter.split(indices, y, groups))
+    if not set(groups[train_idx]).isdisjoint(set(groups[test_idx])):
+        raise RuntimeError("Grouped auxiliary split contains subject overlap")
+    return train_idx, test_idx
 
 
 def _run_explainability(cfg, store, exp_id, pipe, fitted, X, y,

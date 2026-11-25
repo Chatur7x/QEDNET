@@ -15,20 +15,36 @@ from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedGroupKFold, StratifiedKFold
 
 from ..config import ExperimentConfig
 from ..data.validation import (LeakageGuard, check_train_test_contamination,
                                to_binary_target, validate_frame)
 from ..models.registry import CLASSICAL_MODELS, QUANTUM_MODELS, build_model
 from ..preprocess.pipeline import PreprocessPipeline
-from .calibration import calibration_report, fit_calibrator
+from .calibration import fit_calibrator
 from .metrics import (compute_metrics, pr_curve_data, reliability_curve_data,
                       roc_curve_data)
 from .statistics import (bootstrap_ci, corrected_cv_ttest, decision_curve_data,
                          delong_test)
 
 logger = logging.getLogger("qednet.engine")
+
+
+def _require_group_class_support(y: np.ndarray, groups: np.ndarray,
+                                 n_splits: int, level: str) -> None:
+    """Fail instead of silently falling back to row-wise splitting."""
+    y = np.asarray(y)
+    groups = np.asarray(groups)
+    if len(y) != len(groups):
+        raise ValueError("group labels must align with the feature rows")
+    for label in np.unique(y):
+        n_groups = np.unique(groups[y == label]).size
+        if n_groups < n_splits:
+            raise ValueError(
+                f"Cannot create {level} StratifiedGroupKFold with "
+                f"{n_splits} folds: class {label!r} appears in only "
+                f"{n_groups} distinct groups")
 
 # Small, controlled, logged hyperparameter grids (inner CV tuning budgets).
 INNER_GRIDS: Dict[str, Dict[str, list]] = {
@@ -81,14 +97,19 @@ class BenchmarkEngine:
             dataset_name: str) -> Dict[str, Any]:
         """Run the full benchmark; returns the machine-readable result."""
         self.run_started = time.time()
-        validation = validate_frame(df, target, dataset_name)
+        group_column = self.cfg.dataset.group_column
+        validation = validate_frame(
+            df, target, dataset_name, group_column=group_column)
         if not validation.passed:
             raise ValueError(
                 f"Dataset validation failed: {validation.errors}")
 
         df = df.drop_duplicates()
         y_full = to_binary_target(df, target).to_numpy()
-        feature_cols = [c for c in df.columns if c != target]
+        groups_full = (df[group_column].to_numpy()
+                       if group_column is not None else None)
+        feature_cols = [c for c in df.columns
+                        if c not in {target, group_column}]
         X_full = df[feature_cols].to_numpy(dtype=np.float64)
 
         suite = default_suite(self.cfg)
@@ -97,13 +118,23 @@ class BenchmarkEngine:
         records: List[FoldRecord] = []
         curves: Dict[str, Dict[str, Any]] = {}
         for seed in self.cfg.training.seeds:
-            outer = StratifiedKFold(
-                n_splits=self.cfg.training.outer_folds, shuffle=True,
-                random_state=seed)
-            for fold_i, (tr, te) in enumerate(outer.split(X_full, y_full)):
+            if groups_full is None:
+                outer = StratifiedKFold(
+                    n_splits=self.cfg.training.outer_folds, shuffle=True,
+                    random_state=seed)
+                split_iter = outer.split(X_full, y_full)
+            else:
+                _require_group_class_support(
+                    y_full, groups_full, self.cfg.training.outer_folds,
+                    "outer")
+                outer = StratifiedGroupKFold(
+                    n_splits=self.cfg.training.outer_folds, shuffle=True,
+                    random_state=seed)
+                split_iter = outer.split(X_full, y_full, groups_full)
+            for fold_i, (tr, te) in enumerate(split_iter):
                 records += self._run_fold(
                     suite, X_full, y_full, tr, te, seed, fold_i,
-                    matched_params, feature_cols)
+                    matched_params, feature_cols, groups_full)
 
         result = self._aggregate(records, curves, validation, dataset_name,
                                  suite, feature_cols)
@@ -111,9 +142,11 @@ class BenchmarkEngine:
 
     # ------------------------------------------------------------- one fold
     def _run_fold(self, suite, X_full, y_full, tr, te, seed, fold_i,
-                  matched_params, feature_cols) -> List[FoldRecord]:
+                  matched_params, feature_cols, groups_full=None
+                  ) -> List[FoldRecord]:
         X_tr, X_te = X_full[tr], X_full[te]
         y_tr, y_te = y_full[tr], y_full[te]
+        groups_tr = groups_full[tr] if groups_full is not None else None
         out: List[FoldRecord] = []
 
         contamination = check_train_test_contamination(X_tr, X_te)
@@ -137,18 +170,22 @@ class BenchmarkEngine:
             kwargs = self._model_kwargs(model_key, matched_params)
             model = build_model(model_key, random_state=seed, **kwargs)
             if self.tuning_enabled and INNER_GRIDS.get(model_key):
-                best = self._inner_tune(model_key, kwargs, Z_tr, y_tr, seed)
+                best = self._inner_tune(
+                    model_key, kwargs, X_tr, y_tr, seed, feature_cols,
+                    groups_tr)
                 kwargs = {**kwargs, **best}
                 model = build_model(model_key, random_state=seed, **kwargs)
             guard.allow_fit()
             model.fit(Z_tr, y_tr)
             guard.forbid_fit(f"eval s{seed} f{fold_i}")
             p_te = model.predict_proba(Z_te)[:, 1]
-            p_tr = model.predict_proba(Z_tr)[:, 1]
-
-            # calibration fitted on TRAIN predictions only
-            calibrator = fit_calibrator(self.cfg.evaluation.calibration,
-                                        p_tr, y_tr)
+            # Fit calibration only from out-of-fold predictions. Each
+            # calibration split repeats preprocessing and tuning using that
+            # split's training rows, so calibration labels never train the
+            # model that produced their probabilities.
+            calibrator = self._crossfit_calibrator(
+                model_key, X_tr, y_tr, seed, feature_cols, groups_tr,
+                matched_params)
             p_cal = calibrator.transform(p_te) if calibrator else p_te
 
             metrics = compute_metrics(y_te, p_te)
@@ -185,24 +222,88 @@ class BenchmarkEngine:
                     pass
         return out
 
+    def _crossfit_calibrator(self, model_key, X, y, seed,
+                             feature_names, groups, matched_params):
+        method = self.cfg.evaluation.calibration
+        if method == "none":
+            return None
+        n_splits = self.cfg.training.inner_folds
+        if groups is None:
+            splitter = StratifiedKFold(
+                n_splits=n_splits, shuffle=True, random_state=seed + 1009)
+            split_iter = splitter.split(X, y)
+        else:
+            _require_group_class_support(y, groups, n_splits, "calibration")
+            splitter = StratifiedGroupKFold(
+                n_splits=n_splits, shuffle=True, random_state=seed + 1009)
+            split_iter = splitter.split(X, y, groups)
+
+        probabilities = np.full(len(y), np.nan, dtype=float)
+        for fit_idx, cal_idx in split_iter:
+            X_fit, y_fit = X[fit_idx], y[fit_idx]
+            X_cal = X[cal_idx]
+            fit_groups = groups[fit_idx] if groups is not None else None
+            pipe = PreprocessPipeline(
+                compression_method=self.cfg.compression.method,
+                target_dim=self.cfg.compression.target_dim)
+            Z_fit = pipe.fit_transform(X_fit, y_fit,
+                                       feature_names=feature_names)
+            Z_cal = pipe.transform(X_cal)
+            fit_kwargs = self._model_kwargs(model_key, matched_params)
+            if self.tuning_enabled and INNER_GRIDS.get(model_key):
+                fit_kwargs.update(self._inner_tune(
+                    model_key, fit_kwargs, X_fit, y_fit, seed, feature_names,
+                    fit_groups))
+            model = build_model(model_key, random_state=seed, **fit_kwargs)
+            model.fit(Z_fit, y_fit)
+            probabilities[cal_idx] = model.predict_proba(Z_cal)[:, 1]
+
+        if np.isnan(probabilities).any():
+            raise RuntimeError("Calibration cross-fitting left rows without predictions")
+        return fit_calibrator(method, probabilities, y)
+
     # ------------------------------------------------------------ inner CV
     def _inner_tune(self, model_key: str, base_kwargs: Dict[str, Any],
-                    Z_tr: np.ndarray, y_tr: np.ndarray,
-                    seed: int) -> Dict[str, Any]:
-        """Inner k-fold tuning inside the training fold (leakage-safe)."""
+                    X_tr: np.ndarray, y_tr: np.ndarray, seed: int,
+                    feature_names: List[str],
+                    groups_tr: Optional[np.ndarray] = None
+                    ) -> Dict[str, Any]:
+        """Tune with preprocessing fit only on each inner training split.
+
+        The outer-fold representation is deliberately not reused here: doing
+        so would let inner-validation rows influence imputation, scaling,
+        feature selection, and PCA before their tuning score is measured.
+        """
         grid = INNER_GRIDS[model_key]
         keys = list(grid)
         combos = [dict(zip(keys, v)) for v in _product(grid[k] for k in keys)]
-        inner = StratifiedKFold(n_splits=self.cfg.training.inner_folds,
-                                shuffle=True, random_state=seed)
+        if groups_tr is None:
+            inner = StratifiedKFold(
+                n_splits=self.cfg.training.inner_folds, shuffle=True,
+                random_state=seed)
+            split_iter = inner.split(X_tr, y_tr)
+        else:
+            _require_group_class_support(
+                y_tr, groups_tr, self.cfg.training.inner_folds, "inner")
+            inner = StratifiedGroupKFold(
+                n_splits=self.cfg.training.inner_folds, shuffle=True,
+                random_state=seed)
+            split_iter = inner.split(X_tr, y_tr, groups_tr)
+        splits = list(split_iter)
         best_combo, best_score = None, -np.inf
         for combo in combos:
             aucs = []
-            for itr, ite in inner.split(Z_tr, y_tr):
+            for itr, ite in splits:
+                inner_pipe = PreprocessPipeline(
+                    compression_method=self.cfg.compression.method,
+                    target_dim=self.cfg.compression.target_dim)
+                Z_itr = inner_pipe.fit_transform(
+                    X_tr[itr], y_tr[itr], feature_names=feature_names)
+                Z_ite = inner_pipe.transform(X_tr[ite])
                 m = build_model(model_key, random_state=seed,
                                 **{**base_kwargs, **combo})
-                m.fit(Z_tr[itr], y_tr[itr])
-                p = m.predict_proba(Z_tr[ite])[:, 1]
+                m.fit(Z_itr, y_tr[itr])
+                p = m.predict_proba(Z_ite)[:, 1]
                 if len(np.unique(y_tr[ite])) == 2:
                     aucs.append(float(
                         __import__("sklearn.metrics", fromlist=["x"])
@@ -311,6 +412,9 @@ class BenchmarkEngine:
             "protocol": {
                 "outer_folds": self.cfg.training.outer_folds,
                 "inner_folds": self.cfg.training.inner_folds,
+                "splitter": "StratifiedGroupKFold" if
+                self.cfg.dataset.group_column else "StratifiedKFold",
+                "group_column": self.cfg.dataset.group_column,
                 "seeds": self.cfg.training.seeds,
                 "tuning": "inner-CV grid search (small logged grids)"
                 if self.tuning_enabled else "disabled",

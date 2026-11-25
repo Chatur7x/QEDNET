@@ -139,7 +139,7 @@ export function PredictionView() {
         {/* cascade explainer */}
         <SectionCard
           title="Classical–quantum second-opinion cascade (F12)"
-          subtitle="classical screening → confidence gate → quantum second opinion for ambiguous cases → calibration → uncertainty → abstention"
+          subtitle="research-only model scores → configured routing and abstention; outputs are not calibrated clinical risk estimates"
           right={
             <span className="hidden items-center gap-2 text-[11px] text-stone-500 sm:flex">
               <GitBranch className="h-3.5 w-3.5" aria-hidden />
@@ -161,7 +161,7 @@ export function PredictionView() {
         </SectionCard>
 
         {/* experiment selection */}
-        <SectionCard title="Experiment" subtitle="uses the deployment artifacts (pipeline + refit models + conformal calibrator) stored by the run">
+        <SectionCard title="Experiment" subtitle="uses stored research artifacts refit on the experiment dataset; this is not an independently validated clinical prediction">
           {experiments.isLoading ? (
             <LoadingState label="Loading experiments…" />
           ) : !experiments.data?.length ? (
@@ -282,7 +282,7 @@ export function PredictionView() {
         {pr && (
           <SectionCard
             title="Prediction result"
-            subtitle="model used · probability · confidence · uncertainty · abstention"
+            subtitle="model used · raw model score · confidence proxy · uncertainty · abstention"
             right={
               <span
                 className={
@@ -300,7 +300,7 @@ export function PredictionView() {
                 <Zap className="mt-0.5 h-4 w-4 shrink-0 text-violet-600 fill-violet-600" aria-hidden />
                 <div>
                   <span className="font-semibold">Quantum Second-Opinion Cascade Triggered: </span>
-                  Classical screening probability ({fmt(pr.classical_screening_probability)}) fell inside the [0.35, 0.65] ambiguity band. The sample was routed to the {pr.model_used ?? "quantum circuit"} for quantum-enhanced second opinion, resolving positive-class probability to {fmt(pr.probability_used)}.
+                  The classical model score ({fmt(pr.classical_screening_probability)}) fell inside the configured ambiguity band. The sample was routed to {pr.model_used ?? "the configured second-stage model"}. This is an experimental model comparison, not evidence of quantum advantage.
                 </div>
               </div>
             )}
@@ -313,13 +313,13 @@ export function PredictionView() {
                 hint={`model: ${pr.model_used ?? "—"}`}
               />
               <Stat
-                label="probability (class 1)"
+                label="raw model score (class 1)"
                 value={fmt(pr.probability_used)}
                 domain="evaluation"
-                hint={`screening p: ${fmt(pr.classical_screening_probability)}`}
+                hint={`uncalibrated screening score: ${fmt(pr.classical_screening_probability)}`}
               />
-              <Stat label="confidence" value={pct(pr.confidence)} domain="uncertainty"
-                hint={`entropy ${fmt(pr.uncertainty_entropy, 3)} bits`} />
+              <Stat label="confidence proxy" value={pct(pr.confidence)} domain="uncertainty"
+                hint={`uncalibrated score transform; entropy ${fmt(pr.uncertainty_entropy, 3)} bits`} />
               <Stat
                 label="prediction"
                 value={abstain ? "abstain" : String(pr.prediction)}
@@ -332,7 +332,7 @@ export function PredictionView() {
             <div className="mt-5 space-y-1.5">
               <div className="qed-num flex justify-between text-[11px] text-stone-500">
                 <span>0</span>
-                <span>positive-class probability</span>
+                <span>raw positive-class model score (not calibrated risk)</span>
                 <span>1</span>
               </div>
               <div className="relative h-2.5 overflow-hidden rounded-full bg-stone-200">

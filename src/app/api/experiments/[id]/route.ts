@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { cli, RUNS_DIR, getExperimentFallback, isSafeId } from "@/lib/qednet";
+import { requireResearchAccess } from "@/lib/research-access";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,8 @@ export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   const { id } = await params;
   if (!isSafeId(id)) return NextResponse.json({ ok: false, error: "Invalid experiment ID" }, { status: 400 });
   const res = await cli(["get-experiment", "--id", id], 120_000);

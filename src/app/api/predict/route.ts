@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { cli, isSafeId } from "@/lib/qednet";
+import { requireResearchAccess } from "@/lib/research-access";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   const body = await req.json().catch(() => null);
   if (!body || typeof body.experimentId !== "string" || !isSafeId(body.experimentId)
     || !Array.isArray(body.features) || body.features.length === 0

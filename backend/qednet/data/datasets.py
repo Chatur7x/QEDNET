@@ -74,7 +74,16 @@ class ParkinsonsAdapter(DatasetAdapter):
     def load(self) -> pd.DataFrame:
         path = RAW_DIR / "parkinsons.data"
         df = pd.read_csv(path)
-        df = df.drop(columns=["name"])  # subject identifier, not a feature
+        # Preserve the subject key for grouped validation, but exclude it from
+        # model features through DatasetConfig.group_column.
+        subject_id = df["name"].astype(str).str.extract(
+            r"^(phon_R\d+_S\d+)_\d+$", expand=False)
+        if subject_id.isna().any():
+            raise ValueError(
+                "Parkinson's recording names do not match the expected "
+                "phon_Rxx_Sxx_recording pattern; cannot create subject groups")
+        df["__subject_id__"] = subject_id
+        df = df.drop(columns=["name"])
         return df
 
     def target(self) -> str:

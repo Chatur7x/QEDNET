@@ -84,7 +84,8 @@ def test_all_twelve_features_present(small_experiment):
     assert r["bottleneck_honesty_meter"]["compressed_space_baseline"]["auroc"] \
         is not None
     # F11
-    assert r.get("conformal") and "empirical_coverage" in r["conformal"]
+    assert r.get("conformal", {}).get("status") == "NOT MEASURED"
+    assert r["conformal"].get("empirical_coverage") is None
     # F12
     assert r["cascade"] and "routing" in r["cascade"]
 

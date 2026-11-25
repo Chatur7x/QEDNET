@@ -1,0 +1,9 @@
+$ prisma db push
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+Datasource "db": SQLite database "prisma_smoke.sqlite" at "file:D:/Projects/QEDNT/results/qednet_completion_20261125_001/prisma_smoke.sqlite"
+
+Error: Schema engine error:
+
+error: script "db:push" exited with code 1

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { JOBS_DIR, readProgress, readLogTail, refreshJob, isSafeId } from "@/lib/qednet";
+import { requireResearchAccess } from "@/lib/research-access";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,8 @@ export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   const { id } = await params;
   if (!isSafeId(id)) return NextResponse.json({ ok: false, error: "Invalid job ID" }, { status: 400 });
   const jobPath = path.join(JOBS_DIR, `${id}.json`);

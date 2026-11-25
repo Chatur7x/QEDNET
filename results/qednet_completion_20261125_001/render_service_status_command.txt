@@ -1,0 +1,1 @@
+render services --output json | select only QEDNET service name, URL, branch, plan, health path, deployment/suspend status

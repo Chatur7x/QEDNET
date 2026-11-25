@@ -1,0 +1,19 @@
+bun add v1.4.4 (38afee6c8)
+Resolving dependencies
+Resolved, downloaded and extracted [148]
+Saved lockfile
+
+installed @prisma/client@7.10.1
+installed @prisma/adapter-better-sqlite3@7.10.1
+
+39 packages installed [11.36s]
+bun add v1.4.4 (38afee6c8)
+Resolving dependencies
+Resolved, downloaded and extracted [408]
+Saved lockfile
+
+installed prisma@7.10.1 with binaries:
+ - prisma
+
+96 packages installed [26.82s]
+Removed: 1

@@ -1,0 +1,18 @@
+$ node ./node_modules/prisma/build/index.js generate
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (v7.10.1) to .\node_modules\@prisma\client in 66ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+
+$ node ./node_modules/prisma/build/index.js db push
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+Datasource "db": SQLite database "prisma_smoke.sqlite" at "file:D:/Projects/QEDNT/results/qednet_completion_20261125_001/prisma_smoke.sqlite"
+
+The database is already in sync with the Prisma schema.
+

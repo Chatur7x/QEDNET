@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { cli, getExplainFallback, isSafeId } from "@/lib/qednet";
+import { requireResearchAccess } from "@/lib/research-access";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
   const model = url.searchParams.get("model");

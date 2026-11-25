@@ -106,10 +106,15 @@ export function ReportsView() {
             <div className="grid gap-6 lg:grid-cols-2">
               <SectionCard
                 title="Conformal prediction & abstention (F11)"
-                subtitle="inductive LAC sets on pooled out-of-fold predictions — marginal coverage guarantee"
+                subtitle="Conformal coverage is reported only with a valid independent calibration and evaluation design."
                 right={<ShieldQuestion className="h-4 w-4 text-stone-400" aria-hidden />}
               >
-                {conformal ? (
+                {conformal?.status === "NOT MEASURED" ? (
+                  <EmptyState
+                    message="Conformal coverage NOT MEASURED"
+                    hint={String(conformal.reason ?? "An independent calibration and evaluation cohort is required.")}
+                  />
+                ) : conformal ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                       <Stat label="target coverage" value={pct(1 - conformal.alpha, 0)} domain="uncertainty" />

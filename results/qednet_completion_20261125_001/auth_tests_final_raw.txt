@@ -1,0 +1,13 @@
+bun test v1.4.4 (38afee6c8)
+
+tests\auth.test.ts:
+(pass) private email account policy > production auth needs HTTPS Supabase settings and one allowed email [3.76ms]
+(pass) private email account policy > only the configured email is authorized, case-insensitively [0.57ms]
+(pass) private email account policy > production proxy locks the workspace until auth is configured [16.02ms]
+(pass) private email account policy > protected research handlers fail closed when production auth is missing [3.51ms]
+(pass) private email account policy > production proxy leaves the confirmation resend endpoint public [1.80ms]
+
+ 5 pass
+ 0 fail
+ 11 expect() calls
+Ran 5 tests across 1 file. [442.00ms]

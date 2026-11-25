@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { cli } from "@/lib/qednet";
+import { requireResearchAccess } from "@/lib/research-access";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   const body = await req.json().catch(() => ({}));
   const dataset = body?.dataset;
   if (typeof dataset !== "string" || !/^[A-Za-z0-9_-]{1,128}$/.test(dataset)) {

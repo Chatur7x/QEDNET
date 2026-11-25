@@ -1,0 +1,3 @@
+bun audit v1.4.4 (38afee6c8)
+
+No vulnerabilities found (checked 973 packages) [454.00ms]

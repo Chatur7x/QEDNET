@@ -35,6 +35,10 @@ class VQC(BaseModel):
                  epochs: int = 60, batch_size: int = 32, lr: float = 0.08,
                  patience: int = 12, shots: Optional[int] = None, **kw):
         super().__init__(random_state)
+        if backend != "numpy":
+            raise ValueError(
+                "VQC currently executes on the NumPy statevector simulator; "
+                "the requested backend is not implemented")
         if encoding not in ("angle", "amplitude"):
             raise ValueError("VQC supports encoding 'angle' or 'amplitude'")
         self.n_qubits = int(n_qubits)

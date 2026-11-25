@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { NextRequest } from "next/server";
 import { hasProductionAuthConfig, isAllowedEmail } from "../src/lib/auth-policy";
 import { proxy } from "../src/proxy";
+import { requireResearchAccess } from "../src/lib/research-access";
 
 describe("private email account policy", () => {
   test("production auth needs HTTPS Supabase settings and one allowed email", () => {
@@ -38,6 +39,26 @@ describe("private email account policy", () => {
     try {
       const response = await proxy(new NextRequest("https://research.example.org/api/jobs"));
       expect(response.headers.get("location")).toBe("https://research.example.org/setup-required");
+    } finally {
+      for (const key of keys) {
+        if (previous[key] === undefined) delete env[key];
+        else env[key] = previous[key];
+      }
+      if (previousNodeEnv === undefined) delete env.NODE_ENV;
+      else env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  test("protected research handlers fail closed when production auth is missing", async () => {
+    const keys = ["NEXT_PUBLIC_SITE_URL", "NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "QEDNET_ALLOWED_EMAIL"];
+    const env = process.env as Record<string, string | undefined>;
+    const previous = Object.fromEntries(keys.map((key) => [key, env[key]]));
+    const previousNodeEnv = env.NODE_ENV;
+    for (const key of keys) delete env[key];
+    env.NODE_ENV = "production";
+    try {
+      const denied = await requireResearchAccess();
+      expect(denied?.status).toBe(503);
     } finally {
       for (const key of keys) {
         if (previous[key] === undefined) delete env[key];

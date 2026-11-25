@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import { listJobs, startTrainingJob, CONFIGS_DIR, readProgress, refreshJob, cancelJob, isSafeId } from "@/lib/qednet";
+import { requireResearchAccess } from "@/lib/research-access";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   const jobs = listJobs().map((job) => ({
     ...job,
     progress: readProgress(job.experimentId),
@@ -13,6 +16,8 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   const body = await req.json().catch(() => ({}));
   const configName = body?.configName;
   const experimentId = body?.experimentId;
@@ -45,6 +50,8 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   const { searchParams } = new URL(req.url);
   const jobId = searchParams.get("jobId") || (await req.json().catch(() => ({}))).jobId;
   if (!jobId) {

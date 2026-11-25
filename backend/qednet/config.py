@@ -20,6 +20,7 @@ class DatasetConfig:
     name: str = "breast_cancer"
     target: str = "target"
     source: str = "builtin"  # builtin | csv
+    group_column: Optional[str] = None  # subject/site grouping key, never a feature
 
 
 @dataclass

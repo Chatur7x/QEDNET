@@ -1,0 +1,1 @@
+$env:QEDNET_PRISMA_DATABASE_URL=<temporary isolated sqlite>; bun run results/qednet_completion_20261125_001/prisma_adapter_smoke.ts

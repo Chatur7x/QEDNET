@@ -1,0 +1,1 @@
+curl.exe --max-time 45 -sS -o NUL -w "LIVE_CODE=%{http_code} TIME=%{time_total}`n" https://qednet.onrender.com/live; curl.exe --max-time 45 -sS -o NUL -w "ROOT_CODE=%{http_code} REDIRECT=%{redirect_url} TIME=%{time_total}`n" https://qednet.onrender.com/

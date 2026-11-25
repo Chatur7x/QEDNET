@@ -1,0 +1,1 @@
+git diff --check; count secret-shaped matches in tracked diff without printing match contents; git status --short

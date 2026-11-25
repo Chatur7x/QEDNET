@@ -32,6 +32,10 @@ class HybridQNN(BaseModel):
                  epochs: int = 60, batch_size: int = 32, lr: float = 0.05,
                  patience: int = 12, shots: Optional[int] = None, **kw):
         super().__init__(random_state)
+        if backend != "numpy":
+            raise ValueError(
+                "HybridQNN currently executes on the NumPy statevector "
+                "simulator; the requested backend is not implemented")
         self.n_qubits = int(n_qubits)
         self.layers = int(layers)
         self.encoding = encoding

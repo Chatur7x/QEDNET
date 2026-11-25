@@ -1,0 +1,1 @@
+{"name":"QEDNET","suspended":"not_suspended","url":"https://qednet.onrender.com","branch":"main","plan":"free","health":"/live","updatedAt":"2026-11-25T14:05:45.493773Z"}

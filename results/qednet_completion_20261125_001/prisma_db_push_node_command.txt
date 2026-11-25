@@ -1,0 +1,1 @@
+$env:QEDNET_PRISMA_DATABASE_URL=<temporary isolated sqlite>; node node_modules/prisma/build/index.js db push

@@ -1,0 +1,30 @@
+prisma:error 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+'better-sqlite3' is not yet supported in Bun.
+Track the status in https://github.com/oven-sh/bun/issues/4290
+In the meantime, you could try bun:sqlite which has a similar API.
+60 | 
+61 | Example:
+62 |   await prisma.$executeRawUnsafe(\`ALTER USER prisma WITH PASSWORD '\${password}'\`)
+63 | 
+64 | More Information: https://pris.ly/d/execute-raw
+65 | `)}var zi=({clientMethod:e,activeProvider:t,clientVersion:r})=>n=>{let i="",o;if(Ur(n))i=n.sql,o={values:It(n.values,r),__prismaRawParameters__:!0};else if(Array.isArray(n)){let[s,...a]=n;i=s,o={values:It(a||[],r),__prismaRawParameters__:!0}}else switch(t){case"sqlite":case"mysql":{i=n.sql,o={values:It(n.values,r),__prismaRawParameters__:!0};break}case"cockroachdb":case"postgresql":case"postgres":{i=n.text,o={values:It(n.values,r),__prismaRawParameters__:!0};break}case"sqlserver":{i=Al(n),o={values:It(n.values,r),__prismaRawParameters__:!0};break}default:throw new Error(`The ${t} provider does not support ${e}`)}return o?.values?Ol(`prisma.${e}(${i}, ${o.values})`):Ol(`prisma.${e}(${i})`),{query:i,parameters:o}},Dl={requestArgsToMiddlewareArgs(e){return[e.strings,...e.values]},middlewareArgsToRequestArgs(e){let[t,...r]=e;return new Nl.Sql(t,r)}},Ml={requestArgsToMiddlewareArgs(e){return[e]},middlewareArgsToRequestArgs(e){return e[0]}};function Hi(e){return function(r,n){let i,o=(s=e)=>{try{return s===void 0||
+
+PrismaClientKnownRequestError: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+'better-sqlite3' is not yet supported in Bun.
+Track the status in https://github.com/oven-sh/bun/issues/4290
+In the meantime, you could try bun:sqlite which has a similar API.
+       meta: undefined,
+ clientVersion: "7.10.1",
+       code: "ERR_DLOPEN_FAILED"
+
+      at handleRequestError (D:\Projects\QEDNT\node_modules\@prisma\client\runtime\client.js:65:8640)
+      at handleAndLogRequestError (D:\Projects\QEDNT\node_modules\@prisma\client\runtime\client.js:65:7929)
+      at request (D:\Projects\QEDNT\node_modules\@prisma\client\runtime\client.js:65:7636)
+
+Bun v1.4.4 (Windows x64)

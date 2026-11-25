@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cli } from "@/lib/qednet";
+import { requireResearchAccess } from "@/lib/research-access";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,8 @@ let cached: { at: number; data: unknown } | null = null;
 const CACHE_MS = 10 * 60 * 1000;
 
 export async function GET() {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   if (cached && Date.now() - cached.at < CACHE_MS) {
     return NextResponse.json({
       ok: true,

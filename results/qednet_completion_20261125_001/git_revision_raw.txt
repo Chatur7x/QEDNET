@@ -1,0 +1,38 @@
+4dd7d1cf013995bccbeead7e9b7a764ded373b1b
+4dd7d1cf013995bccbeead7e9b7a764ded373b1b	refs/heads/main
+ M README.md
+ M backend/qednet/config.py
+ M backend/qednet/data/datasets.py
+ M backend/qednet/data/validation.py
+ M backend/qednet/evaluation/engine.py
+ M backend/qednet/models/quantum/hybrid_qnn.py
+ M backend/qednet/models/quantum/reupload.py
+ M backend/qednet/models/quantum/vqc.py
+ M backend/qednet/train/runner.py
+ M backend/tests/integration/test_end_to_end.py
+ M bun.lock
+ M configs/experiments/parkinsons.yaml
+ M docs/PRODUCT_ROADMAP.md
+ M docs/model-cards.md
+ M package.json
+ M src/app/api/certificate/route.ts
+ M src/app/api/datasets/route.ts
+ M src/app/api/datasets/validate/route.ts
+ M src/app/api/experiments/[id]/route.ts
+ M src/app/api/experiments/route.ts
+ M src/app/api/explain/route.ts
+ M src/app/api/health/route.ts
+ M src/app/api/jobs/[id]/route.ts
+ M src/app/api/jobs/route.ts
+ M src/app/api/predict/route.ts
+ M src/components/qednet/views/prediction.tsx
+ M src/components/qednet/views/reports.tsx
+ M tests/auth.test.ts
+ M tests/qednet-api.test.ts
+?? backend/tests/unit/test_engine.py
+?? docs/EARLY_DETECTION_PRODUCT_SPEC.md
+?? docs/PRODUCT_SPEC.md
+?? frontend/
+?? runs/
+?? src/lib/research-access.ts
+?? web/

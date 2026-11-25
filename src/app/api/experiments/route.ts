@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { cli, getExperimentsFallback } from "@/lib/qednet";
+import { requireResearchAccess } from "@/lib/research-access";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   const res = await cli(["list-experiments"], 60_000);
   if (res.ok && Array.isArray((res.data as any)?.experiments) && (res.data as any).experiments.length > 0) {
     return NextResponse.json({

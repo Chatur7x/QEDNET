@@ -48,5 +48,5 @@ always show measured values).
 ## Calibration / uncertainty wrappers
 
 - Platt & isotonic calibrators (fit on training-fold predictions only)
-- Inductive conformal prediction (LAC) with empirical coverage reporting
-- Abstention rule (confidence / ambiguity band / conformal set size) — never bypassed
+- Conformal coverage is marked NOT MEASURED unless an independent calibration/evaluation design is available; pooled cross-validation predictions are not presented as an inductive guarantee
+- The prediction view can abstain under its configured confidence/ambiguity rule; abstention is not evidence of clinical safety

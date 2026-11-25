@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { cli, saveUploadedCsv, MAX_UPLOAD_BYTES } from "@/lib/qednet";
+import { requireResearchAccess } from "@/lib/research-access";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   const res = await cli(["list-datasets"], 60_000);
   if (res.ok && Array.isArray((res.data as any)?.datasets)) {
     return NextResponse.json({ ok: true, datasets: (res.data as any).datasets });
@@ -15,6 +18,8 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   try {
     const form = await req.formData();
     const file = form.get("file");

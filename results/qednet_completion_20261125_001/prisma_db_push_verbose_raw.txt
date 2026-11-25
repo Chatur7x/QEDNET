@@ -1,0 +1,33 @@
+Loaded Prisma config from prisma.config.ts.
+
+
+! unknown or unexpected option: --verbose
+
+Push the state from your Prisma schema to your database
+
+Usage
+
+  $ prisma db push [options]
+
+  The datasource URL configuration is read from the Prisma config file (e.g., prisma7.config.ts).
+
+Options
+
+           -h, --help   Display this help message
+             --config   Custom path to your Prisma config file
+             --schema   Custom path to your Prisma schema
+                 --url   Override the datasource URL from the Prisma config file
+   --accept-data-loss   Ignore data loss warnings
+        --force-reset   Force a reset of the database before push
+
+Examples
+
+  Push the Prisma schema state to the database
+  $ prisma db push
+
+  Specify a schema
+  $ prisma db push --schema=./schema.prisma
+
+  Ignore data loss warnings
+  $ prisma db push --accept-data-loss
+

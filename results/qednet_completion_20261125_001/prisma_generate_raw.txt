@@ -1,0 +1,11 @@
+PRESERVED_DB_SHA256_BEFORE=6BF8F634F4944F01D71C4AEBAECCE892AC772473E5B478822649B09309F73936
+$ prisma generate
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (v7.10.1) to .\node_modules\@prisma\client in 85ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+

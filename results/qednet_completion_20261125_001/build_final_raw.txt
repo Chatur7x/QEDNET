@@ -1,0 +1,303 @@
+$ prisma generate && next build
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (v7.10.1) to .\node_modules\@prisma\client in 72ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+
+▲ Next.js 16.4.6 (Turbopack)
+✓ Running next.config.ts took 176ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.2s
+  Running TypeScript ...
+results/qednet_completion_20261125_001/prisma_adapter_smoke.ts(1,16): error TS1375: 'await' expressions are only allowed at the top level of a file when that file is a module, but this file has no imports or exports. Consider adding an empty 'export {}' to make this file a module.
+results/qednet_completion_20261125_001/prisma_adapter_smoke.ts(1,29): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+results/qednet_completion_20261125_001/prisma_adapter_smoke.ts(3,16): error TS1375: 'await' expressions are only allowed at the top level of a file when that file is a module, but this file has no imports or exports. Consider adding an empty 'export {}' to make this file a module.
+results/qednet_completion_20261125_001/prisma_adapter_smoke.ts(6,3): error TS1375: 'await' expressions are only allowed at the top level of a file when that file is a module, but this file has no imports or exports. Consider adding an empty 'export {}' to make this file a module.
+results/qednet_fix_20261125_001/http_auth_gate.ts(3,20): error TS1375: 'await' expressions are only allowed at the top level of a file when that file is a module, but this file has no imports or exports. Consider adding an empty 'export {}' to make this file a module.
+Failed to type check.
+
+Turbopack build encountered 8 warnings:
+./src/lib/qednet.ts:92:5
+Warning: Dynamic filesystem access causes tracing of the whole project
+   90 | export function cli<T = unknown>(args: string[], timeoutMs = 120_000): Promise<CliResult<...
+   91 |   return new Promise((resolve) => {
+>  92 |     execFile(
+      |     ^^^^^^^^
+>  93 |       PYTHON,
+      | ^^^^^^^^^^^^^
+>  94 |       ["-m", "qednet.cli", ...args],
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  95 |       {
+      | ^^^^^^^
+>  96 |         cwd: ROOT,
+      | ^^^^^^^^^^^^^^^^^^
+>  97 |         env: { ...process.env, PYTHONPATH },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  98 |         timeout: timeoutMs,
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  99 |         maxBuffer: 64 * 1024 * 1024,
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 100 |       },
+      | ^^^^^^^^
+> 101 |       (err, stdout, stderr) => {
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 102 |         const lastJson = lastJsonLine(stdout);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 103 |         if (lastJson) {
+      | ^^^^^^^^^^^^^^^^^^^^^^^
+> 104 |           const data = lastJson as T & { ok?: boolean; error?: string };
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 105 |           const dataSaysNo = typeof data.ok === "boolean" && !data.ok;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 106 |           resolve({
+      | ^^^^^^^^^^^^^^^^^^^
+> 107 |             ok: !dataSaysNo,
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 108 |             data,
+      | ^^^^^^^^^^^^^^^^^
+> 109 |             error: dataSaysNo ? data.error : undefined,
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 110 |             stderrTail: tail(stderr),
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 111 |           });
+      | ^^^^^^^^^^^^^
+> 112 |           return;
+      | ^^^^^^^^^^^^^^^^^
+> 113 |         }
+      | ^^^^^^^^^
+> 114 |         resolve({
+      | ^^^^^^^^^^^^^^^^^
+> 115 |           ok: false,
+      | ^^^^^^^^^^^^^^^^^^^^
+> 116 |           data: null,
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 117 |           error: err ? String(err.message) : "no JSON output from backend",
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 118 |           stderrTail: tail(stderr),
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 119 |         });
+      | ^^^^^^^^^^^
+> 120 |       }
+      | ^^^^^^^
+> 121 |     );
+      | ^^^^^
+  122 |   });
+  123 | }
+  124 |
+
+Static analysis determined that this filesystem access causes the whole project to be traced and included in the output.
+This is usually unintentional and leads to all source files (including the public folder) to be deployed as part of the server code.
+This can slow down deployments or lead to failures when size limits are exceeded.
+To resolve this, you can
+- make sure the path is statically scoped to some subfolder, for example path.join(process.cwd(), 'data', bar), or
+- only use them in development, or
+- opt out by adding an ignore comment to the highlighted call: child_process.execFile(/*turbopackIgnore: true*/ ...), or
+- remove them.
+
+Import trace:
+  App Route:
+    ./src/lib/qednet.ts
+    ./src/app/api/predict/route.ts
+
+
+./src/lib/qednet.ts:173:13
+Warning: Dynamic filesystem access causes tracing of the whole project
+  171 |   try {
+  172 |     const out = fs.openSync(logFile, "a");
+> 173 |     child = spawn(
+      |             ^^^^^
+> 174 |       PYTHON,
+      | ^^^^^^^^^^^^^
+> 175 |       ["-m", "qednet.cli", "run-experiment", "--config",
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 176 |         path.join(CONFIGS_DIR, `${configName}.yaml`), "--exp-id", experimentId],
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 177 |       {
+      | ^^^^^^^
+> 178 |         cwd: ROOT,
+      | ^^^^^^^^^^^^^^^^^^
+> 179 |         env: { ...process.env, PYTHONPATH },
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 180 |         detached: true,
+      | ^^^^^^^^^^^^^^^^^^^^^^^
+> 181 |         stdio: ["ignore", out, out],
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 182 |       }
+      | ^^^^^^^
+> 183 |     );
+      | ^^^^^
+  184 |     child.unref();
+  185 |     fs.closeSync(out);
+  186 |   } catch {
+
+Static analysis determined that this filesystem access causes the whole project to be traced and included in the output.
+This is usually unintentional and leads to all source files (including the public folder) to be deployed as part of the server code.
+This can slow down deployments or lead to failures when size limits are exceeded.
+To resolve this, you can
+- make sure the path is statically scoped to some subfolder, for example path.join(process.cwd(), 'data', bar), or
+- only use them in development, or
+- opt out by adding an ignore comment to the highlighted call: child_process.spawn(/*turbopackIgnore: true*/ ...), or
+- remove them.
+
+Import trace:
+  App Route:
+    ./src/lib/qednet.ts
+    ./src/app/api/predict/route.ts
+
+
+./src/lib/qednet.ts:58:11
+Warning: Dynamic filesystem access causes tracing of the whole project
+  56 |   for (const c of candidates) {
+  57 |     try {
+> 58 |       if (fs.existsSync(c) && fs.accessSync(c, fs.constants.X_OK) === undefined) {
+     |           ^^^^^^^^^^^^^^^^
+  59 |         return c;
+  60 |       }
+  61 |     } catch {
+
+Static analysis determined that this filesystem access causes the whole project to be traced and included in the output.
+This is usually unintentional and leads to all source files (including the public folder) to be deployed as part of the server code.
+This can slow down deployments or lead to failures when size limits are exceeded.
+To resolve this, you can
+- make sure the path is statically scoped to some subfolder, for example path.join(process.cwd(), 'data', bar), or
+- only use them in development, or
+- opt out by adding an ignore comment to the highlighted call: fs.existsSync(/*turbopackIgnore: true*/ ...), or
+- remove them.
+
+Import trace:
+  App Route:
+    ./src/lib/qednet.ts
+    ./src/app/api/predict/route.ts
+
+
+./src/lib/qednet.ts:287:10
+Warning: Dynamic filesystem access causes tracing of the whole project
+  285 |   const dirs = [JOBS_DIR, jobsDir];
+  286 |   for (const dir of dirs) {
+> 287 |     if (!fs.existsSync(dir)) continue;
+      |          ^^^^^^^^^^^^^^^^^^
+  288 |     try {
+  289 |       for (const f of fs.readdirSync(dir)) {
+  290 |         if (!f.endsWith(".json")) continue;
+
+Static analysis determined that this filesystem access causes the whole project to be traced and included in the output.
+This is usually unintentional and leads to all source files (including the public folder) to be deployed as part of the server code.
+This can slow down deployments or lead to failures when size limits are exceeded.
+To resolve this, you can
+- make sure the path is statically scoped to some subfolder, for example path.join(process.cwd(), 'data', bar), or
+- only use them in development, or
+- opt out by adding an ignore comment to the highlighted call: fs.existsSync(/*turbopackIgnore: true*/ ...), or
+- remove them.
+
+Import trace:
+  App Route:
+    ./src/lib/qednet.ts
+    ./src/app/api/predict/route.ts
+
+
+./src/lib/qednet.ts:292:34
+Warning: Dynamic filesystem access causes tracing of the whole project
+  290 |         if (!f.endsWith(".json")) continue;
+  291 |         try {
+> 292 |           const job = JSON.parse(fs.readFileSync(path.join(dir, f), "utf-8"));
+      |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  293 |           if (job?.jobId && !seenIds.has(job.jobId)) {
+  294 |             seenIds.add(job.jobId);
+  295 |             out.push(refreshJob(job));
+
+Static analysis determined that this filesystem access causes the whole project to be traced and included in the output.
+This is usually unintentional and leads to all source files (including the public folder) to be deployed as part of the server code.
+This can slow down deployments or lead to failures when size limits are exceeded.
+To resolve this, you can
+- make sure the path is statically scoped to some subfolder, for example path.join(process.cwd(), 'data', bar), or
+- only use them in development, or
+- opt out by adding an ignore comment to the highlighted call: fs.readFileSync(/*turbopackIgnore: true*/ ...), or
+- remove them.
+
+Import trace:
+  App Route:
+    ./src/lib/qednet.ts
+    ./src/app/api/predict/route.ts
+
+
+./src/lib/qednet.ts:289:23
+Warning: Dynamic filesystem access causes tracing of the whole project
+  287 |     if (!fs.existsSync(dir)) continue;
+  288 |     try {
+> 289 |       for (const f of fs.readdirSync(dir)) {
+      |                       ^^^^^^^^^^^^^^^^^^^
+  290 |         if (!f.endsWith(".json")) continue;
+  291 |         try {
+  292 |           const job = JSON.parse(fs.readFileSync(path.join(dir, f), "utf-8"));
+
+Static analysis determined that this filesystem access causes the whole project to be traced and included in the output.
+This is usually unintentional and leads to all source files (including the public folder) to be deployed as part of the server code.
+This can slow down deployments or lead to failures when size limits are exceeded.
+To resolve this, you can
+- make sure the path is statically scoped to some subfolder, for example path.join(process.cwd(), 'data', bar), or
+- only use them in development, or
+- opt out by adding an ignore comment to the highlighted call: fs.readdir(/*turbopackIgnore: true*/ ...), or
+- remove them.
+
+Import trace:
+  App Route:
+    ./src/lib/qednet.ts
+    ./src/app/api/predict/route.ts
+
+
+./src/lib/qednet.ts:18:18
+Warning: Dynamic filesystem access causes tracing of the whole project
+  16 |
+  17 | function getWritableDir(defaultRelativePath: string, tmpSubdir: string): string {
+> 18 |   const target = path.join(ROOT, defaultRelativePath);
+     |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  19 |   try {
+  20 |     fs.mkdirSync(target, { recursive: true });
+  21 |     const testFile = path.join(target, `.write_test_${Date.now()}`);
+
+Static analysis determined that this filesystem access causes the whole project to be traced and included in the output.
+This is usually unintentional and leads to all source files (including the public folder) to be deployed as part of the server code.
+This can slow down deployments or lead to failures when size limits are exceeded.
+To resolve this, you can
+- make sure the path is statically scoped to some subfolder, for example path.join(process.cwd(), 'data', bar), or
+- only use them in development, or
+- opt out by adding an ignore comment to the highlighted call: path.join(/*turbopackIgnore: true*/ ...), or
+- remove them.
+
+Import trace:
+  App Route:
+    ./src/lib/qednet.ts
+    ./src/app/api/predict/route.ts
+
+
+./src/lib/qednet.ts:292:50
+Warning: Dynamic filesystem access causes tracing of the whole project
+  290 |         if (!f.endsWith(".json")) continue;
+  291 |         try {
+> 292 |           const job = JSON.parse(fs.readFileSync(path.join(dir, f), "utf-8"));
+      |                                                  ^^^^^^^^^^^^^^^^^
+  293 |           if (job?.jobId && !seenIds.has(job.jobId)) {
+  294 |             seenIds.add(job.jobId);
+  295 |             out.push(refreshJob(job));
+
+Static analysis determined that this filesystem access causes the whole project to be traced and included in the output.
+This is usually unintentional and leads to all source files (including the public folder) to be deployed as part of the server code.
+This can slow down deployments or lead to failures when size limits are exceeded.
+To resolve this, you can
+- make sure the path is statically scoped to some subfolder, for example path.join(process.cwd(), 'data', bar), or
+- only use them in development, or
+- opt out by adding an ignore comment to the highlighted call: path.join(/*turbopackIgnore: true*/ ...), or
+- remove them.
+
+Import trace:
+  App Route:
+    ./src/lib/qednet.ts
+    ./src/app/api/predict/route.ts
+
+
+error: script "build" exited with code 1

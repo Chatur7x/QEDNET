@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { cli, getCertificateFallback, isSafeId } from "@/lib/qednet";
+import { requireResearchAccess } from "@/lib/research-access";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  const denied = await requireResearchAccess();
+  if (denied) return denied;
   const id = new URL(req.url).searchParams.get("id");
   if (!id || !isSafeId(id)) {
     return NextResponse.json({ ok: false, error: "id is required" }, { status: 400 });
