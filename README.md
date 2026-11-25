@@ -8,7 +8,7 @@
 
 ## Overview
 
-QED-Net 2.0 investigates where quantum machine learning provides measurable value for biomedical disease-risk classification — **without assuming quantum superiority**. It is a fully integrated research platform: a Python quantum/ML core, a FastAPI service for deployment, and a React research dashboard, all driven by real experiments with complete provenance.
+QED-Net 2.0 is a research codebase for comparing quantum and classical machine-learning approaches on biomedical benchmark data. It contains a Python research core, a FastAPI service, and a Next.js dashboard. Production routes require organization OIDC sign-in and an allowed group claim; the current Render deployment is not configured with those secrets and remains a research demo. Persistent storage, multi-user data isolation, and clinical validation are not configured.
 
 The system combines:
 
@@ -94,16 +94,16 @@ QED-Net 2.0 repository
 
 | Layer | Technology |
 |-------|------------|
-| Language | Python 3.11+ (sandbox: 3.12) · TypeScript 5 |
+| Language | Python 3.11+ · TypeScript 5 |
 | Quantum ML | PennyLane 0.45 (+ custom batched statevector engine, PL-verified) |
 | Quantum secondary | Qiskit-compatible circuit descriptions; `qiskit` optional |
-| Classical ML | scikit-learn, XGBoost, LightGBM |
-| Data | pandas, Pandera-style validation, imbalanced-learn (SMOTE inside folds only) |
+| Classical ML | scikit-learn, XGBoost |
+| Data | pandas, built-in schema/leakage validation, imbalanced-learn (SMOTE inside folds only) |
 | Explainability | SHAP (KernelExplainer over the full pipeline), permutation, parameter-shift circuit gradients |
 | Tracking | JSON experiment store + optional MLflow mirror |
 | Backend API | FastAPI + Pydantic (docker profile); Next.js API routes bridge the CLI in the demo |
-| Background jobs | Detached process jobs (demo); Celery + Redis (docker profile) |
-| Storage | File store (demo); PostgreSQL + MinIO/S3 (docker profile) |
+| Background jobs | Detached process jobs (dashboard demo); optional ARQ + Redis worker when database mode is configured |
+| Storage | File store (demo); optional PostgreSQL + MinIO/S3 adapters when configured |
 | Dashboard | Next.js 16 · React 19 · Tailwind CSS 4 · shadcn/ui · recharts · Framer Motion |
 | Testing | pytest (+ Hypothesis available) |
 | Packaging | Docker + docker-compose |
@@ -131,7 +131,7 @@ PYTHONPATH=backend python -m qednet.cli run-experiment \
 bun install && bun run dev     # http://localhost:3000
 ```
 
-Every dashboard number comes from `experiments/runs/*/result.json` — real experiment output.
+Experiment metrics shown in the dashboard are read from saved run artifacts. Dataset metadata and service health are obtained from their respective backend endpoints. The cloud demo currently has no saved experiments, so it does not show model performance results.
 
 ## Integrated deployment (docker-compose)
 
@@ -148,6 +148,10 @@ The Compose stack has not been run in this environment because the local Docker 
 is unavailable. The Render deployment uses filesystem-demo mode and does not use the
 Compose PostgreSQL, Redis, or MinIO services. Render's free service filesystem is
 ephemeral, so uploaded data and run artifacts are not durable there.
+
+### Organization sign-in
+
+Production builds lock the dashboard and API unless all of these environment variables are configured: `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `OIDC_ISSUER`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, and `OIDC_ALLOWED_GROUP`. The callback URL registered with the identity provider is `{NEXTAUTH_URL}/api/auth/callback/organization`. The group claim defaults to `groups`; set `OIDC_GROUP_CLAIM` if the provider uses another claim. Configure secrets in the hosting provider's secret store. Local development (`bun run dev`) bypasses the production gate and must not be exposed publicly.
 
 ## Using the platform
 
@@ -189,9 +193,9 @@ Or in the dashboard: **Prediction** view → set features → run cascade.
 | Tier | Dataset | Samples × features | Status |
 |------|---------|--------------------|--------|
 | 1 (must) | Wisconsin Breast Cancer | 569 × 30 | bundled (sklearn) |
-| 1 (must) | UCI Heart Disease (Cleveland) | NOT MEASURED here | local source file required; not bundled |
-| 1 (must) | UCI Parkinson's (voice) | NOT MEASURED here | local source file required; not bundled |
-| 2 (should) | Pima Indian Diabetes | NOT MEASURED here | local source file required; not bundled |
+| 1 (must) | UCI Heart Disease (Cleveland) | 303 × 13 in the dataset adapter documentation | local source file required; not bundled |
+| 1 (must) | UCI Parkinson's (voice) | 195 × 22 in the dataset adapter documentation | local source file required; not bundled |
+| 2 (should) | Pima Indian Diabetes | 768 × 8 in the dataset adapter documentation | local source file required; not bundled |
 | 3 (stretch) | TCGA / MIMIC-IV | — | NOT bundled (restricted; platform works fully without them) |
 
 CSV upload with schema discovery, profiling and validation is available in the **Datasets** view.
@@ -218,7 +222,7 @@ CSV upload with schema discovery, profiling and validation is available in the *
 
 ```bash
 cd backend
-python -m pytest                      # full suite (54 tests)
+python -m pytest                      # full suite
 python -m pytest tests/leakage        # deliberate leakage attempts must be caught
 python -m pytest tests/quantum        # simulator == PennyLane, machine precision
 python -m pytest tests/integration    # complete F1→F12 end-to-end run
@@ -226,9 +230,9 @@ python -m pytest tests/integration    # complete F1→F12 end-to-end run
 
 ## Known limitations
 
-- Demo experiments use a compute-reduced protocol (5-fold × 3 seeds) to fit the sandbox; the full protocol (10 seeds, inner tuning) is one flag away (`--full`) but takes hours with exact simulation.
+- Demo configs use a compute-reduced protocol (5 outer folds × 3 seeds); inner-CV tuning is already enabled. `scripts/reproduce.py --full` replaces the configured seed list with 10 seeds and can take substantially longer with exact simulation.
 - Exact statevector simulation means no shot noise; `shots` is recorded as `null` (equivalent to shots=∞). Shot-noise simulation at inference is supported via config.
-- The Docker deployment profile (Celery/Redis/Postgres/MinIO) is untested in the sandbox.
+- The Docker Compose profile is configuration-checked but has not been run in this environment. The dashboard's job route still starts local child processes; it is not integrated with the durable ARQ queue. The current Render service uses filesystem-demo mode and has no durable database/object store configured.
 - Restricted datasets (TCGA, MIMIC-IV) are not bundled; the platform is designed to work without them.
 - QSVM kernels use exact fidelity of simulated states — efficient for ≤12 qubits only (resource limits are enforced).
 
@@ -238,4 +242,4 @@ QED-Net 2.0 is a research and educational platform. It is not a medical device, 
 
 ## License / attribution
 
-Bundled datasets: UCI Machine Learning Repository (Heart Disease, Parkinson's, Pima) and sklearn (Wisconsin Breast Cancer) — public benchmark research datasets. This platform is a research artifact; treat all outputs accordingly.
+Dataset attribution: the breast-cancer adapter loads scikit-learn's Wisconsin Diagnostic Breast Cancer dataset; the other adapters expect local source files. The repository does not bundle those raw files. No repository license file is present, so the project license is not established by this README. Do not assume the project or third-party datasets are licensed for commercial or clinical use.

@@ -2,7 +2,7 @@
 """Reproduce a QED-Net 2.0 experiment from its configuration.
 
     python scripts/reproduce.py --config configs/experiments/breast_cancer.yaml
-    python scripts/reproduce.py --config ... --full   # 10 seeds, inner tuning on
+    python scripts/reproduce.py --config ... --full   # replace configured seeds with 10 fixed seeds
 
 The reproduction process regenerates the relevant benchmark output from the
 stored configuration, seeds and package versions.
@@ -21,7 +21,7 @@ def main() -> int:
     p = argparse.ArgumentParser(description="Reproduce a QED-Net experiment")
     p.add_argument("--config", required=True, help="experiment YAML path")
     p.add_argument("--full", action="store_true",
-                   help="run the full research protocol (10 seeds)")
+                   help="replace configured seeds with the fixed 10-seed list")
     p.add_argument("--exp-id", default=None, help="override experiment id")
     p.add_argument("--no-explain", action="store_true")
     args = p.parse_args()

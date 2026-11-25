@@ -7,7 +7,8 @@ COPY . .
 RUN bun run build
 
 FROM node:22-bookworm-slim AS runtime
-ENV PYTHONDONTWRITEBYTECODE=1 \
+ENV NODE_ENV=production \
+    PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     QEDNET_WORKSPACE_ROOT=/app \
     QEDNET_PYTHON=/opt/qednet-venv/bin/python \

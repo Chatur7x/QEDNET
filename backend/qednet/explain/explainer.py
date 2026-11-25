@@ -76,9 +76,9 @@ def shap_global_local(pipeline, model, X_train, X_explain,
 def permutation_global(pipeline, model, X, y, n_repeats: int = 5,
                        seed: int = 42) -> Dict[str, Any]:
     """Permutation importance on the full pipeline (original features)."""
-    from sklearn.base import ClassifierMixin
+    from sklearn.base import BaseEstimator, ClassifierMixin
 
-    class _Pipe(ClassifierMixin):
+    class _Pipe(ClassifierMixin, BaseEstimator):
         def __init__(self):
             self.classes_ = np.array([0, 1])
             self._is_fitted = True
