@@ -13,6 +13,10 @@ function safeNextPath(value: string | null) {
   return target.origin === base.origin ? `${target.pathname}${target.search}${target.hash}` : "/";
 }
 
+function publicUrl(path: string, request: NextRequest) {
+  return new URL(path, process.env.NEXT_PUBLIC_SITE_URL ?? request.nextUrl.origin);
+}
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code");
@@ -20,13 +24,13 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get("type") as EmailOtpType | null;
   const next = safeNextPath(request.nextUrl.searchParams.get("next"));
   if (!code && !(tokenHash && type && emailOtpTypes.has(type))) {
-    return NextResponse.redirect(new URL("/signin?message=confirmation-failed", request.url));
+    return NextResponse.redirect(publicUrl("/signin?message=confirmation-failed", request));
   }
 
   const supabase = await createSupabaseServerClient();
   const { error } = tokenHash && type
     ? await supabase.auth.verifyOtp({ token_hash: tokenHash, type })
     : await supabase.auth.exchangeCodeForSession(code!);
-  if (error) return NextResponse.redirect(new URL("/signin?message=confirmation-failed", request.url));
-  return NextResponse.redirect(new URL(next, request.url));
+  if (error) return NextResponse.redirect(publicUrl("/signin?message=confirmation-failed", request));
+  return NextResponse.redirect(publicUrl(next, request));
 }

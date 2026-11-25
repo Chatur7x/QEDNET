@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 import { hasProductionAuthConfig, isAllowedEmail } from "../src/lib/auth-policy";
 import { proxy } from "../src/proxy";
 import { requireResearchAccess } from "../src/lib/research-access";
+import { GET as confirmEmail } from "../src/app/auth/confirm/route";
 
 describe("private email account policy", () => {
   test("production auth needs HTTPS Supabase settings and one allowed email", () => {
@@ -93,6 +94,20 @@ describe("private email account policy", () => {
       }
       if (previousNodeEnv === undefined) delete env.NODE_ENV;
       else env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
+  test("confirmation errors redirect to the configured public origin", async () => {
+    const previous = process.env.NEXT_PUBLIC_SITE_URL;
+    process.env.NEXT_PUBLIC_SITE_URL = "https://research.example.org";
+    try {
+      const response = await confirmEmail(new NextRequest("http://0.0.0.0:10000/auth/confirm"));
+      expect(response.headers.get("location")).toBe(
+        "https://research.example.org/signin?message=confirmation-failed",
+      );
+    } finally {
+      if (previous === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
+      else process.env.NEXT_PUBLIC_SITE_URL = previous;
     }
   });
 });
