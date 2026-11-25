@@ -30,7 +30,9 @@ export function SignInForm({ initialError }: { initialError?: string }) {
     });
     setBusy(false);
     if (error) {
-      setMessage("Sign-in failed. Check your email and password, then try again.");
+      setMessage(/email not confirmed/i.test(error.message)
+        ? "This account's email is not confirmed yet. Open the latest confirmation email, or use Create account to request another link."
+        : "Sign-in failed. Check your email and password, then try again.");
       return;
     }
     const next = new URLSearchParams(window.location.search).get("callbackUrl");

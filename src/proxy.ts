@@ -4,7 +4,7 @@ import { hasProductionAuthConfig, isAllowedEmail } from "@/lib/auth-policy";
 
 const publicPaths = new Set([
   "/signin", "/signup", "/access-denied",
-  "/auth/confirm", "/forgot-password",
+  "/auth/confirm", "/forgot-password", "/api/auth/resend-confirmation",
 ]);
 
 export async function proxy(request: NextRequest) {

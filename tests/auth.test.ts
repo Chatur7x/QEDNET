@@ -47,4 +47,31 @@ describe("private email account policy", () => {
       else env.NODE_ENV = previousNodeEnv;
     }
   });
+
+  test("production proxy leaves the confirmation resend endpoint public", async () => {
+    const keys = ["NEXT_PUBLIC_SITE_URL", "NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "QEDNET_ALLOWED_EMAIL"];
+    const env = process.env as Record<string, string | undefined>;
+    const previous = Object.fromEntries(keys.map((key) => [key, env[key]]));
+    const previousNodeEnv = env.NODE_ENV;
+    env.NEXT_PUBLIC_SITE_URL = "https://research.example.org";
+    env.NEXT_PUBLIC_SUPABASE_URL = "https://project.supabase.co";
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-key";
+    env.QEDNET_ALLOWED_EMAIL = "owner@example.org";
+    env.NODE_ENV = "production";
+    try {
+      const response = await proxy(new NextRequest(
+        "https://research.example.org/api/auth/resend-confirmation",
+        { method: "POST" },
+      ));
+      expect(response.headers.get("location")).toBeNull();
+      expect(response.status).toBe(200);
+    } finally {
+      for (const key of keys) {
+        if (previous[key] === undefined) delete env[key];
+        else env[key] = previous[key];
+      }
+      if (previousNodeEnv === undefined) delete env.NODE_ENV;
+      else env.NODE_ENV = previousNodeEnv;
+    }
+  });
 });
