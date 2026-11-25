@@ -8,7 +8,9 @@
 
 ## Overview
 
-QED-Net 2.0 is a research codebase for comparing quantum and classical machine-learning approaches on biomedical benchmark data. It contains a Python research core, a FastAPI service, and a Next.js dashboard. Production routes require Supabase email/password authentication and a single allowlisted email; the current Render deployment still needs its Supabase project settings. Persistent experiment storage, multi-user data isolation, and clinical validation are not configured.
+QED-Net 2.0 is a research codebase for comparing quantum and classical machine-learning approaches on biomedical benchmark data. It contains a Python research core, a FastAPI service, and a Next.js dashboard. The Render preview has Supabase email/password authentication and a single-email allowlist configured, but successful confirmation delivery remains unverified after the default sender rate-limited requests. Persistent experiment storage, multi-user data isolation, and clinical validation are not configured.
+
+See the [product update plan](docs/PRODUCT_ROADMAP.md) for the separate research and clinical tracks, proposed feature sequence, and completion gates. The clinical track is a future, separate product and is not implemented here.
 
 The system combines:
 

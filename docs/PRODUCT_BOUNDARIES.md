@@ -4,7 +4,7 @@
 
 QEDNET remains the research platform. Its purpose is to run and report reproducible research experiments comparing classical and simulator-based quantum ML on permitted, de-identified datasets. It must label estimates as research outputs, retain provenance, surface uncertainty, and avoid diagnostic or treatment language.
 
-The present QEDNET cloud instance is a demo. The application now requires Supabase email/password authentication and a single allowlisted email before production routes are available, but the current cloud deployment does not have those settings configured. It has no tenant isolation, uses filesystem-demo mode, has no durable attached database/object store, and has no saved model runs. It must not receive patient data or be used for care decisions.
+The present QEDNET cloud instance is a private research preview. Supabase email/password authentication and a single-email allowlist are configured, and the confirmation-resend route is deployed. Successful confirmation email delivery and account confirmation remain unverified because the Supabase default sender rate-limited requests. The service has no tenant isolation, uses filesystem-demo mode, and has no durable attached database/object store. It must not receive patient data or be used for care decisions.
 
 ## Clinical decision-support product
 
