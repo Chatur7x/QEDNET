@@ -276,7 +276,7 @@ def quantum_diagnostics(model, pipeline, X_explain,
 def _param_shift_grad(model, Zsq, layer, qubit) -> np.ndarray:
     """Parameter-shift gradient of the output expectation per sample."""
     import autograd.numpy as anp
-    from ...sim.statevector import BatchedCircuit, ladder_entanglers  # type: ignore
+    from ..sim.statevector import BatchedCircuit, ladder_entanglers
 
     W = np.asarray(model.params["W"])
     Wp = W.copy(); Wp[layer, qubit] += np.pi / 2

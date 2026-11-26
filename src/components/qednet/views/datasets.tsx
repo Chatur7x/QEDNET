@@ -142,7 +142,7 @@ export function DatasetsView() {
         {/* registry table */}
         <SectionCard
           title="Registered datasets"
-          subtitle="name · samples · features · class balance · missing values · validation status"
+          subtitle="name · samples · features · class balance · missing values · saved validation status"
         >
           {datasets.isLoading ? (
             <LoadingState label="Loading dataset registry…" />
@@ -181,7 +181,14 @@ export function DatasetsView() {
                         <TableCell className="qed-num text-right text-stone-600">{missing}</TableCell>
                         <TableCell className="qed-num text-right text-stone-600">{d.profile?.duplicate_rows ?? 0}</TableCell>
                         <TableCell>
-                          <StatusBadge status={d.validation_status} />
+                          <div className="space-y-1">
+                            <StatusBadge status={d.validation_status} />
+                            {d.validated_at && (
+                              <div className="qed-num text-[10px] text-stone-400">
+                                {new Date(d.validated_at).toLocaleString()}
+                              </div>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-right">
                           <Button

@@ -8,9 +8,11 @@
 
 ## Overview
 
-QED-Net 2.0 is a research codebase for comparing quantum and classical machine-learning approaches on biomedical benchmark data. It contains a Python research core, a FastAPI service, and a Next.js dashboard. The Render preview has Supabase email/password authentication and a single-email allowlist configured, but successful confirmation delivery remains unverified after the default sender rate-limited requests. Persistent experiment storage, multi-user data isolation, and clinical validation are not configured.
+QED-Net 2.0 is a research codebase for comparing quantum and classical machine-learning approaches on biomedical benchmark data. It contains a Python research core, a FastAPI service, and a Next.js dashboard. The Render preview uses Supabase email/password authentication with email confirmation disabled and a single-email allowlist. The current account has signed in successfully; a fresh signup flow has not been independently re-tested. Persistent experiment storage, multi-user data isolation, and clinical validation are not configured.
 
 See the [early-detection product specification](docs/EARLY_DETECTION_PRODUCT_SPEC.md) and [product roadmap](docs/PRODUCT_ROADMAP.md) for the research scope, evidence gates, and unresolved problems. “Early detection” is a research objective, not a demonstrated capability of the current cross-sectional benchmarks.
+
+See [research completion status](docs/RESEARCH_COMPLETION_STATUS.md) for the latest local verification evidence and the remaining production blockers.
 
 The system combines:
 
@@ -178,7 +180,7 @@ schema changes; do not point smoke tests at an existing database file.
 
 ### Email/password accounts
 
-Production builds lock the dashboard and API unless these settings are configured: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `QEDNET_ALLOWED_EMAIL`. Render Docker builds pass the public Supabase settings to Next.js so the browser auth client is configured at build time. In Supabase, set the site URL to `https://qednet.onrender.com`, allow the exact callbacks `https://qednet.onrender.com/auth/confirm?next=%2F` and `https://qednet.onrender.com/auth/confirm?next=%2Freset-password`, and enable email confirmation. Configure a custom SMTP sender and test confirmation and password reset before relying on signup; Supabase's default email sender is rate-limited. The allowlist permits one email only because experiment files are currently shared; do not add more users until per-user storage isolation exists. The publishable key is intended for browser use; never place a Supabase secret/service-role key in the browser or Render web service. Local development (`bun run dev`) bypasses the production gate and must not be exposed publicly.
+Production builds lock the dashboard and API unless these settings are configured: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `QEDNET_ALLOWED_EMAIL`. Render Docker builds pass the public Supabase settings to Next.js so the browser auth client is configured at build time. The current Supabase project has email confirmation disabled, so email ownership is not verified during signup. The allowlist permits one email only because experiment files are shared; do not add users until per-user storage isolation exists. Password reset still depends on the configured Supabase email delivery and has not been re-verified in this pass. The publishable key is intended for browser use; never place a Supabase secret/service-role key in the browser or Render web service. Local development (`bun run dev`) bypasses the production gate and must not be exposed publicly.
 
 ## Using the platform
 

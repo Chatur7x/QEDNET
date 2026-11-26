@@ -206,6 +206,10 @@ function DashboardInner() {
           </div>
         </header>
 
+        <div role="note" className="border-b border-amber-200 bg-amber-50 px-5 py-2 text-xs leading-relaxed text-amber-950 md:px-8">
+          Private research preview: this deployment uses temporary filesystem storage, so uploaded files and experiment runs may not survive service replacement. Use public or de-identified research data only; never use outputs for patient-care decisions.
+        </div>
+
         <main id="main" className="min-w-0 flex-1 px-5 py-6 md:px-8" aria-live="polite">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -224,8 +228,8 @@ function DashboardInner() {
         <footer className="mt-auto border-t border-stone-200 bg-white/60 px-5 py-4 text-[11px] leading-relaxed text-stone-400 md:px-8">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span>
-              QED-Net 2.0 — Hybrid Quantum–Classical ML research platform. All
-              metrics shown are real experimental results with logged provenance.
+              QED-Net 2.0 — Hybrid Quantum–Classical ML research platform.
+              Saved experiment metrics come from run artifacts with provenance; example inputs are illustrative.
             </span>
             <span className="inline-flex items-center gap-1.5">
               <ShieldAlert className="h-3 w-3" aria-hidden />

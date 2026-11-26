@@ -8,11 +8,10 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-
-REPO_ROOT = Path(__file__).resolve().parents[3]
 
 pytestmark = pytest.mark.slow
 
@@ -20,8 +19,7 @@ pytestmark = pytest.mark.slow
 @pytest.fixture(scope="module")
 def small_experiment(tmp_path_factory):
     from qednet.config import ExperimentConfig
-    from qednet.data.datasets import register_builtins
-    from qednet.data.ingestion import DatasetRegistry
+    from qednet.data.ingestion import DatasetRegistry, ingest_csv
     from qednet.train.runner import run_experiment
     from qednet.tracking.store import ExperimentStore
 
@@ -32,16 +30,25 @@ def small_experiment(tmp_path_factory):
     os.chdir(tmp)
     try:
         reg = DatasetRegistry(registry_path=tmp / "registry.json")
-        # point raw data at the real location via copy
-        (tmp / "data" / "raw").mkdir(parents=True, exist_ok=True)
-        import shutil
-        for src in (REPO_ROOT / "data" / "raw").iterdir():
-            shutil.copy(src, tmp / "data" / "raw" / src.name)
-        register_builtins(reg)
+        # A deterministic synthetic file keeps this integration test independent
+        # of private/untracked raw datasets while exercising the real ingestion
+        # and experiment pipeline.
+        rng = np.random.default_rng(42)
+        subject_ids = np.repeat([f"S{i:02d}" for i in range(30)], 3)
+        labels = np.repeat(np.tile([0, 1], 15), 3)
+        values = rng.normal(loc=labels[:, None] * 0.5, size=(len(labels), 10))
+        frame = pd.DataFrame(values, columns=[f"feature_{i}" for i in range(10)])
+        frame["__subject_id__"] = subject_ids
+        frame["status"] = labels
+        source = tmp / "grouped_research_fixture.csv"
+        frame.to_csv(source, index=False)
+        reg.register(ingest_csv(source, target="status",
+                                dataset_name="grouped_research_fixture"))
 
         cfg = ExperimentConfig(experiment_id="exp_integration_test")
-        cfg.dataset.name = "parkinsons"          # smallest open dataset
+        cfg.dataset.name = "grouped_research_fixture"
         cfg.dataset.target = "status"
+        cfg.dataset.group_column = "__subject_id__"
         cfg.compression.target_dim = 6
         cfg.model.n_qubits = 6
         cfg.model.layers = 2
@@ -125,9 +132,7 @@ def test_no_fake_results(small_experiment):
         assert n_folds == 3  # 3 outer folds x 1 seed
         means = np.mean([f["metrics"]["auroc"] for f in m["folds"]])
         assert abs(means - m["summary"]["auroc"]["mean"]) < 1e-6
-        assert len(m["pooled_predictions"]["y"]) == \
-            sum(len(f["metrics"] and [1]) for f in m["folds"]) * 0 + \
-            len(m["pooled_predictions"]["y"])  # non-empty
+        assert m["pooled_predictions"]["y"]
 
 
 def test_markdown_report_generated(small_experiment):

@@ -4,13 +4,18 @@
 
 This review scopes production work to a secure research and educational platform. It does not treat QED-Net as a clinical decision-support product. Benchmark performance, simulator verification, or a successful cloud health check does not establish clinical safety or effectiveness.
 
+See [RESEARCH_COMPLETION_STATUS.md](RESEARCH_COMPLETION_STATUS.md) for the latest local code fixes, smoke-run evidence, and current release position. The verification record below documents earlier checks and is historical where it refers to the prior deployment/auth configuration.
+
 ## Current observed state
 
 | Area | Observed state | Readiness |
 |---|---|---|
 | Research core | Python package contains classical and simulator-based quantum models, evaluation, calibration, explainability, uncertainty, certificates, and file-backed experiment artifacts. | Present in source; release verification remains required. |
+| Dataset validation | Validation reports, pass/fail status, and validation timestamps are now persisted in the local dataset registry and displayed after reload. | Verified locally; registry remains non-durable in filesystem-demo mode. |
+| API boundary | The colocated FastAPI service binds to loopback by default from the repository launcher; API dependency and CLI errors return generic client messages. | Verified in source and regression tests; production network policy still needs an environment-level check. |
+| Legacy Caddy example | The query-controlled local reverse-proxy target was replaced with a fixed `/socket.io/*` route to port 3003. | Source reviewed; Caddy parser/runtime unavailable locally, so Caddy execution is NOT MEASURED. |
 | Dashboard/API | Next.js app and FastAPI app are deployed together on Render. Liveness, readiness, models, dataset listing, and experiment listing responded successfully in the deployed environment. | Live research demo. |
-| Authentication | Supabase email/password signup, confirmation, sign-in, password reset, and sign-out are implemented. Render has the public Supabase settings and one-email allowlist. Supabase's site URL and QEDNET callback URLs are configured. A confirmation attempt is still pending because the hosted default email sender rate-limited a resend; successful delivery and confirmation remain unverified. | Private preview only; configure SMTP and verify the full flow before relying on signup. |
+| Authentication | Supabase email/password sign-in and one-email allowlist are configured. Email confirmation is disabled. The current account has signed in, but fresh signup and password reset were not re-tested in this review. | Private preview only; disabling confirmation means email ownership is not verified. |
 | Job execution | Dashboard `/api/jobs` launches a local child process. A separate FastAPI training route can use ARQ only when database mode is enabled. These paths are not integrated. | Blocker for reliable queued training. |
 | Persistence | Render is in filesystem-demo mode, with no attached durable database, object store, or persistent disk. Render filesystem writes are not durable across service replacement. | Blocker for durable data and runs. |
 | Dataset availability | Breast cancer loads through scikit-learn. Heart disease, Parkinson's, and Pima adapters require local files that are not in the repository or cloud deployment. | Limited dataset support in deployment. |
@@ -23,7 +28,7 @@ This review scopes production work to a secure research and educational platform
 
 ### Security and privacy
 
-- Configure production SMTP for Supabase Auth and verify confirmation and reset emails end to end. Keep the exact Render site URL and callback URLs (`/auth/confirm?next=%2F` and `/auth/confirm?next=%2Freset-password`) in Supabase's allowlist. Next.js Proxy verifies the server-side user and allowlisted email before the app and API, including the FastAPI rewrite; only sign-in, signup, confirmation, reset, setup, and `/live` remain public.
+- Decide whether to retain disabled email confirmation. If retained, document that the account email is not verified and test password reset delivery. If confirmation is re-enabled later, configure transactional email and test signup and reset end to end. Next.js Proxy and protected route handlers check the server-side user and allowlisted email; only explicitly public auth/setup/liveness paths remain public.
 - Add tenant and ownership checks before accepting or returning datasets, jobs, runs, reports, certificates, and model artifacts. Existing database tables alone do not enforce user-facing authorization.
 - Add request rate limits, request-size limits at the edge and application, upload quotas, audit events, abuse detection, and safe error responses.
 - Define what data may be uploaded. Reject direct identifiers and document retention, deletion, encryption, backup, and incident-response policies.
@@ -50,7 +55,7 @@ This review scopes production work to a secure research and educational platform
 
 ### Gate: private research preview
 
-- Configure Supabase and the allowed email, then exercise signup confirmation, sign-in, password reset, sign-out, and blocked-email behavior against the hosted project.
+- Keep the current exact email allowlist and exercise sign-in, sign-out, password reset, and blocked-email behavior against the hosted project. Signup confirmation is intentionally disabled in the current Supabase configuration.
 - Keep only de-identified research datasets; add upload quotas and operational logs.
 - Connect dashboard training to the queue, or disable remote training until the queue is configured.
 - Configure durable storage and verify backup restoration, or clearly limit the app to disposable demo data.
@@ -69,14 +74,14 @@ This review scopes production work to a secure research and educational platform
 
 ## Inputs required to finish deployment hardening
 
-- Configure a custom SMTP sender in Supabase and complete an end-to-end confirmation and password-reset test. Keep the Supabase URL and publishable key, `QEDNET_ALLOWED_EMAIL`, and `NEXT_PUBLIC_SITE_URL` in Render; keep exact auth callback URLs in Supabase. Never set the service-role key in the browser app or Render web service.
+- Keep the Supabase URL and publishable key, `QEDNET_ALLOWED_EMAIL`, and `NEXT_PUBLIC_SITE_URL` in Render. Email confirmation is currently disabled; if it is re-enabled, configure transactional SMTP and test confirmation and password reset. Never set the service-role key in the browser app or Render web service.
 - Confirmation of whether paid managed database, object storage, and worker resources are permitted. Free Render mode does not meet durable-storage requirements.
 - Confirmation that the target is research use only. A clinical target needs a separate validated product plan and evidence.
 - Approved dataset sources, licenses, consent/governance requirements, and data-retention rules for any non-public uploads.
 
 ## Verification record
 
-Checks performed on this checkout:
+Latest local checks for dataset-validation persistence and API error handling are recorded in `results/research_completion_v2/COMMANDS.md`. The historical checks below are from earlier local verification passes and are not proof that these changes are deployed:
 
 | Command | Result | Scope and caveats |
 |---|---|---|

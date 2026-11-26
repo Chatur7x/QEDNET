@@ -4,7 +4,7 @@
 
 QEDNET remains the research platform. Its purpose is to run and report reproducible research experiments comparing classical and simulator-based quantum ML on permitted, de-identified datasets. It must label estimates as research outputs, retain provenance, surface uncertainty, and avoid diagnostic or treatment language.
 
-The present QEDNET cloud instance is a private research preview. Supabase email/password authentication and a single-email allowlist are configured, and the confirmation-resend route is deployed. Successful confirmation email delivery and account confirmation remain unverified because the Supabase default sender rate-limited requests. The service has no tenant isolation, uses filesystem-demo mode, and has no durable attached database/object store. It must not receive patient data or be used for care decisions.
+The present QEDNET cloud instance is a private, disposable research preview. Supabase email/password authentication uses a single-email allowlist; email confirmation is disabled. The current account has signed in, but a fresh signup and password-reset flow were not re-tested in this review. The service has no tenant isolation, uses filesystem-demo mode, and has no durable attached database/object store. Runs and uploads may be lost when the service is replaced. Use public or properly de-identified research data only; do not upload identifiable patient data or use this service for care decisions.
 
 ## Clinical decision-support product
 
@@ -20,5 +20,5 @@ Research methods may be considered for later transfer only after independent rev
 
 - Keep this repository and its Render service scoped to QEDNET research.
 - Design the clinical decision-support product as a separate application and release program.
-- QEDNET's current preview uses verified email/password sign-in with one allowlisted email. Organization SSO can be restored later if the organization provides an OIDC identity provider.
+- QEDNET's current preview uses email/password sign-in with email confirmation disabled and one allowlisted email. Organization SSO can be considered later if the organization provides an OIDC identity provider.
 - Free hosting is acceptable for a non-sensitive preview only. It does not provide the durable storage and operational guarantees required for a production research service that retains user uploads and experiments.

@@ -5,7 +5,7 @@ the CLI; in the full docker-compose deployment this FastAPI service exposes
 the same capabilities over HTTP with ARQ+Redis handling durable training
 jobs and PostgreSQL/MinIO providing persistent metadata and artifacts.
 
-Run: uvicorn api.main:app --host 0.0.0.0 --port 8000
+Run: uvicorn api.main:app --host 127.0.0.1 --port 8000
 """
 from __future__ import annotations
 
@@ -78,7 +78,8 @@ def _cli(args: List[str], timeout: int = 300) -> Dict[str, Any]:
                 return json.loads(line)
             except json.JSONDecodeError:
                 continue
-    raise HTTPException(status_code=500, detail=proc.stderr[-800:] or "backend error")
+    logger.error("Research CLI returned no JSON (exit code %s)", proc.returncode)
+    raise HTTPException(status_code=500, detail="Research backend command failed")
 
 
 class ValidateRequest(BaseModel):
@@ -189,8 +190,9 @@ def train(background_tasks: BackgroundTasks, config: str = Form(...),
                 config_hash=cfg.config_hash(),
                 dataset=cfg.dataset.name,
             )
-        except Exception as exc:  # noqa: BLE001 - surface queue/DB failure
-            raise HTTPException(503, f"training queue unavailable: {exc}")
+        except Exception:  # noqa: BLE001 - keep dependency details out of responses
+            logger.exception("Training queue could not accept a research job")
+            raise HTTPException(503, "Training queue unavailable") from None
 
     queued: Any = None
     if queued is None:
@@ -256,4 +258,8 @@ def certificate(experiment_id: str) -> Dict[str, Any]:
 
 if __name__ == "__main__":  # pragma: no cover
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(
+        app,
+        host=os.environ.get("QEDNET_API_HOST", "127.0.0.1"),
+        port=int(os.environ.get("QEDNET_API_PORT", "8000")),
+    )

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import subprocess
+from dataclasses import replace
+from types import SimpleNamespace
 
 import pytest
 from fastapi import HTTPException
@@ -88,3 +90,47 @@ def test_cli_timeout_returns_gateway_timeout(monkeypatch):
     with pytest.raises(HTTPException) as exc:
         api._cli(["list-datasets"], timeout=1)
     assert exc.value.status_code == 504
+
+
+def test_cli_does_not_return_stderr_to_the_client(monkeypatch):
+    class Failed:
+        stdout = ""
+        stderr = "private filesystem path"
+        returncode = 1
+
+    monkeypatch.setattr(api.subprocess, "run", lambda *args, **kwargs: Failed())
+    with pytest.raises(HTTPException) as exc:
+        api._cli(["list-datasets"])
+
+    assert exc.value.status_code == 500
+    assert exc.value.detail == "Research backend command failed"
+    assert "private filesystem path" not in exc.value.detail
+
+
+def test_training_queue_error_does_not_leak_dependency_details(monkeypatch):
+    from qednet.db.settings import StorageSettings
+    from qednet.api import integration
+
+    settings = replace(StorageSettings.from_env(), use_db_storage=True)
+    monkeypatch.setattr(
+        StorageSettings, "from_env", classmethod(lambda cls: settings)
+    )
+    monkeypatch.setattr(
+        "qednet.config.load_config",
+        lambda path: SimpleNamespace(
+            experiment_id=None,
+            config_hash=lambda: "config-hash",
+            dataset=SimpleNamespace(name="breast_cancer"),
+        ),
+    )
+    monkeypatch.setattr("qednet.config.config_to_dict", lambda cfg: {})
+
+    def fail(*args, **kwargs):
+        raise RuntimeError("private database connection string")
+
+    monkeypatch.setattr(integration, "start_db_job", fail)
+    response = client.post("/train", data={"config": "breast_cancer"})
+
+    assert response.status_code == 503
+    assert response.json()["detail"] == "Training queue unavailable"
+    assert "private database connection string" not in response.text
