@@ -1,0 +1,27 @@
+$ bun test --path-ignore-patterns='preserved/**' tests/auth.test.ts tests/qednet-api.test.ts
+bun test v1.4.4 (38afee6c8)
+
+tests\auth.test.ts:
+(pass) private email account policy > production auth needs HTTPS Supabase settings and one allowed email [0.12ms]
+(pass) private email account policy > only the configured email is authorized, case-insensitively [0.06ms]
+(pass) private email account policy > production proxy locks the workspace until auth is configured [3.09ms]
+(pass) private email account policy > protected research handlers fail closed when production auth is missing [1.18ms]
+(pass) private email account policy > production proxy leaves the confirmation resend endpoint public [1.11ms]
+(pass) private email account policy > confirmation errors redirect to the configured public origin [0.69ms]
+
+tests\qednet-api.test.ts:
+(pass) QEDNET production route smoke > public liveness endpoint identifies research-only state [107.49ms]
+(pass) QEDNET production route smoke > workspace does not render without an authenticated session [4.08ms]
+(pass) QEDNET production route smoke > protected route GET /api/health stays behind auth [1.45ms]
+(pass) QEDNET production route smoke > protected route GET /api/datasets stays behind auth [1.47ms]
+(pass) QEDNET production route smoke > protected route GET /api/experiments stays behind auth [1.55ms]
+(pass) QEDNET production route smoke > protected route GET /api/jobs stays behind auth [1.99ms]
+(pass) QEDNET production route smoke > protected route POST /api/datasets/validate stays behind auth [3.71ms]
+(pass) QEDNET production route smoke > protected route POST /api/predict stays behind auth [2.53ms]
+
+ 14 pass
+ 0 fail
+ 28 expect() calls
+Ran 14 tests across 2 files. [252.00ms]
+
+EXIT_CODE=0

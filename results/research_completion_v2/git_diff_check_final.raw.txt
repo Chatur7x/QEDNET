@@ -1,0 +1,5 @@
+warning: in the working copy of 'Caddyfile', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/tests/unit/test_api_hardening.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/PRODUCTION_READINESS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/PRODUCT_BOUNDARIES.md', LF will be replaced by CRLF the next time Git touches it
+EXIT_CODE=0
