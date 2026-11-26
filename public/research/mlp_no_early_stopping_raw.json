@@ -1,0 +1,134 @@
+[
+  {
+    "dataset": "breast_cancer",
+    "fold": 0,
+    "seed": 42,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 1.0,
+    "accuracy": 0.98,
+    "train_seconds": 0.6515188999983366,
+    "n_iter": 300
+  },
+  {
+    "dataset": "breast_cancer",
+    "fold": 1,
+    "seed": 43,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 0.9949066213921902,
+    "accuracy": 0.96,
+    "train_seconds": 1.4152428000015789,
+    "n_iter": 300
+  },
+  {
+    "dataset": "breast_cancer",
+    "fold": 2,
+    "seed": 44,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 0.9643463497453311,
+    "accuracy": 0.92,
+    "train_seconds": 0.3729161000010208,
+    "n_iter": 300
+  },
+  {
+    "dataset": "heart_disease",
+    "fold": 0,
+    "seed": 42,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 0.8824476650563607,
+    "accuracy": 0.82,
+    "train_seconds": 0.31424820000029285,
+    "n_iter": 300
+  },
+  {
+    "dataset": "heart_disease",
+    "fold": 1,
+    "seed": 43,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 0.8421900161030595,
+    "accuracy": 0.72,
+    "train_seconds": 0.37144959999932325,
+    "n_iter": 300
+  },
+  {
+    "dataset": "heart_disease",
+    "fold": 2,
+    "seed": 44,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 0.8743961352657004,
+    "accuracy": 0.84,
+    "train_seconds": 0.45743769999899087,
+    "n_iter": 300
+  },
+  {
+    "dataset": "parkinsons",
+    "fold": 0,
+    "seed": 42,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 0.8903508771929824,
+    "accuracy": 0.82,
+    "train_seconds": 0.5989874000006239,
+    "n_iter": 300
+  },
+  {
+    "dataset": "parkinsons",
+    "fold": 1,
+    "seed": 43,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 0.9342105263157895,
+    "accuracy": 0.86,
+    "train_seconds": 0.5249043000003439,
+    "n_iter": 300
+  },
+  {
+    "dataset": "parkinsons",
+    "fold": 2,
+    "seed": 44,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 0.8794178794178794,
+    "accuracy": 0.84,
+    "train_seconds": 0.43350000000282307,
+    "n_iter": 300
+  },
+  {
+    "dataset": "diabetes",
+    "fold": 0,
+    "seed": 42,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 0.8270944741532977,
+    "accuracy": 0.74,
+    "train_seconds": 0.4838482000013755,
+    "n_iter": 300
+  },
+  {
+    "dataset": "diabetes",
+    "fold": 1,
+    "seed": 43,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 0.8181818181818181,
+    "accuracy": 0.74,
+    "train_seconds": 1.0546882999988156,
+    "n_iter": 300
+  },
+  {
+    "dataset": "diabetes",
+    "fold": 2,
+    "seed": 44,
+    "n_train": 100,
+    "n_test": 50,
+    "auc": 0.876736111111111,
+    "accuracy": 0.78,
+    "train_seconds": 0.4428632999988622,
+    "n_iter": 300
+  }
+]

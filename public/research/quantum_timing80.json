@@ -1,0 +1,31 @@
+[
+  {
+    "dataset": "heart_disease",
+    "n": 80,
+    "n_train": 53,
+    "n_test": 27,
+    "fold": 0,
+    "seed": 42,
+    "model": "qsvm",
+    "device": "default.qubit",
+    "qubits": 4,
+    "shots": null,
+    "fit_seconds": 53.85604339999918,
+    "kernel_evaluations": 1431,
+    "predict_seconds": 48.33107899999959,
+    "status": "completed",
+    "metadata": {
+      "model": "qsvm",
+      "n_qubits": 4,
+      "encoding": "zz",
+      "use_swap_test": false,
+      "C": 1.0,
+      "kernel_evals": 2862,
+      "circuit_depth": 3,
+      "two_qubit_gates": 3,
+      "shots": null,
+      "device": "default.qubit",
+      "fit_time_s": 53.85585117340088
+    }
+  }
+]

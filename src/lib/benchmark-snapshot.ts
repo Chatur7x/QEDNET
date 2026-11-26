@@ -69,4 +69,16 @@ export const benchmarkSnapshot = {
     modelFeatures: "4 PCA features",
     simulator: "PennyLane default.qubit, analytic shots (shots=None)",
   },
+  artifacts: [
+    { label: "Complete benchmark report", href: "/research-results.md", detail: "tables, methods, limitations, and saved commands" },
+    { label: "Shared-fold comparison CSV", href: "/research/shared80_per_fold.csv", detail: "all models, metrics, folds, and paired deltas" },
+    { label: "Classical raw records", href: "/research/shared80_classical_raw.json", detail: "per-fold classical outputs" },
+    { label: "Quantum raw records", href: "/research/quantum_raw.json", detail: "per-fold quantum outputs, including timeouts" },
+    { label: "Parkinson’s grouped-fold CSV", href: "/research/parkinsons_grouped_folds.csv", detail: "separate full-dataset classical grouped-CV run" },
+    { label: "Parkinson’s grouped raw records", href: "/research/parkinsons_grouped_raw.json", detail: "grouped-CV metrics and fold sizes" },
+    { label: "MLP diagnostic records", href: "/research/mlp_no_early_stopping_raw.json", detail: "separate 150-row diagnostic rerun" },
+    { label: "QSVM timing repeats", href: "/research/qsvm_timing_repeats80.json", detail: "raw repeated fit-time observations" },
+    { label: "QSVM timing gate", href: "/research/quantum_timing80.json", detail: "saved timing-gate record" },
+    { label: "Research features and gaps", href: "/research-roadmap.md", detail: "limits, next studies, and evidence gates" },
+  ],
 } as const;
