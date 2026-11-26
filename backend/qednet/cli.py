@@ -91,11 +91,22 @@ def cmd_upload(args) -> None:
     # validate right away
     from .data.validation import validate_frame
     import pandas as pd
-    df = pd.read_csv(args.csv)
+    df = pd.read_csv(args.csv, sep="\t" if Path(args.csv).suffix.lower() == ".tsv" else ",")
     rep = validate_frame(df, rec.target, rec.name)
+    identifier_columns = rep.stats.get("identifier_like_columns", [])
+    if identifier_columns:
+        rep.errors.append(
+            "Direct-identifier-like columns must be removed before registration: "
+            + ", ".join(identifier_columns)
+        )
+        rep.passed = False
     rec.validation_status = "passed" if rep.passed else "failed"
     rec.validation_report = rep.to_dict()
     rec.validated_at = datetime.now(timezone.utc).isoformat()
+    if not rep.passed:
+        _stdout_json({"ok": False, "error": "Dataset validation failed; dataset was not registered",
+                      "validation": rep.to_dict()})
+        return
     reg.register(rec)
     _stdout_json({"ok": rep.passed, "dataset": rec.to_dict(),
                   "validation": rep.to_dict()})

@@ -72,3 +72,28 @@ def test_validation_status_and_report_persist_across_registry_instances(tmp_path
     assert restored["validation_status"] == "failed"
     assert restored["validation_report"] == report
     assert isinstance(restored["validated_at"], str)
+
+
+def test_upload_rejects_identifier_columns_without_registering(tmp_path, monkeypatch, capsys):
+    path = tmp_path / "patients.csv"
+    path.write_text("patient_name,value,target\nAlice,1,0\nBob,2,1\n")
+    monkeypatch.chdir(tmp_path)
+
+    cli.cmd_upload(SimpleNamespace(csv=str(path), target="target", name="demo"))
+
+    response = json.loads(capsys.readouterr().out)
+    assert response["ok"] is False
+    assert "patient_name" in response["validation"]["stats"]["identifier_like_columns"]
+    assert not DatasetRegistry().exists("demo")
+
+
+def test_upload_accepts_valid_numeric_csv_and_registers(tmp_path, monkeypatch, capsys):
+    path = tmp_path / "measurements.csv"
+    path.write_text("feature,target\n1,0\n2,1\n")
+    monkeypatch.chdir(tmp_path)
+
+    cli.cmd_upload(SimpleNamespace(csv=str(path), target="target", name="demo"))
+
+    response = json.loads(capsys.readouterr().out)
+    assert response["ok"] is True
+    assert DatasetRegistry().get("demo")["validation_status"] == "passed"

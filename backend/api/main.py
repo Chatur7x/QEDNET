@@ -144,7 +144,11 @@ async def upload_dataset(file: UploadFile = File(...),
         args += ["--target", target]
     if name:
         args += ["--name", name]
-    return _cli(args, timeout=180)
+    result = _cli(args, timeout=180)
+    if not result.get("ok", False):
+        dest.unlink(missing_ok=True)
+        raise HTTPException(422, "Dataset validation failed; file was not registered")
+    return result
 
 
 @app.post("/datasets/validate")

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { unlink } from "node:fs/promises";
 import { cli, saveUploadedCsv, MAX_UPLOAD_BYTES } from "@/lib/qednet";
 import { requireResearchAccess } from "@/lib/research-access";
 
@@ -41,9 +42,10 @@ export async function POST(req: Request) {
     if (name) args.push("--name", name);
     const res = await cli(args, 120_000);
     if (!res.ok || !res.data || (res.data as any).ok === false) {
+      await unlink(csvPath).catch(() => {});
       return NextResponse.json(
         { ok: false, error: res.error || (res.data as any)?.error || "Dataset registration unavailable" },
-        { status: 503 },
+        { status: (res.data as any)?.validation ? 422 : 503 },
       );
     }
     return NextResponse.json(res.data);

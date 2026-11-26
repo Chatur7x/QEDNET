@@ -142,10 +142,12 @@ def validate_frame(df: pd.DataFrame, target: str,
             "SMOTE inside CV folds is recommended")
 
     # 9. identifier-like columns (privacy flag) ----------------------------------
+    identifier_hints = ("name", "email", "phone", "patient_id", "ssn",
+                        "address", "mrn", "patient number", "mail")
     id_cols = [c for c in df.columns
                if c != group_column
-               if any(h in str(c).lower() for h in
-                      ("name", "email", "phone", "patient_id", "ssn", "mrn"))]
+               if any(h in str(c).lower().strip("_") for h in identifier_hints)
+               or str(c).lower().strip("_") in ("id", "index", "subject", "subject_id")]
     if id_cols:
         rep.warnings.append(
             f"Direct-identifier-like columns present: {id_cols} — "

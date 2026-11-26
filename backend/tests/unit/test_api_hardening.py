@@ -65,6 +65,19 @@ def test_upload_limit_removes_partial_file(tmp_path, monkeypatch):
     assert not list((tmp_path / "data" / "uploads").glob("*"))
 
 
+def test_upload_validation_failure_removes_file(tmp_path, monkeypatch):
+    monkeypatch.setattr(api, "ROOT", tmp_path)
+    monkeypatch.setattr(api, "_cli", lambda *args, **kwargs: {
+        "ok": False, "error": "Dataset validation failed",
+    })
+    response = client.post(
+        "/datasets/upload",
+        files={"file": ("bad.csv", b"patient_name,target\nAlice,1\n", "text/csv")},
+    )
+    assert response.status_code == 422
+    assert not list((tmp_path / "data" / "uploads").glob("*"))
+
+
 def test_cli_preserves_windows_path(monkeypatch):
     monkeypatch.setenv("PATH", "sentinel-path")
     seen: dict[str, object] = {}

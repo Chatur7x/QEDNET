@@ -86,11 +86,10 @@ export function OverviewView({ onNavigate }: { onNavigate: (v: ViewId) => void }
         ) : (
           <div className="space-y-4">
             <p className="max-w-3xl text-sm leading-relaxed text-stone-600">
-              {experiments.data.length} end-to-end experiment(s) have been executed on open
-              biomedical datasets with nested cross-validation, multi-seed evaluation and leakage
-              guards. Each experiment benchmarks the full classical baseline suite against four
-              quantum model families under one evaluation framework, then generates a Quantum
-              Advantage Certificate from the measured evidence.
+              {experiments.data.length} experiment(s) have saved run artifacts. The protocol,
+              datasets, models, splits and seeds are specific to each run; inspect its recorded
+              configuration before comparing results. Certificates summarize the saved evidence
+              and do not establish quantum advantage or clinical performance.
             </p>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {experiments.data.slice(0, 4).map((e) => (

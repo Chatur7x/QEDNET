@@ -25,6 +25,14 @@ See [RESEARCH_COMPLETION_STATUS.md](RESEARCH_COMPLETION_STATUS.md) for the lates
 | Compose | `docker compose config --quiet` passed. The containers and worker lifecycle have not been executed because the local Docker daemon is unavailable. | Not runtime-verified. |
 | License and data rights | No project license file is present; local raw dataset files are not bundled. | Legal review and explicit data-rights records required before external/commercial distribution. |
 
+## Decisions for hosting, access, jobs, uploads, and claims
+
+- **Hosting (free-only):** keep Render Free as a private demonstration environment using public benchmark data only. It is not a suitable host for retained uploads or reliable long-running jobs because its filesystem is temporary and there is no durable database, object store, or worker attached. Do not connect the unrelated Chhaya database. For a persistent research service, use a managed PostgreSQL database, durable object storage, and a separate worker/queue with tested backups and recovery; this requires a paid plan or another provider whose current terms meet those requirements. No free deployment should be represented as durable until persistence and restore have been demonstrated.
+- **Access:** retain the existing single-email allowlist. Do not enable multiple accounts until ownership checks cover every dataset, upload, job, run, report, certificate, and model artifact. Email confirmation is disabled, so the allowed account's email ownership is not verified.
+- **Jobs:** the Next.js dashboard currently spawns local child processes, while FastAPI's ARQ path is separate and only used when `USE_DB_STORAGE` is enabled. The paths are not integrated and Render Free cannot preserve them through restarts. Treat hosted training as best-effort preview behavior; reliable execution remains NOT IMPLEMENTED/NOT VERIFIED until a durable queue is integrated, the worker is independently deployed, and restart, retry, cancellation, timeout, and result recovery tests pass.
+- **Uploads:** CSV/TSV uploads must pass schema validation and must not contain direct-identifier-like columns before they are registered. Failed validation must leave no registered dataset or orphaned upload file. Successful upload files remain on the service filesystem in preview mode; there is no automatic retention or durable deletion policy, so use public benchmark data only until storage and retention controls are implemented.
+- **Scientific claims:** describe a certificate as a summary of the evidence recorded for that run. It does not establish quantum advantage, generalization, early detection, or clinical performance. Report only the split strategy, seed, cohort/data fingerprint, models, metrics, and hardware/simulator that are present in that run's saved artifacts. Do not imply nested CV or multi-seed evaluation unless that particular run record proves it.
+
 ## Production blockers
 
 ### Security and privacy

@@ -11,6 +11,8 @@ This review covers the QEDNET research and education platform only. It does not 
 - Narrowed the dashboard's metric-provenance wording. It no longer claims every displayed value is a real experiment result.
 - Persisted dataset validation status, full validation report, and validation time in the dataset registry. The dashboard reloads and displays the saved status instead of relying on page-local state. In filesystem-demo deployments, this registry still uses the non-durable service filesystem.
 - Sanitized FastAPI responses for subprocess and training-queue failures; added regression tests that prove internal stderr/database details are not sent to clients.
+- Tightened upload validation so direct-identifier-like columns fail validation before registration, TSV parsing uses its declared delimiter, and invalid uploads are removed by the FastAPI/Next upload handlers.
+- Replaced the dashboard's blanket nested-CV/multi-seed/full-suite claim with wording that requires inspecting each run's saved protocol. Certificates are now described as summaries, not proof of quantum or clinical advantage.
 - Removed the legacy Caddy configuration's query-selected proxy port and routed the fixed Socket.IO path to its fixed local service port. Caddy runtime parsing was not available locally.
 - Fixed the Parkinson's validation command so it excludes `__subject_id__` from numeric feature validation while still checking the group key.
 - Fixed Parkinson's dataset profiling so `__subject_id__` is excluded from predictive-feature counts and the registry profile. The key remains available for group-aware splitting.
@@ -55,7 +57,7 @@ The breast-cancer run also exercised the saved-model cascade prediction on a row
 
 ## Remaining work before a persistent production research service
 
-1. **Durability and jobs:** Render remains in filesystem-demo mode. Add and verify durable database/object storage and a durable worker queue, or retain the clearly labelled disposable-preview boundary. The dashboard still starts detached local child-process jobs; this is not the durable ARQ path.
+1. **Durability and jobs:** Render remains in filesystem-demo mode. Add and verify durable database/object storage and a durable worker queue, or retain the clearly labelled disposable-preview boundary. The dashboard still starts detached local child-process jobs; this is not the durable ARQ path. Free-only hosting cannot satisfy the durability requirement.
 2. **Access isolation:** Keep the one-email allowlist. Add ownership checks for every dataset, upload, job, experiment, report and artifact before admitting more users. FastAPI currently relies on being loopback-only behind the protected Next.js route; independently protect it if that network boundary changes.
 3. **Operations:** Run the new CI workflow on GitHub; execute the Compose stack on a Docker-capable runner; verify worker restart, cancellation, timeouts, retries, storage failure, backup and restore; add monitoring, alerting, release rollback and an accountable operator.
 4. **Data governance:** Document data source/license, consent or use permissions, provenance, retention, deletion and upload policy for each real dataset. The local raw benchmark files are ignored by Git, so a clean checkout cannot reproduce the local-data runs without authorized retrieval steps.
