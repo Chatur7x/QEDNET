@@ -1,5 +1,5 @@
 # Local integrated stack. The free Render service runs filesystem-demo mode;
-# enable PostgreSQL/Redis/MinIO only in an environment configured for them.
+# enable PostgreSQL/Redis/RustFS only in an environment configured for them.
 services:
   app:
     build: .
@@ -14,7 +14,7 @@ services:
       USE_DB_STORAGE: "true"
       DATABASE_URL: postgresql+psycopg://qednet:qednet@postgres:5432/qednet
       REDIS_URL: redis://redis:6379/0
-      S3_ENDPOINT: minio:9000
+      S3_ENDPOINT: rustfs:9000
       S3_ACCESS_KEY: qednet
       S3_SECRET_KEY: qednet-local-secret
       S3_BUCKET: qednet-artifacts
@@ -24,9 +24,10 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      minio-init:
-        condition: service_completed_successfully
+      rustfs:
+        condition: service_started
     volumes:
+      - ./backend:/app/backend
       - qednet-experiments:/app/experiments
       - qednet-uploads:/app/data/uploads
 
@@ -39,9 +40,10 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      minio-init:
-        condition: service_completed_successfully
+      rustfs:
+        condition: service_started
     volumes:
+      - ./backend:/app/backend
       - qednet-experiments:/app/experiments
       - qednet-uploads:/app/data/uploads
 
@@ -69,28 +71,24 @@ services:
     volumes:
       - redis-data:/data
 
-  minio:
-    image: minio/minio:latest
-    command: server /data --console-address ":9001"
+  rustfs:
+    image: rustfs/rustfs:latest
+    command: ["/data"]
+    ports:
+      - "9000:9000"
+      - "9001:9001"
     environment:
-      MINIO_ROOT_USER: qednet
-      MINIO_ROOT_PASSWORD: qednet-local-secret
+      RUSTFS_ACCESS_KEY: qednet
+      RUSTFS_SECRET_KEY: qednet-local-secret
+      RUSTFS_ADDRESS: ":9000"
+      RUSTFS_CONSOLE_ADDRESS: ":9001"
+      RUSTFS_CONSOLE_ENABLE: "true"
     volumes:
-      - minio-data:/data
-
-  minio-init:
-    image: minio/mc:latest
-    depends_on:
-      - minio
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - >-
-        until mc alias set local http://minio:9000 qednet qednet-local-secret; do sleep 2; done;
-        mc mb --ignore-existing local/qednet-artifacts
+      - rustfs-data:/data
 
 volumes:
   postgres-data:
   redis-data:
-  minio-data:
+  rustfs-data:
   qednet-experiments:
   qednet-uploads:

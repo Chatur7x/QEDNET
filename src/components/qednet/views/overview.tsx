@@ -26,21 +26,6 @@ import {
   TransitionIn,
 } from "../ui-bits";
 
-const FEATURES: { id: string; label: string; domain: "quantum" | "classical" | "evaluation" | "explain" | "uncertainty" | "research" }[] = [
-  { id: "F1", label: "Data Ingestion", domain: "classical" },
-  { id: "F2", label: "Validation & Leakage Guard", domain: "classical" },
-  { id: "F3", label: "Preprocessing & Compression", domain: "classical" },
-  { id: "F4", label: "Quantum Encoding Library", domain: "quantum" },
-  { id: "F5", label: "Quantum Model Zoo", domain: "quantum" },
-  { id: "F6", label: "Classical Baseline Suite", domain: "classical" },
-  { id: "F7", label: "Automated Benchmarking", domain: "evaluation" },
-  { id: "F8", label: "Explainability", domain: "explain" },
-  { id: "F9", label: "Quantum Advantage Certificate", domain: "research" },
-  { id: "F10", label: "Bottleneck Honesty Meter", domain: "research" },
-  { id: "F11", label: "Uncertainty & Abstention", domain: "uncertainty" },
-  { id: "F12", label: "Second-Opinion Cascade", domain: "quantum" },
-];
-
 export function OverviewView({ onNavigate }: { onNavigate: (v: ViewId) => void }) {
   const health = useHealth();
   const datasets = useDatasets();
@@ -52,6 +37,30 @@ export function OverviewView({ onNavigate }: { onNavigate: (v: ViewId) => void }
 
   return (
     <div className="space-y-6">
+      <section className="overview-masthead relative overflow-hidden rounded-3xl border border-white/70 p-6 shadow-xl shadow-slate-900/5 sm:p-8">
+        <div className="overview-masthead-orb" aria-hidden />
+        <div className="relative z-[1] flex flex-wrap items-end justify-between gap-6">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200/80 bg-white/75 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-cyan-900">
+              <span className="h-1.5 w-1.5 rounded-full bg-cyan-600" /> Whole-body health research
+            </div>
+            <h2 className="qed-display mt-4 text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">
+              Research the whole person. Report only what the evidence supports.
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+              Women’s health, including menstrual and life-course research, is a first-class track. The atlas distinguishes registered benchmark data from planned studies; this workspace does not collect personal cycle records.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => onNavigate("bodyHealth")}
+            className="qed-focus inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-950/15 transition hover:-translate-y-0.5 hover:bg-slate-800"
+          >
+            Open body health atlas <Link2 className="h-4 w-4" aria-hidden />
+          </button>
+        </div>
+      </section>
+
       {/* status strip */}
       <TransitionIn className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-6">
         <Stat label="Backend" value={health.data?.ok ? "online" : "offline"} domain="classical"
@@ -157,16 +166,19 @@ export function OverviewView({ onNavigate }: { onNavigate: (v: ViewId) => void }
           )}
         </SectionCard>
 
-        <SectionCard title="Platform features" subtitle="exactly 12 main features — scope is fixed">
-          <ul className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
-            {FEATURES.map((f) => (
-              <li key={f.id} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs text-stone-600 hover:bg-stone-50">
-                <DomainDot domain={f.domain} />
-                <span className="qed-num text-stone-400">{f.id}</span>
-                <span className="truncate">{f.label}</span>
-              </li>
-            ))}
-          </ul>
+        <SectionCard title="Research roadmap" subtitle="whole-body scope; availability is grounded in the registry">
+          <div className="space-y-4">
+            <p className="text-sm leading-6 text-stone-600">
+              Current benchmarks are tabular. Cycle tracking, wearable streams, imaging, genomics, EHR, and clinical workflows need separate approved data and validation before implementation.
+            </p>
+            <button
+              type="button"
+              onClick={() => onNavigate("bodyHealth")}
+              className="qed-focus inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-800 transition hover:border-cyan-300 hover:bg-cyan-50"
+            >
+              Explore whole-body and women’s-health research <Link2 className="h-3.5 w-3.5" aria-hidden />
+            </button>
+          </div>
         </SectionCard>
       </div>
 

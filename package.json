@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3000 2>&1 | tee dev.log",
     "build": "prisma generate && next build",
-    "test": "bun test --path-ignore-patterns='preserved/**' tests/auth.test.ts tests/qednet-api.test.ts",
+    "test": "bun test --path-ignore-patterns='preserved/**' tests/auth.test.ts tests/qednet-api.test.ts tests/body-research.test.ts tests/cycle-journal.test.ts",
     "build:standalone": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
     "start": "node .next/standalone/server.js",
     "lint": "eslint src next.config.ts",

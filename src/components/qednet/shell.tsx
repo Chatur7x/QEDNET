@@ -15,6 +15,7 @@ import {
   Brain,
   FileText,
   FlaskConical,
+  HeartPulse,
   LayoutDashboard,
   Microscope,
   Table2,
@@ -33,6 +34,7 @@ import { ExplainabilityView } from "./views/explainability";
 import { BenchmarkView } from "./views/benchmark";
 import { AdvantageView } from "./views/advantage";
 import { ReportsView } from "./views/reports";
+import { BodyHealthView } from "./views/body-health";
 import { SignOutButton } from "@/components/auth/forms";
 
 export type ViewId =
@@ -43,6 +45,7 @@ export type ViewId =
   | "explainability"
   | "benchmark"
   | "advantage"
+  | "bodyHealth"
   | "reports";
 
 const NAV: { id: ViewId; label: string; icon: React.ComponentType<{ className?: string }>; hint: string }[] = [
@@ -53,6 +56,7 @@ const NAV: { id: ViewId; label: string; icon: React.ComponentType<{ className?: 
   { id: "explainability", label: "Explainability", icon: Microscope, hint: "F8 — SHAP, sensitivity, counterfactuals" },
   { id: "benchmark", label: "Benchmark", icon: Scale, hint: "F7 — quantum vs classical results" },
   { id: "advantage", label: "Quantum Advantage", icon: Brain, hint: "F9/F10 — certificate & honesty meter" },
+  { id: "bodyHealth", label: "Body Health Atlas", icon: HeartPulse, hint: "whole-body and women’s health research scope" },
   { id: "reports", label: "Research Reports", icon: FileText, hint: "experiment reports & certificates" },
 ];
 
@@ -64,6 +68,7 @@ const VIEW_TITLES: Record<ViewId, { title: string; sub: string }> = {
   explainability: { title: "Explainability", sub: "SHAP, feature importance, sensitivity, counterfactuals, quantum diagnostics" },
   benchmark: { title: "Benchmark", sub: "classical vs quantum models under one evaluation framework" },
   advantage: { title: "Quantum Advantage", sub: "certificate, ablation, dequantization, statistical evidence" },
+  bodyHealth: { title: "Body Health Research Atlas", sub: "whole-body evidence map · women’s health · planned research domains" },
   reports: { title: "Research Reports", sub: "per-experiment reports, certificates, reproducibility" },
 };
 
@@ -101,6 +106,7 @@ function DashboardInner() {
       explainability: <ExplainabilityView />,
       benchmark: <BenchmarkView />,
       advantage: <AdvantageView />,
+      bodyHealth: <BodyHealthView />,
       reports: <ReportsView />,
     }),
     []
@@ -111,16 +117,16 @@ function DashboardInner() {
       {/* ------------------------------------------------ sidebar */}
       <nav
         aria-label="Dashboard sections"
-        className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-stone-200 bg-white/70 backdrop-blur-sm md:flex"
+        className="research-sidebar sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-slate-800/70 text-slate-100 md:flex"
       >
-        <div className="flex items-center gap-2.5 border-b border-stone-200 px-5 py-5">
-          <Beaker className="h-5 w-5 text-violet-700" aria-hidden />
+        <div className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
+          <span className="research-brand-mark"><Beaker className="h-5 w-5" aria-hidden /></span>
           <div>
-            <div className="qed-display text-[15px] font-semibold leading-tight text-stone-900">
-              QED-Net <span className="text-stone-400">2.0</span>
+            <div className="qed-display text-[15px] font-semibold leading-tight text-white">
+              QED-Net <span className="text-cyan-300">Research</span>
             </div>
-            <div className="text-[10px] uppercase tracking-wider text-stone-400">
-              hybrid quantum–classical ML
+            <div className="mt-1 text-[9px] uppercase tracking-[0.18em] text-slate-400">
+              human health · QML
             </div>
           </div>
         </div>
@@ -135,13 +141,13 @@ function DashboardInner() {
                   onClick={() => setView(item.id)}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "qed-focus group flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-[13px] font-medium transition-colors",
+                    "qed-focus group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[12px] font-medium transition-all",
                     active
-                      ? "bg-stone-900 text-white"
-                      : "text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                      ? "bg-white text-slate-950 shadow-lg shadow-black/20"
+                      : "text-slate-300 hover:bg-white/8 hover:text-white"
                   )}
                 >
-                  <Icon className={cn("h-4 w-4 shrink-0", active ? "text-white" : "text-stone-400 group-hover:text-stone-600")} aria-hidden />
+                  <Icon className={cn("h-4 w-4 shrink-0", active ? "text-cyan-700" : "text-slate-400 group-hover:text-cyan-200")} aria-hidden />
                   <span className="truncate">{item.label}</span>
                 </button>
               </li>
@@ -149,10 +155,10 @@ function DashboardInner() {
           })}
         </ul>
 
-        <div className="space-y-3 border-t border-stone-200 px-4 py-4">
-          <div className="flex items-center gap-2 text-[11px] text-stone-500">
+        <div className="space-y-3 border-t border-white/10 px-4 py-4">
+          <div className="flex items-center gap-2 text-[11px] text-slate-300">
             <span
-              className={cn("inline-block h-1.5 w-1.5 rounded-full", backendOk ? "bg-emerald-500" : "bg-rose-500")}
+              className={cn("inline-block h-2 w-2 rounded-full ring-4", backendOk ? "bg-emerald-400 ring-emerald-400/10" : "bg-rose-400 ring-rose-400/10")}
               aria-hidden
             />
             <span className="truncate">
@@ -162,13 +168,13 @@ function DashboardInner() {
             </span>
           </div>
           {pennylane && (
-            <div className="flex items-center gap-2 text-[11px] text-stone-500">
-              <Cpu className="h-3 w-3 text-violet-500" aria-hidden />
+              <div className="flex items-center gap-2 text-[11px] text-slate-300">
+              <Cpu className="h-3 w-3 text-violet-300" aria-hidden />
               PennyLane {String(pennylane)}
             </div>
           )}
           <ResearchBadge compact />
-          <p className="text-[10px] leading-relaxed text-stone-400">
+          <p className="text-[10px] leading-relaxed text-slate-400">
             Not a medical device. Not clinically validated. Not for diagnosis.
           </p>
         </div>
@@ -176,7 +182,7 @@ function DashboardInner() {
 
       {/* ------------------------------------------------ main */}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 border-b border-stone-200 bg-[#fafaf9]/85 backdrop-blur-md">
+        <header className="sticky top-0 z-10 border-b border-slate-200/80 bg-white/80 shadow-sm shadow-slate-900/[0.025] backdrop-blur-xl">
           <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 md:px-8">
             <div className="min-w-0">
               <h1 className="qed-display text-lg font-semibold text-stone-900">
@@ -206,8 +212,8 @@ function DashboardInner() {
           </div>
         </header>
 
-        <div role="note" className="border-b border-amber-200 bg-amber-50 px-5 py-2 text-xs leading-relaxed text-amber-950 md:px-8">
-          Private research preview: this deployment uses temporary filesystem storage, so uploaded files and experiment runs may not survive service replacement. Use public or de-identified research data only; never use outputs for patient-care decisions.
+        <div role="note" className="border-b border-cyan-100 bg-cyan-50/80 px-5 py-2 text-xs leading-relaxed text-slate-700 md:px-8">
+          Research preview · use public or authorized de-identified data only · not validated for personal medical or surgical decisions.
         </div>
 
         <main id="main" className="min-w-0 flex-1 px-5 py-6 md:px-8" aria-live="polite">
@@ -225,7 +231,7 @@ function DashboardInner() {
           </AnimatePresence>
         </main>
 
-        <footer className="mt-auto border-t border-stone-200 bg-white/60 px-5 py-4 text-[11px] leading-relaxed text-stone-400 md:px-8">
+        <footer className="mt-auto border-t border-slate-200 bg-white/70 px-5 py-4 text-[11px] leading-relaxed text-slate-500 md:px-8">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span>
               QED-Net 2.0 — Hybrid Quantum–Classical ML research platform.

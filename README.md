@@ -10,6 +10,8 @@
 
 QED-Net 2.0 is a research codebase for comparing quantum and classical machine-learning approaches on biomedical benchmark data. It contains a Python research core, a FastAPI service, and a Next.js dashboard. The Render preview uses Supabase email/password authentication with email confirmation disabled and a single-email allowlist. The current account has signed in successfully; a fresh signup flow has not been independently re-tested. Persistent experiment storage, multi-user data isolation, and clinical validation are not configured.
 
+The product direction is a whole-body health research platform, with dedicated women's-health and menstrual-cycle research alongside other body-system studies. These are planned research areas, not currently implemented trackers, Android features, diagnostic models, or clinical functions. See the [whole-body health research plan](docs/WHOLE_BODY_HEALTH_RESEARCH_PLAN.md).
+
 See the [early-detection product specification](docs/EARLY_DETECTION_PRODUCT_SPEC.md) and [product roadmap](docs/PRODUCT_ROADMAP.md) for the research scope, evidence gates, and unresolved problems. “Early detection” is a research objective, not a demonstrated capability of the current cross-sectional benchmarks.
 
 See [research completion status](docs/RESEARCH_COMPLETION_STATUS.md) for the latest local verification evidence and the remaining production blockers.
@@ -36,7 +38,10 @@ Dashboard + Research Reports
 
 **If quantum models perform worse, the platform reports that.** The certificate's verdict comes from deterministic rules applied to measured statistics — never hard-coded.
 
-## The 12 main features (fixed scope)
+## Current research-core modules
+
+These modules are present in the repository; they do not constitute the planned
+whole-body product or establish clinical validity.
 
 | ID | Feature | Where |
 |----|---------|-------|
@@ -151,8 +156,8 @@ bun run test
 
 The app tests verify liveness and that protected routes remain behind the auth
 gate. They do not verify authenticated research API behavior without configured
-Supabase test credentials. Root test discovery explicitly excludes the separate
-`preserved/` project.
+Supabase test credentials. Run backend tests from `backend/`; running pytest at the
+repository root also discovers duplicate tests under the separate `preserved/` project.
 
 Experiment metrics shown in the dashboard are read from saved run artifacts. Dataset metadata and service health are obtained from their respective backend endpoints. The cloud demo currently has no saved experiments, so it does not show model performance results.
 
@@ -163,14 +168,31 @@ docker compose up --build
 ```
 
 Starts the Next.js dashboard and FastAPI API in the app container, plus an ARQ worker,
-Redis, PostgreSQL, and MinIO. The app waits for its database/object-store dependencies
-and runs the Alembic migrations before serving requests. Local compose credentials are
-development defaults; replace them before exposing this stack outside a trusted machine.
+Redis, PostgreSQL, and RustFS (the local S3-compatible object store). The app waits for
+PostgreSQL and Redis, then runs the Alembic migrations before serving requests. Local
+Compose credentials are development defaults; replace them before exposing this stack
+outside a trusted machine.
 
-The Compose stack has not been run in this environment because the local Docker daemon
-is unavailable. The Render deployment uses filesystem-demo mode and does not use the
-Compose PostgreSQL, Redis, or MinIO services. Render's free service filesystem is
-ephemeral, so uploaded data and run artifacts are not durable there.
+The local Docker stack has been started and checked: app, worker, PostgreSQL, Redis, and
+RustFS all ran; database, queue, and object-store readiness passed; and the artifact
+adapter passed a write/read/delete smoke check. The sign-in page loads, but a protected
+research API redirects to setup because this local Compose environment has no Supabase
+URL/key or allowlisted email configured. An authenticated research session was not
+verified. The Render deployment uses filesystem-demo mode and does not use the Compose
+PostgreSQL, Redis, or RustFS services. Render's free service filesystem is ephemeral,
+so uploaded data and run artifacts are not durable there.
+
+### Local Aiven PostgreSQL pilot
+
+Aiven Free PostgreSQL can be tested as a local development database. It is not a
+production database tier, and it does not provide QEDNET's queue or artifact storage.
+Create `aiven.local.env` from `aiven.local.env.example`, put the Aiven URI there with
+`sslmode=require`, and keep the file private (it is gitignored). Run
+`powershell -ExecutionPolicy Bypass -File scripts/check-aiven.ps1` to test TLS/database
+connectivity without displaying the URI. Only after confirming the database is dedicated
+and empty, run the same command with `-ApplySchema` to apply Alembic migrations.
+This does not enable `USE_DB_STORAGE` or alter the hosted Render service. Do not use
+patient or other sensitive data in this free-tier pilot.
 
 The optional Prisma helper uses a separate SQLite setting, `QEDNET_PRISMA_DATABASE_URL`
 (for example, a `file:` URL). It is not the Python research backend's `DATABASE_URL`
@@ -261,7 +283,7 @@ python -m pytest tests/integration    # complete F1→F12 end-to-end run
 
 - Demo configs use a compute-reduced protocol (5 outer folds × 3 seeds); inner-CV tuning is already enabled. `scripts/reproduce.py --full` replaces the configured seed list with 10 seeds and can take substantially longer with exact simulation.
 - Exact statevector simulation means no shot noise; `shots` is recorded as `null` (equivalent to shots=∞). Shot-noise simulation at inference is supported via config.
-- The Docker Compose profile is configuration-checked but has not been run in this environment. The dashboard's job route still starts local child processes; it is not integrated with the durable ARQ queue. The current Render service uses filesystem-demo mode and has no durable database/object store configured.
+- The local Docker Compose stack now runs with PostgreSQL, Redis, and RustFS, but local Supabase authentication is not configured and the protected research UI has not been verified with an authenticated session. The dashboard's job route still starts local child processes; it is not integrated with the durable ARQ queue. The current Render service uses filesystem-demo mode and has no durable database/object store configured.
 - Restricted datasets (TCGA, MIMIC-IV) are not bundled; the platform is designed to work without them.
 - QSVM kernels use exact fidelity of simulated states — efficient for ≤12 qubits only (resource limits are enforced).
 

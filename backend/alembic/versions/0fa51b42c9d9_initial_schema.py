@@ -203,7 +203,8 @@ def upgrade() -> None:
         op.execute("""
             CREATE OR REPLACE FUNCTION qednet_audit_append_only() RETURNS trigger AS $$
             BEGIN
-                RAISE EXCEPTION 'audit_logs is append-only: %% on %%', TG_OP, TG_TABLE_NAME;
+                RAISE EXCEPTION USING MESSAGE =
+                    'audit_logs is append-only: ' || TG_OP || ' on ' || TG_TABLE_NAME;
             END;
             $$ LANGUAGE plpgsql;
         """)

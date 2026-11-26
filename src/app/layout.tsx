@@ -3,14 +3,16 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "QED-Net 2.0 — Hybrid Quantum–Classical ML Research Platform",
+  title: "QED-Net Research — Whole-Body Health Research Atlas",
   description:
-    "Research dashboard for QED-Net 2.0: hybrid quantum–classical machine learning for biomedical disease-risk research. Benchmarking, explainability, uncertainty and quantum-advantage certificates from real experiments. Research and educational use only — not a medical device.",
+    "Research workspace for transparent evaluation of classical and simulator-based quantum ML on biomedical datasets, with a whole-body and women’s-health research atlas. Research and education only; not for diagnosis or clinical decisions.",
   keywords: [
     "quantum machine learning",
     "hybrid quantum-classical",
     "QSVM",
     "VQC",
+    "whole-body health research",
+    "women's health research",
     "biomedical data analytics",
     "explainable AI",
     "research platform",

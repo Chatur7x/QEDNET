@@ -2,9 +2,11 @@
 
 For the full early-detection workflow, feature requirements, evaluation design, architecture, and evidence references, see [EARLY_DETECTION_PRODUCT_SPEC.md](EARLY_DETECTION_PRODUCT_SPEC.md).
 
+For the whole-body product scope, women's-health and cycle research, clinician/surgeon boundaries, quantum/ML evaluation plan, and research-production gates, see [WHOLE_BODY_HEALTH_RESEARCH_PLAN.md](WHOLE_BODY_HEALTH_RESEARCH_PLAN.md). These are roadmap requirements, not current capabilities.
+
 ## Product definition
 
-QEDNET is a research platform for testing hybrid quantum-classical machine-learning methods against strong classical baselines on biomedical classification tasks. Its workflow is: ingest documented data, validate it, split it according to how observations were collected, fit preprocessing on training partitions only, train and compare models, inspect explanations and uncertainty, and export a reproducible report.
+QEDNET is a whole-body health research platform direction for testing classical and hybrid quantum-classical machine-learning methods against strong classical baselines on narrowly defined biomedical research questions. It includes a dedicated women's-health research track, with a private cycle journal as a possible first product feature and cycle modeling only after suitable data and protocol approval. Its workflow is: ingest documented data, validate it, split it according to how observations were collected, fit preprocessing on training partitions only, train and compare models, inspect explanations and uncertainty, and export a reproducible report.
 
 The project brief says “early disease detection.” That is a hypothesis and intended research direction, not an established capability. A model trained to classify existing diagnostic labels on cross-sectional benchmark rows does not show that it detects disease earlier, improves care, or reduces cost. Any such claim needs a prediction time, reference standard, clinically meaningful lead-time horizon, representative longitudinal cohort, and independent validation that respects patient, site, and time boundaries.
 

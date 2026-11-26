@@ -2,7 +2,9 @@
 
 ## Purpose
 
-Design one coordinated, research-led hybrid quantum/classical biomedical ML platform with a single public website, one authenticated web workspace, and one Android companion app. The platform should support reproducible research on early-detection hypotheses and later, only after separate evidence and regulatory gates, a controlled clinical decision-support workflow.
+Design one coordinated, whole-body health research platform using hybrid quantum/classical ML, with a single public website, one authenticated web workspace, and one planned Android companion app. Women's health, including cycle and life-course research, is a first-class research area alongside health domains affecting men and mixed populations. The platform should support reproducible research on early-detection hypotheses and later, only after separate evidence and regulatory gates, a controlled clinical decision-support workflow.
+
+The detailed whole-body scope, menstrual-health diary requirements, body-system research portfolio, and production gates are in [WHOLE_BODY_HEALTH_RESEARCH_PLAN.md](WHOLE_BODY_HEALTH_RESEARCH_PLAN.md). That document describes target work; it does not claim those features are implemented.
 
 The research product and any future clinical function may share a brand and selected user-interface components, but must have separate authorization boundaries, data stores, model registries, audit trails, release controls, and safety cases. A role or feature flag alone is not an adequate clinical security boundary. Until the clinical gates are met, the clinical workspace remains unavailable.
 

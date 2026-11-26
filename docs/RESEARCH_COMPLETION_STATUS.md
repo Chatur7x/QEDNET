@@ -51,9 +51,26 @@ The breast-cancer run also exercised the saved-model cascade prediction on a row
 | Production build | `bun run build` — `frontend_build_ci_candidate.raw.txt` | Passed. Turbopack reported dynamic filesystem tracing warnings for the Python/filesystem bridge. |
 | JavaScript dependency audit | `bun audit --audit-level=critical` — `bun_audit.raw.txt` | No critical vulnerabilities found in the checked JavaScript dependency set. This is not a Python, OS-image, or full security audit. |
 | Compose syntax | `docker compose config --quiet` — `compose_config_final.raw.txt` | Passed configuration validation only. |
-| Docker runtime | `docker info` — `docker_info.raw.txt` | NOT MEASURED: Docker CLI exists, but the Docker Desktop Linux engine pipe was unavailable. No containers, worker lifecycle, or backup/restore were run. |
+| Docker runtime (previous check) | `docker info` — `docker_info.raw.txt` | NOT MEASURED at that earlier check: the Docker Desktop Linux engine pipe was unavailable. See the subsequent local Docker check below. |
 | CI YAML parse | `python -c "import yaml; ..."` — `ci_yaml_parse.raw.txt` | YAML parsed locally; GitHub Actions execution is still unverified. |
 | Diff whitespace | `git diff --check` — `git_diff_check.raw.txt` | Passed. |
+
+## Subsequent local Docker check
+
+On 2026-11-26, Docker Desktop was started and the local Compose stack was run. The original Docker Hub MinIO images could not be pulled, so local Compose now uses RustFS as its S3-compatible object store; the Python application continues to use its existing MinIO-compatible S3 client. A PostgreSQL migration initially failed because the audit-trigger exception string had extra format placeholders. The migration now constructs the message without a format string, and the initial Alembic revision applied successfully.
+
+| Check | Command | Observed result |
+|---|---|---|
+| Compose validation | `docker compose config --quiet` | Passed. |
+| Container startup | `docker compose up --build -d` | App, worker, PostgreSQL, Redis, and RustFS started. PostgreSQL and Redis reported healthy. |
+| Health/readiness | `docker compose exec -T app /opt/qednet-venv/bin/python -c "from qednet.api.health import readiness; from qednet.db.settings import StorageSettings; print(readiness(StorageSettings.from_env()))"` | Readiness returned HTTP 200 with PostgreSQL, Redis, and S3 all `ok`. |
+| S3 adapter | In-container write/read/delete smoke command using `get_store(StorageSettings.from_env())` | Write/read matched and test object was deleted. |
+| API inventory | In-container GET `/health`, `/ready`, `/datasets`, `/models` | All responded; the built-in breast-cancer dataset was listed. The registry returned the configured model names. |
+| Website routes | PowerShell GET `/`, `/live`, `/signin` | Home and sign-in returned HTTP 200; `/live` returned `status: ok`. |
+| Authenticated workspace | PowerShell GET `/api/health` | Redirected to `/setup-required`; local Supabase URL/key and allowlisted email are not configured. Authenticated access remains unverified. |
+| Targeted tests | `python -m pytest backend/tests/unit/test_health.py backend/tests/unit/test_storage.py -q` | Exit code 0; 5 tests passed. |
+
+This is local runtime evidence only. Backup/restore, external exposure, full training, authenticated research access, and production operations remain unverified. The broad repository-root pytest command also discovers duplicate tests under `preserved/`; run the root backend suite from `backend/` as documented.
 
 ## Remaining work before a persistent production research service
 
@@ -72,6 +89,7 @@ The breast-cancer run also exercised the saved-model cascade prediction on a row
 - Persistence across Render restart/replacement, multi-user isolation, or backup restoration: **not tested**.
 - Full clinical use, early detection, calibration/conformal coverage on an independent cohort, external/prospective validation, or patient outcomes: **not established**.
 - Real quantum hardware execution: **not measured**.
+- Whole-body health models, menstrual diary/prediction, Android, wearables, imaging, genomics, and EHR integration: **not implemented**. See [WHOLE_BODY_HEALTH_RESEARCH_PLAN.md](WHOLE_BODY_HEALTH_RESEARCH_PLAN.md) for the target scope and gates.
 - SHAP/counterfactual outputs are research explanations, not causal or clinical reasoning. Counterfactual plausibility constraints were not validated in this pass.
 
 ## Release position
