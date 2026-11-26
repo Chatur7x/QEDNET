@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
@@ -52,13 +52,10 @@ export function SignInForm({ initialError }: { initialError?: string }) {
 }
 
 export function SignUpForm() {
-  const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [resending, setResending] = useState(false);
-  const [resendMessage, setResendMessage] = useState("");
-  const [resendError, setResendError] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -78,17 +75,21 @@ export function SignUpForm() {
         return;
       }
       const supabase = createSupabaseBrowserClient();
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { data: { session }, error: signUpError } = await supabase.auth.signUp({
         email: String(form.get("email") ?? "").trim(),
         password: String(form.get("password") ?? ""),
-        options: { emailRedirectTo: `${window.location.origin}/auth/confirm?next=%2F` },
+        options: {
+          data: { username: String(form.get("username") ?? "").trim() },
+          emailRedirectTo: `${window.location.origin}/auth/confirm?next=%2F`,
+        },
       });
-      setError(Boolean(signUpError));
-      setMessage(signUpError
-        ? /rate limit/i.test(signUpError.message)
-          ? "Supabase temporarily limited confirmation emails. Wait before requesting another email."
-          : "Sign-up could not be completed. Check the password and try again."
-        : "If this email can register, check its inbox for the confirmation link.");
+      if (!signUpError && session) {
+        router.replace("/");
+        router.refresh();
+        return;
+      }
+      setError(true);
+      setMessage("Account creation did not start a session. Try signing in or use Forgot password if you already have an account.");
     } catch {
       setError(true);
       setMessage("Sign-up could not reach the authentication service. Check your connection and try again.");
@@ -97,43 +98,13 @@ export function SignUpForm() {
     }
   }
 
-  async function resendConfirmation() {
-    const email = String(new FormData(formRef.current ?? undefined).get("email") ?? "").trim();
-    if (!email) {
-      setResendError(true);
-      setResendMessage("Enter your email address first.");
-      return;
-    }
-    setResending(true);
-    setResendMessage("");
-    setResendError(false);
-    try {
-      const response = await fetch("/api/auth/resend-confirmation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const result = await response.json().catch(() => ({}));
-      setResendError(!response.ok);
-      setResendMessage(response.ok
-        ? "If the account is waiting for verification, a fresh confirmation email was requested."
-        : result.error || "A new confirmation email could not be sent. Try again later.");
-    } catch {
-      setResendError(true);
-      setResendMessage("Could not reach the authentication service. Try again later.");
-    } finally {
-      setResending(false);
-    }
-  }
-
   return (
-    <form ref={formRef} onSubmit={submit} className="space-y-4">
+    <form onSubmit={submit} className="space-y-4">
+      <label className="block space-y-1 text-sm">Username<input className="w-full rounded border px-3 py-2" name="username" type="text" autoComplete="username" maxLength={64} required /></label>
       <label className="block space-y-1 text-sm">Email<input className="w-full rounded border px-3 py-2" name="email" type="email" autoComplete="email" required /></label>
       <label className="block space-y-1 text-sm">Password<input className="w-full rounded border px-3 py-2" name="password" type="password" autoComplete="new-password" minLength={12} maxLength={128} required /></label>
       <button className="rounded bg-primary px-4 py-2 text-primary-foreground" type="submit" disabled={busy}>{busy ? "Creating account…" : "Create account"}</button>
       {message && <FormMessage error={error}>{message}</FormMessage>}
-      <button className="rounded border px-4 py-2 text-sm" type="button" disabled={busy || resending} onClick={resendConfirmation}>{resending ? "Requesting email…" : "Resend confirmation email"}</button>
-      {resendMessage && <FormMessage error={resendError}>{resendMessage}</FormMessage>}
     </form>
   );
 }
