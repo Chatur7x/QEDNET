@@ -4,7 +4,7 @@
  */
 "use client";
 
-import { FileDown, Link2, ShieldCheck } from "lucide-react";
+import { ExternalLink, FileDown, Link2, ShieldCheck } from "lucide-react";
 import {
   useDatasets,
   useExperiments,
@@ -206,6 +206,47 @@ export function OverviewView({ onNavigate }: { onNavigate: (v: ViewId) => void }
             ))}
           </ul>
         </div>
+      </SectionCard>
+
+      <SectionCard
+        title="Current evidence gaps and next research gates"
+        subtitle="Visible research status · not presented as completed capabilities"
+        right={<ResearchBadge compact />}
+      >
+        <div className="grid gap-4 xl:grid-cols-3">
+          <section className="rounded-lg border border-rose-200 bg-rose-50/50 p-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-rose-900">Validation gaps</h3>
+            <ul className="mt-3 space-y-2.5 text-xs leading-relaxed text-stone-700">
+              <li><strong>Parkinson’s quantum grouped CV — NOT MEASURED.</strong> The 80-row random-fold comparison has subject overlap. The linked grouped Parkinson’s files are a separate full-dataset classical run.</li>
+              <li><strong>Generalization — NOT ESTABLISHED.</strong> Results come from one fixed 80-row sample and one three-fold split set per dataset.</li>
+              <li><strong>Early detection and external or prospective validation — NOT MEASURED.</strong> The saved datasets do not establish prediction before diagnosis or transfer to an independent cohort.</li>
+            </ul>
+          </section>
+
+          <section className="rounded-lg border border-amber-200 bg-amber-50/50 p-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-950">Model and quantum gaps</h3>
+            <ul className="mt-3 space-y-2.5 text-xs leading-relaxed text-stone-700">
+              <li><strong>Quantum hardware — NOT MEASURED.</strong> Saved quantum results use PennyLane’s analytic simulator; there are no device or finite-shot results.</li>
+              <li><strong>Timeout enforcement — defective in the historical run.</strong> The breast-cancer QSVM fold ran past its configured 900-second limit. Do not describe that grid as completing within the limit.</li>
+              <li><strong>Parameter-matched comparison, quantum calibration, conformal prediction, and SHAP — NOT MEASURED</strong> for this shared 80-row comparison.</li>
+            </ul>
+          </section>
+
+          <section className="rounded-lg border border-cyan-200 bg-cyan-50/50 p-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-cyan-950">Next research gates</h3>
+            <ol className="mt-3 space-y-2.5 text-xs leading-relaxed text-stone-700">
+              <li><strong>Repair and self-test timeout termination</strong>, then rerun only the affected benchmark folds and preserve every terminal status.</li>
+              <li><strong>Use shared group-aware and temporal split manifests</strong>, complete parameter-matched baselines, and repeat the paired comparison across prespecified seeds.</li>
+              <li><strong>Secure authorized longitudinal and independent cohorts</strong> before studying early detection, subgroup performance, cycle health, wearables, imaging, genomics, EHR, or surgical outcomes.</li>
+            </ol>
+            <a href="/research-roadmap.md" download className="mt-4 inline-flex items-center gap-1 text-[11px] font-medium text-cyan-900 underline underline-offset-2">
+              Download full research plan <ExternalLink className="h-3 w-3" aria-hidden />
+            </a>
+          </section>
+        </div>
+        <p className="mt-4 border-t border-stone-100 pt-3 text-[11px] leading-relaxed text-stone-500">
+          The dashboard exposes the existing evidence and its gaps; it does not manufacture missing cohorts, hardware runs, or clinical validation. Only benchmark artifacts are linked here, not row-level patient data.
+        </p>
       </SectionCard>
 
       {/* datasets + features */}
