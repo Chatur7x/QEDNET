@@ -22,7 +22,11 @@ This review covers the QEDNET research and education platform only. It does not 
 
 All local run commands and raw outputs are indexed in `results/research_completion/`. The local data files are not committed to Git. The smoke runs below are workflow checks, **not benchmark claims**: one seed and three outer folds do not establish comparative performance.
 
-The follow-up changes and their raw checks are indexed in [`results/research_completion_v2/COMMANDS.md`](../results/research_completion_v2/COMMANDS.md). The final backend suite exited successfully (92 progress dots counted from its saved output), the frontend lint/build passed, and the protected-route smoke passed against the local standalone build. These checks do not exercise an authenticated hosted session or the deployed Render revision. Caddy's fixed route passed a source assertion only; its parser/runtime was unavailable.
+The follow-up changes and their raw checks are indexed in [`results/research_completion_v2/COMMANDS.md`](../results/research_completion_v2/COMMANDS.md). The final backend suite exited successfully (92 progress dots counted from its saved output), the frontend lint/build passed, and the protected-route smoke passed against the local standalone build. A separate live check verified the deployed Render revision and unauthenticated route behavior; it did not exercise a signed-in hosted session. Caddy's fixed route passed a source assertion only; its parser/runtime was unavailable.
+
+## Latest live deployment check
+
+GitHub merge commit `95eb9280f4e39b32d9341a9334930de904482c05` is live on the Render service `https://qednet.onrender.com` (deployment `dep-dc42eoi9lscs73dnomrg`). The public `/live` and `/signin` routes returned HTTP 200. Unauthenticated `/api/health` and `/v2-api/health` returned HTTP 307 redirects to the sign-in flow. GitHub Actions for the merge commit completed successfully. Raw command output is in [`live_render_verification.raw.txt`](../results/research_completion_v2/live_render_verification.raw.txt).
 
 | Dataset | Local data profile | Validation | Saved experiment | Models in smoke run | Evidence |
 |---|---:|---|---|---|---|
@@ -61,7 +65,7 @@ The breast-cancer run also exercised the saved-model cascade prediction on a row
 
 ## Not established
 
-- Current deployed source/revision after these local changes: **not deployed or verified**.
+- Current deployed source/revision: the merge commit above is live, and the public liveness/sign-in pages plus unauthenticated redirects were checked. A successful authenticated session, signup/reset flow, and account-specific data path were not tested.
 - Fresh signup, password-reset email delivery, and a second account: **not tested**.
 - Persistence across Render restart/replacement, multi-user isolation, or backup restoration: **not tested**.
 - Full clinical use, early detection, calibration/conformal coverage on an independent cohort, external/prospective validation, or patient outcomes: **not established**.

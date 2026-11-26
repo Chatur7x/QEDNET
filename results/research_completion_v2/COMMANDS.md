@@ -17,4 +17,8 @@ Run from `D:\Projects\QEDNT` in PowerShell. Raw outputs are saved beside this fi
 
 The legacy Caddy reverse-proxy configuration was not executed: `caddy` is not installed in this environment. Its upstream target is fixed in source; runtime parsing remains `NOT MEASURED`.
 
+## Live Render deployment check
+
+After merge, `render deploys list srv-dc39ncgm7kps73dks070 --output json` showed the merged main commit as `live`. `curl.exe` requests to `/live`, `/signin`, `/api/health`, and `/v2-api/health` returned 200, 200, 307, and 307 respectively without an authenticated cookie. GitHub Actions on the merge commit completed successfully. Exact commands and raw output: [live_render_verification.raw.txt](live_render_verification.raw.txt). This was an anonymous route check only, not a signed-in account verification or durability test.
+
 No CSV outputs were created. These checks do not establish live deployment behavior, durable storage, multi-user isolation, backup/restore, or clinical validity.

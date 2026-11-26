@@ -1,0 +1,12 @@
+COMMAND: render deploys list srv-dc39ncgm7kps73dks070 --output json | ConvertFrom-Json | Select-Object -First 1 id,status,startedAt,finishedAt,commit
+{"id":"dep-dc42eoi9lscs73dnomrg","status":"live","startedAt":"2026-11-26T12:34:42.806198Z","finishedAt":"2026-11-26T12:36:54.58522Z","commit":"95eb9280f4e39b32d9341a9334930de904482c05"}
+COMMAND: curl.exe --silent --show-error --output NUL --write-out "LIVE_HTTP=%{http_code}" https://qednet.onrender.com/live
+LIVE_HTTP=200
+COMMAND: curl.exe --silent --show-error --output NUL --write-out "SIGNIN_HTTP=%{http_code}" https://qednet.onrender.com/signin
+SIGNIN_HTTP=200
+COMMAND: curl.exe --silent --show-error --output NUL --write-out "PROTECTED_API_HTTP=%{http_code}" https://qednet.onrender.com/api/health
+PROTECTED_API_HTTP=307
+COMMAND: curl.exe --silent --show-error --output NUL --write-out "INTERNAL_API_HTTP=%{http_code}" https://qednet.onrender.com/v2-api/health
+INTERNAL_API_HTTP=307
+COMMAND: gh run view 45820952142 --repo Chatur7x/QEDNET --json status,conclusion | ConvertFrom-Json | Select-Object status,conclusion | ConvertTo-Json -Compress
+{"status":"completed","conclusion":"success"}
