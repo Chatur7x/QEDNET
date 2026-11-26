@@ -18,6 +18,7 @@ API layer and scripts can consume them deterministically.
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import json
 import logging
 import sys
@@ -70,8 +71,13 @@ def cmd_validate(args) -> None:
     reg = _registry()
     df = load_dataset(args.dataset, reg)
     target = reg.get(args.dataset)["target"]
-    rep = validate_frame(df, target, args.dataset)
-    _stdout_json(rep.to_dict())
+    group_column = ("__subject_id__" if args.dataset == "parkinsons"
+                    and "__subject_id__" in df.columns else None)
+    rep = validate_frame(df, target, args.dataset,
+                         group_column=group_column)
+    report = rep.to_dict()
+    reg.update_validation(args.dataset, report)
+    _stdout_json(report)
 
 
 def cmd_upload(args) -> None:
@@ -88,6 +94,8 @@ def cmd_upload(args) -> None:
     df = pd.read_csv(args.csv)
     rep = validate_frame(df, rec.target, rec.name)
     rec.validation_status = "passed" if rep.passed else "failed"
+    rec.validation_report = rep.to_dict()
+    rec.validated_at = datetime.now(timezone.utc).isoformat()
     reg.register(rec)
     _stdout_json({"ok": rep.passed, "dataset": rec.to_dict(),
                   "validation": rep.to_dict()})

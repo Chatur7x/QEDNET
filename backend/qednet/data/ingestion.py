@@ -14,6 +14,7 @@ import hashlib
 import json
 import logging
 import re
+from datetime import datetime, timezone
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -66,6 +67,8 @@ class RegisteredDataset:
     n_features: int = 0
     profile: Dict[str, Any] = field(default_factory=dict)
     validation_status: str = "pending"
+    validation_report: Dict[str, Any] = field(default_factory=dict)
+    validated_at: Optional[str] = None
     notes: str = ""
 
     def to_dict(self) -> Dict[str, Any]:
@@ -90,23 +93,26 @@ def fingerprint_frame(df: pd.DataFrame) -> str:
     return hashlib.sha256(payload.encode()).hexdigest()[:16]
 
 
-def profile_frame(df: pd.DataFrame, target: str) -> DatasetProfile:
+def profile_frame(df: pd.DataFrame, target: str,
+                  group_column: str | None = None) -> DatasetProfile:
     """Basic profiling of a dataframe with a binary target column."""
     y = df[target]
     counts = y.value_counts(normalize=True)
     balance = {str(k): float(v) for k, v in counts.items()}
     missing = {c: int(df[c].isna().sum()) for c in df.columns}
+    feature_names = [c for c in df.columns
+                     if c not in {target, group_column}]
     constant = [c for c in df.columns
-                if c != target and df[c].nunique(dropna=False) <= 1]
+                if c not in {target, group_column}
+                and df[c].nunique(dropna=False) <= 1]
     identifier_like = [
         c for c in df.columns
-        if any(h in str(c).lower() for h in IDENTIFIER_HINTS)
-        or str(c).lower() in ("id", "index", "subject", "subject_id")
+        if any(h in str(c).lower().strip("_") for h in IDENTIFIER_HINTS)
+        or str(c).lower().strip("_") in ("id", "index", "subject", "subject_id")
     ]
     return DatasetProfile(
-        n_samples=int(df.shape[0]),
-        n_features=int(df.shape[1] - 1),
-        feature_names=[c for c in df.columns if c != target],
+        n_samples=int(df.shape[0]), n_features=len(feature_names),
+        feature_names=feature_names,
         dtypes={c: str(df[c].dtype) for c in df.columns},
         class_balance=balance,
         missing_per_column=missing,
@@ -158,7 +164,9 @@ def ingest_csv(path: str | Path, target: str | None = None,
         df = df.dropna(how="all")
 
     name = dataset_name or safe_filename(path.stem)
-    profile = profile_frame(df, target)
+    group_column = ("__subject_id__" if "__subject_id__" in df.columns
+                    else None)
+    profile = profile_frame(df, target, group_column=group_column)
     sha = hashlib.sha256(path.read_bytes()).hexdigest()[:16]
 
     return RegisteredDataset(
@@ -207,6 +215,16 @@ class DatasetRegistry:
     # -- operations -------------------------------------------------------
     def register(self, rec: RegisteredDataset) -> None:
         self._entries[rec.name] = rec.to_dict()
+        self._save()
+
+    def update_validation(self, name: str, report: Dict[str, Any]) -> None:
+        if name not in self._entries:
+            raise KeyError(f"Dataset '{name}' is not registered")
+        self._entries[name].update({
+            "validation_status": "passed" if report.get("passed") else "failed",
+            "validation_report": report,
+            "validated_at": datetime.now(timezone.utc).isoformat(),
+        })
         self._save()
 
     def list_datasets(self) -> List[Dict[str, Any]]:

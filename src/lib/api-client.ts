@@ -1,7 +1,6 @@
 /**
  * API client + shared types for the QED-Net 2.0 research dashboard.
- * Server state via TanStack Query; all data comes from REAL experiment
- * results produced by the Python backend (never fabricated).
+ * Server state via TanStack Query; experiment results come from saved backend runs.
  */
 "use client";
 
@@ -32,6 +31,8 @@ export interface DatasetMeta {
   n_features: number;
   profile: DatasetProfile;
   validation_status: string;
+  validation_report?: Record<string, unknown>;
+  validated_at?: string | null;
   notes?: string;
 }
 
@@ -303,6 +304,7 @@ export function useUploadDataset() {
 }
 
 export function useValidateDataset() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (dataset: string) => {
       const res = await fetch("/api/datasets/validate", {
@@ -312,6 +314,7 @@ export function useValidateDataset() {
       });
       return res.json();
     },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["datasets"] }),
   });
 }
 

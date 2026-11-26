@@ -133,7 +133,9 @@ def register_builtins(registry: DatasetRegistry) -> None:
             logger.warning("Could not load builtin '%s': %s", adapter.name, exc)
             continue
         target = adapter.target()
-        profile = profile_frame(df, target)
+        group_column = ("__subject_id__" if "__subject_id__" in df.columns
+                        else None)
+        profile = profile_frame(df, target, group_column=group_column)
         rec = RegisteredDataset(
             name=adapter.name, source="builtin", target=target,
             sha256=fingerprint_frame(df),
