@@ -28,7 +28,7 @@ The follow-up changes and their raw checks are indexed in [`results/research_com
 
 ## Latest live deployment check
 
-GitHub merge commit `95eb9280f4e39b32d9341a9334930de904482c05` is live on the Render service `https://qednet.onrender.com` (deployment `dep-dc42eoi9lscs73dnomrg`). The public `/live` and `/signin` routes returned HTTP 200. Unauthenticated `/api/health` and `/v2-api/health` returned HTTP 307 redirects to the sign-in flow. GitHub Actions for the merge commit completed successfully. Raw command output is in [`live_render_verification.raw.txt`](../results/research_completion_v2/live_render_verification.raw.txt).
+The application revision `20b028d8ae18f661527734301d10466f6dcba5f5` was live on Render service `https://qednet.onrender.com` (deployment `dep-dc42nn8ae00c73d3qal0`) during this check. The public `/live` and `/signin` routes returned HTTP 200. Unauthenticated `/api/health` and `/api/datasets` returned HTTP 307 redirects to the sign-in flow. GitHub Actions for the application revision completed successfully. This verifies deploy and anonymous route behavior only; it does not establish authenticated upload behavior, durable jobs, or persistent storage.
 
 | Dataset | Local data profile | Validation | Saved experiment | Models in smoke run | Evidence |
 |---|---:|---|---|---|---|
