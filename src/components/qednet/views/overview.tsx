@@ -4,16 +4,16 @@
  */
 "use client";
 
-import { Link2, ShieldCheck } from "lucide-react";
+import { ExternalLink, Link2, ShieldCheck } from "lucide-react";
 import {
   useDatasets,
   useExperiments,
   useHealth,
-  fmt,
   pct,
   seconds,
 } from "@/lib/api-client";
 import type { ViewId } from "../shell";
+import { benchmarkSnapshot } from "@/lib/benchmark-snapshot";
 import {
   DomainDot,
   EmptyState,
@@ -128,6 +128,66 @@ export function OverviewView({ onNavigate }: { onNavigate: (v: ViewId) => void }
             </div>
           </div>
         )}
+      </SectionCard>
+
+      {/* saved, audited benchmark snapshot — distinct from this server's live runs */}
+      <SectionCard
+        title="Exploratory benchmark snapshot"
+        subtitle="Saved local benchmark evidence · not a live run from this server"
+        right={<ResearchBadge compact />}
+      >
+        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50/70 px-3 py-2.5 text-xs leading-relaxed text-amber-950">
+          One fixed {benchmarkSnapshot.datasets[0].rows}-row subsample per dataset; {benchmarkSnapshot.protocol.folds} shuffled stratified folds;
+          split seed {benchmarkSnapshot.protocol.splitSeed}; model seeds {benchmarkSnapshot.protocol.modelSeeds}. Classical models used {benchmarkSnapshot.protocol.modelFeatures}.
+          Quantum used {benchmarkSnapshot.protocol.simulator}; no hardware runs.
+          Parkinson’s uses random-row folds with subject overlap. A quantum fold timed out on
+          breast cancer, and the runner exceeded its configured 900-second timeout. Treat these numbers as
+          exploratory only.
+        </div>
+        <div className="overflow-x-auto rounded-lg border border-stone-200">
+          <table className="w-full min-w-[760px] border-collapse text-left text-xs">
+            <thead className="bg-stone-50 text-stone-500">
+              <tr>
+                <th className="px-3 py-2.5 font-medium">Dataset · sample</th>
+                <th className="px-3 py-2.5 font-medium">Classical AUC leader</th>
+                <th className="px-3 py-2.5 font-medium">Quantum AUC leader</th>
+                <th className="px-3 py-2.5 font-medium">Fold coverage / caveat</th>
+              </tr>
+            </thead>
+            <tbody>
+              {benchmarkSnapshot.datasets.map((row) => (
+                <tr key={row.id} className="border-t border-stone-100 align-top">
+                  <td className="px-3 py-3">
+                    <div className="font-medium text-stone-800">{row.label}</div>
+                    <div className="qed-num mt-1 text-stone-500">
+                      {row.rows} rows · {row.inputFeatures} input features · classes {row.classBalance}
+                    </div>
+                  </td>
+                  <td className="px-3 py-3">
+                    <div className="font-medium text-stone-700">{row.classicalModel}</div>
+                    <div className="qed-num mt-1 break-all text-stone-600">{row.classicalAuc}</div>
+                    <div className="mt-1 text-[10px] text-stone-400">mean ± SD · folds {row.classicalFolds}</div>
+                  </td>
+                  <td className="px-3 py-3">
+                    <div className="font-medium text-stone-700">{row.quantumModel}</div>
+                    <div className="qed-num mt-1 break-all text-stone-600">{row.quantumAuc}</div>
+                    <div className="mt-1 text-[10px] text-stone-400">mean ± SD · completed folds {row.quantumFolds}</div>
+                  </td>
+                  <td className="max-w-56 px-3 py-3 leading-relaxed text-stone-500">{row.caveat}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-stone-500">
+          <span>Source: {benchmarkSnapshot.source}. Values are shown at saved precision; each model’s SD uses its completed folds.</span>
+          <a
+            href="/research-results.md"
+            className="inline-flex items-center gap-1 underline underline-offset-2 hover:text-stone-800"
+          >
+            Open benchmark report <ExternalLink className="h-3 w-3" aria-hidden />
+          </a>
+        </div>
       </SectionCard>
 
       {/* datasets + features */}
