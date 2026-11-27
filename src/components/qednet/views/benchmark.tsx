@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CompareView } from "./compare";
 import {
   Table,
   TableBody,
@@ -59,7 +60,7 @@ const METRICS: { key: string; label: string; digits?: number; asPct?: boolean }[
   { key: "ece", label: "ECE ↓" },
 ];
 
-export function BenchmarkView() {
+function BenchmarkMetricsView() {
   const experiments = useExperiments();
   const [expId, setExpId] = useState<string | null>(null);
   const activeId = expId ?? experiments.data?.[0]?.experiment_id ?? null;
@@ -399,5 +400,18 @@ export function BenchmarkView() {
         )}
       </TransitionIn>
     </div>
+  );
+}
+
+export function BenchmarkView() {
+  return (
+    <Tabs defaultValue="results" className="w-full">
+      <TabsList className="h-auto w-full justify-start overflow-x-auto rounded-xl bg-stone-100 p-1 sm:w-fit">
+        <TabsTrigger value="results" className="min-h-10 px-4 text-sm">Run results</TabsTrigger>
+        <TabsTrigger value="compare" className="min-h-10 px-4 text-sm">Compare saved runs</TabsTrigger>
+      </TabsList>
+      <TabsContent value="results" className="mt-5"><BenchmarkMetricsView /></TabsContent>
+      <TabsContent value="compare" className="mt-5"><CompareView /></TabsContent>
+    </Tabs>
   );
 }

@@ -140,12 +140,33 @@
   --qed-grid: #e7e5e4;
   --qed-ink: #1c1917;
   --qed-muted: #78716c;
+  --qed-nervous: #7c3aed;
+  --qed-cardio: #be123c;
+  --qed-resp: #0284c7;
+  --qed-digestive: #b45309;
+  --qed-renal: #0f766e;
+  --qed-endocrine: #a16207;
+  --qed-skeletal: #64748b;
 }
 
 /* tabular numerics for all scientific values */
 .qed-num {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
+}
+
+.qed-label {
+  color: #57534e;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  line-height: 1.4;
+}
+
+.qed-atlas-stage {
+  background:
+    radial-gradient(ellipse at 52% 12%, rgba(165, 243, 252, 0.42), transparent 42%),
+    linear-gradient(155deg, #f8fafc 0%, #eef3f6 55%, #f8fafc 100%);
 }
 
 /* display typography: negative tracking as type grows (Apple typography) */

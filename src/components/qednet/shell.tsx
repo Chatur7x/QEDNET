@@ -35,6 +35,8 @@ import { BenchmarkView } from "./views/benchmark";
 import { AdvantageView } from "./views/advantage";
 import { ReportsView } from "./views/reports";
 import { BodyHealthView } from "./views/body-health";
+import { BodyAtlasView } from "./views/body-atlas";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SignOutButton } from "@/components/auth/forms";
 
 export type ViewId =
@@ -47,6 +49,19 @@ export type ViewId =
   | "advantage"
   | "bodyHealth"
   | "reports";
+
+function BodyHealthWorkspace() {
+  return (
+    <Tabs defaultValue="research" className="w-full">
+      <TabsList className="h-auto w-full justify-start overflow-x-auto rounded-xl bg-stone-100 p-1 sm:w-fit">
+        <TabsTrigger value="research" className="min-h-10 px-4 text-sm">Health research</TabsTrigger>
+        <TabsTrigger value="atlas" className="min-h-10 px-4 text-sm">3D body atlas</TabsTrigger>
+      </TabsList>
+      <TabsContent value="research" className="mt-5"><BodyHealthView /></TabsContent>
+      <TabsContent value="atlas" className="mt-5"><BodyAtlasView /></TabsContent>
+    </Tabs>
+  );
+}
 
 const NAV: { id: ViewId; label: string; icon: React.ComponentType<{ className?: string }>; hint: string }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard, hint: "project status & research summary" },
@@ -106,7 +121,7 @@ function DashboardInner() {
       explainability: <ExplainabilityView />,
       benchmark: <BenchmarkView />,
       advantage: <AdvantageView />,
-      bodyHealth: <BodyHealthView />,
+      bodyHealth: <BodyHealthWorkspace />,
       reports: <ReportsView />,
     }),
     []
@@ -141,7 +156,7 @@ function DashboardInner() {
                   onClick={() => setView(item.id)}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "qed-focus group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[12px] font-medium transition-all",
+                    "qed-focus group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-all",
                     active
                       ? "bg-white text-slate-950 shadow-lg shadow-black/20"
                       : "text-slate-300 hover:bg-white/8 hover:text-white"
@@ -201,8 +216,9 @@ function DashboardInner() {
               <button
                 key={item.id}
                 onClick={() => setView(item.id)}
+                aria-current={view === item.id ? "page" : undefined}
                 className={cn(
-                  "qed-focus whitespace-nowrap rounded-md px-2.5 py-1.5 text-xs font-medium",
+                  "qed-focus whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium",
                   view === item.id ? "bg-stone-900 text-white" : "text-stone-500 hover:bg-stone-100"
                 )}
               >
